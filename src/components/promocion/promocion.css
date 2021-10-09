@@ -1,0 +1,131 @@
+.button-request{
+    background-color: #052434;
+    color: white;
+    font-weight: bolder;
+    padding: 5px;
+    width: 150px;
+    border: 0px;
+}
+
+.columns{
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 10px;
+}
+
+.error-add-prom{
+    color: red;
+}
+
+.item-label-prom{
+    color: gray;
+    font-size: smaller;
+}
+
+
+.input-round-prom{
+    border: 1px solid #052434;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 20px;
+    width: 250px;
+}
+
+.input-round-prom-desc{
+    border: 1px solid #052434;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 5px;
+    width: 60px;
+}
+
+.input-prom-date{
+    border: 0px;
+    width: 120px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: block;
+    padding: 0px;
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+}
+
+
+.text-area{
+    height: 100px;
+}
+
+
+.item-flex{
+    display: flex;
+}
+
+.sub-item{
+    margin-right: 25px;
+}
+
+.select-prom{
+    border: 1px solid #052434;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 5px;
+    width: 250px;   
+}
+
+.item{
+    margin-bottom: 10px;
+}
+
+
+.container-area{
+    max-width: 250px;
+    min-height: 100px;
+    background: white;
+    border: 1px #052434 solid;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.button-ctg{
+    font-size: x-small;
+}
+
+.box-prom-catg{
+    padding-right: 5px;
+    padding-left: 5px ;
+    display: flex;
+    width: 100px;
+    background: #edeef0;
+    border: 1px solid #edeef0;
+    height: 25px;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.box-prom-lb{
+    margin-right: 10px;
+    color: #052434;
+    font-weight: bold;
+}
+
+.box-prom-bt{
+    width: 10px;
+    height: 10px;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size: x-small !important;
+    background: transparent !important;
+    border: 0px !important; 
+    color: #052434 !important;
+    font-weight: bolder !important;  
+}
+

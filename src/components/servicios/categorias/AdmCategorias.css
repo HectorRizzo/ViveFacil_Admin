@@ -1,0 +1,61 @@
+.titulo{
+    font-size: 2em;
+}
+
+#agregarimgButton{
+    width: 30px;
+    height: "auto";
+}
+#agregarButton{
+    margin-right:10px;
+}
+.ant-form-item.form{
+    display: block;
+}
+.ant-form-item-label > label{
+    color: #87868A!important;
+    font-family: 'Myriad Pro', sans-serif !important;
+}
+.ant-input.input{
+    border: 1.5px solid #052434;
+    border-radius: 45px 50px 45px 50px;
+}
+.ant-input.input2{
+    border: 1.5px solid #052434;
+    border-radius: 20px 20px 20px 20px;
+}
+.div_form{
+    margin: 0% 8% 0% 8%;
+}
+.ant-modal-title{
+    font-weight: bold!important;
+    color: #052434!important;
+    font-size: x-large!important;
+}
+.ant-modal-footer>button.ant-btn{
+    font-size: 1em;
+    background-color: #727176;
+    color: white;
+    width: 170px;
+    height: 50px;;
+}
+.ant-modal-footer>.ant-btn.ant-btn-primary{
+    border-color: #052434!important;
+}
+.ant-modal-footer>.ant-btn-primary{
+    background-color: #052434!important;
+}
+.ant-modal-footer{
+    text-align: center!important;
+    font-family: 'Myriad Pro', sans-serif !important;
+    background-color: #EDEEF0 !important;
+}
+.ant-modal-body{
+    background-color: #EDEEF0 !important;
+}
+.ant-modal-header{
+    background-color: #EDEEF0 !important;
+}
+.ant-modal-title{
+    background-color: #EDEEF0 !important;
+}

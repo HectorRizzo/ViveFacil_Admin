@@ -1,0 +1,168 @@
+
+.input-round-pay{
+    border: 1px solid #052434;
+    border-radius: 20px;
+    padding: 5px;
+    margin-right: 20px;
+    width: 150px;
+}
+.block{
+    margin-top: 30px;
+}
+
+.conciliacion-item{
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+}
+.ghost-label-input{
+    color: gray;
+    font-size: small;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.error-input-pay{
+    color: red;
+    margin-left: 20px;
+}
+
+.fecha-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-items{
+    display: flex;
+}
+
+.select-input{
+    margin-right: 20px;
+}
+
+.ant-select-selection-selected-value {
+    border-radius: 0px 8px 8px 0px;
+    height: 53px;
+  }
+  
+
+.name-item{
+    color: gray;
+    width: 100px;
+    text-align: end;
+}
+.name-item-ctg{
+    color: gray;
+    width: 150px;
+    text-align: end;
+    margin-right: 10px;
+}
+
+.ctg-name{
+    color: #052434;
+    font-style: italic;
+    width: 150px;
+    text-align: end;
+    font-size: small;
+}
+
+.columns{
+    display: grid;
+    grid-template-columns: auto auto;
+    padding-left: 10px;
+    
+}
+
+.columns-pay{
+    display: grid;
+    grid-template-columns: 80% 10px;
+    padding: 10px;
+}
+
+.item-sol{
+    margin-bottom: 10px;
+}
+.item-pay-ctg{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.ctg-name{
+    margin-top: 0px;
+    margin-right: 10px;
+    width: 150px;
+}
+
+.sub-item-ctg{
+    display: flex;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 20px;
+}
+
+.item-center-pay{
+    margin-bottom: 10px;
+}
+.sub-item-sol{
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.table-name{
+    width: 200px;
+    color: #052434;
+}
+
+.table-border{
+    width: 100px;
+    border-bottom: 1px solid gray;
+}
+
+.table-value{
+    width: 100px;
+    margin-left: 20px;
+    text-align: end;
+    color: #052434;
+}
+
+.table-detail{
+    align-self: center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.value-item{
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    color: #052434;
+}
+.ctg-value{
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    color: #052434;
+    font-style: italic;
+}
+
+.border-detail{
+    border-bottom: 1px solid #2282B4;
+}
+
+.payment-details{
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.bold-name{
+    font-weight: bolder;
+    color: #052434;
+}
+
+
+.table-item-cgt{
+    margin-bottom: 40px;
+    padding: 10px;
+}

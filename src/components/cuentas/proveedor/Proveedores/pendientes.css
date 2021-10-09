@@ -1,0 +1,182 @@
+/**
+* Table style
+**/
+
+.columns-pendientes{
+    background-color: #EDEDF0;
+    text-align: center;
+}
+
+.columns-pendientes-1{
+    background-color: #EDEDF0;
+    text-align: center;
+    font-weight: bolder;
+    color:#052434 ;
+}
+
+thead[class*="ant-table-thead"] th{
+    background-color: #2282B4 !important;
+    color: white !important;
+    text-align: center !important;   
+    font-weight: bolder !important; 
+}
+
+
+
+/**
+* Modal Style View datos
+**/
+
+.modal-container{
+    width: 100%;
+    padding-left: 30px;
+}
+
+.title{
+    font-size: x-large;
+    font-weight: bolder;
+    color:#052434;
+}
+
+.row{
+    margin: 10px;
+}
+
+.column-data{
+    font-weight: normal;
+    padding: 10px;
+    color:#052434;
+    font-size: small;
+}
+
+
+.column-data-3{
+    font-weight: normal;
+    padding-left: 10px;
+    padding-right: 10px;
+    color:#052434;
+    font-size: small;
+}
+
+.column-name{
+    font-weight: normal;
+    color: gray;
+    padding: 10px;
+    align-content: flex-end;
+    text-align: end;
+    font-size: small;
+}
+
+.column-name-3{
+    font-weight: normal;
+    color: gray;
+    padding: 10px;
+    align-content: flex-end;
+    text-align: end;
+    font-size: small;
+    vertical-align: top;
+}
+
+.footer{
+    display: flex;
+    justify-content: center;
+}
+
+
+.icon{
+    width: 30px;
+    height: 30px;
+}
+
+
+.button-modal{
+    background-color: transparent;
+    border: 0px;
+}
+
+/** DOCUMENT SECTION**/
+
+.section-document{
+    display: flex;
+}
+
+.document-container{
+    display: block;
+    margin: 5px;
+    text-align: center;
+}
+.document-link{
+    text-decoration: none;
+    color: #052434;
+}
+.document-link:link{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:visited{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:hover{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:active{
+    text-decoration: none;
+}
+
+
+.button-document{
+    display: block !important;
+    border: 0px !important;
+    align-self: center;
+}
+
+.button-document:hover{
+    border: 0px !important;
+}
+
+
+.document-name{
+    display: block;
+    margin-top: 10px;
+    align-self: center;
+}
+
+/**
+* Modal style messages for Post failed or success
+**/
+
+.success-msg{
+    display:block;
+    text-align: center;
+    padding: 10px;
+}
+
+.msg-text{
+    align-self: center;
+    font-weight: bolder;
+    color:#052434;
+    text-align: center;
+}
+
+.msg-detail{
+    align-self: center;
+    color:#052434;
+    text-align: center;
+}
+
+
+.button-request{
+    background-color: #052434;
+    color: white;
+    font-weight: bolder;
+    padding: 5px;
+    width: 100px;
+}
+
+
+

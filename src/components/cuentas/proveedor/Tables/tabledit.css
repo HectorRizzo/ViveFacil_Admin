@@ -1,0 +1,66 @@
+/** EDIT TABLE PENDIENTE*/
+
+
+[title="Apellido"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Nombre"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Teléfono"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Cédula"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Correo"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Tipo"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Cuenta"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Banco"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+
+[title="Licencia"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Profesión"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+[title="Documentación"] {
+    color: gray !important;
+    font-size: small !important;
+}
+
+
+.divider-edit{
+    font-size: small !important;
+    font-weight: bolder !important;
+    color: #052434 !important;
+    padding-bottom: 10px !important;
+}

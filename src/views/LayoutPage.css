@@ -1,0 +1,112 @@
+/*
+  =========Sider=========
+*/
+  .menuLateral{
+    min-height: 100vh;
+  }
+  .ant-layout-sider{
+    background: #EDEEF0 !important;
+  } 
+
+  /*
+    =========Logo=========
+  */
+    .textoCorreoLogo{
+      margin: 0;
+      color:white;
+      font-weight: bold;
+    }
+    .textoLogo{
+      margin: 0;
+      color:white;
+    }
+    .logo {
+      height: 200px;
+      background: #2282B4;
+      text-align: center;
+    } 
+
+  /*
+    =========Menu=========
+  */
+    .ant-menu{
+      background: #EDEEF0!important ;
+      
+    }
+    .ant-menu-sub{
+      background-color: #F7F7F8 !important;
+      color:rgba(10,68,91) !important;
+    }
+
+    #menu-item-only{
+      font-weight: bold ;
+      color:rgba(10,68,91);
+    }
+
+    .ant-menu-submenu-title{
+      font-weight: bold ;
+      color:rgba(10,68,91);
+    }
+
+/*
+  =========Header=========
+*/
+.ant-layout-header{
+  width: 100% !important;
+  height: 120px !important ;
+  background: rgba(10,68,91) !important;
+  background: radial-gradient(circle, rgba(10,68,91,1) 0%, rgba(5,36,52,1) 60%) !important;
+}
+
+
+/*
+    =========Others=========
+*/
+.site-layout-sub-header-background {
+  background: #fff;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
+/*
+    =========Global=========
+*/
+.ant-switch-checked{
+  background-color: #3FE836 !important;
+}
+.ant-tabs-top > .ant-tabs-nav{
+  margin: 0 !important;
+}
+.ant-tabs-content-holder{
+  background-color: #edeef0 !important;
+}
+.ant-table{
+  margin: 2% !important;
+}
+.ant-table-content{
+  background-color: #edeef0 !important;
+}
+.ant-tabs-tab-btn{
+  font-weight: bold;
+  /*color:rgba(10,68,91);*/
+  color:white;
+}
+.ant-tabs-tab{
+  background-color:#C2C3C9 !important;
+  border-bottom-color: #edeef0 !important;
+  border-radius: 30px 30px 0px 0px !important;
+  padding-left: 10% !important;
+  padding-right: 10% !important;
+  
+}
+.ant-tabs-tab-active{
+  background-color: #edeef0 !important;
+  
+  
+}
+.ant-tabs-tab-active > .ant-tabs-tab-btn{
+  color:rgba(10,68,91) !important;
+  font-weight: bold !important;
+}
