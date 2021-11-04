@@ -282,6 +282,7 @@ class Promociones extends Component {
                 descuento: this.state.descuento,
                 participantes: this.state.participantes,
                 categorias: this.state.selected_ctgs,
+                foto: this.state.foto
             }
             
 
@@ -317,6 +318,7 @@ class Promociones extends Component {
             success: false,
             failed: false,
             msg: "",
+            foto: "",
 
         });
         resetLabels();
@@ -511,6 +513,18 @@ class Promociones extends Component {
                                                 </div>
                                                 <h6 id="error-prom-ctg" className="error-add-prom"></h6>
                                             </div>
+
+                                            <div className="item" key="text-pro">
+                                                <h4 className="item-label-prom">Descripcion</h4>
+                                                <textarea name="descripcion" key="input-text"
+                                                    value={this.state.descripcion}
+                                                    onChange={this.handleChange} type="text"
+                                                    maxLength="250" required
+                                                    rows="3"
+                                                    className="input-round-prom text-area"></textarea>
+                                                <h6 id="error-prom-text" className="error-add-prom"></h6>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                     <div className="footer">
