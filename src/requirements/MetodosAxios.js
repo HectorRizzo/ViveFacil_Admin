@@ -37,6 +37,35 @@ export default class MetodosAxios {
 
 
   /*
+    obtener_insignias
+    autor: Livingston
+    descripccion: Obtiene todos las insignias
+    parametros: None
+  */
+    static obtener_insignias = () => {
+      return MetodosAxios.instanceAxios.get("/insignias/")
+    };
+
+
+    /*
+    obtener_insignia
+    autor: Livingston
+    descripccion: Obtiene una insignia
+    parametros: None
+    */
+      static obtener_insignia = (id) => {
+        return MetodosAxios.instanceAxios.get(`/insignias/${id}`)
+      };
+
+      static obtener_promocion = (id) => {
+        return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
+      };
+
+    
+
+
+
+  /*
     obtener_administradores
     autor: Axell
     descripccion: Obtiene todos los administradores
@@ -263,6 +292,27 @@ export default class MetodosAxios {
   console.log(estado, id)
   return MetodosAxios.instanceAxios.put(`/categoria_update/${id}`, estado)
 };
+
+
+
+
+
+
+static cambio_insignia = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/insignia_update/${id}`, estado)
+};
+
+
+static cambio_promocion = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
+};
+
+
+
+
+
 /*
     eliminar_categoria
     autor: lilibeth
@@ -272,6 +322,20 @@ export default class MetodosAxios {
  static eliminar_categoria(id) {
   return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
 };
+
+
+static eliminar_insignia(id) {
+  return MetodosAxios.instanceAxios.delete(`/insignia_delete/${id}`)
+};
+
+
+
+
+static eliminar_promocion(id) {
+  return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
+};
+
+
   /*
     obtener_Subcategorias
     autor: Lilibeth
@@ -309,6 +373,12 @@ export default class MetodosAxios {
  static crear_categoria(data) {
   return MetodosAxios.instanceAxios.post(`/categorias/`,data)
 };
+
+static crear_insignia(data) {
+  return MetodosAxios.instanceAxios.post(`/insignias/`,data)
+};
+
+
 /*
     crear_subcategoria
     autor: lilibeth
@@ -351,6 +421,10 @@ static update_pendiente_documento = ( data) => {
 
   static obtener_promociones = ()=>{
     return MetodosAxios.instanceAxios.get('/promociones/');
+  }
+
+  static obtener_cupones = ()=>{
+    return MetodosAxios.instanceAxios.get('/cupones/');
   }
 
 
@@ -450,5 +524,48 @@ static update_pendiente_documento = ( data) => {
     return MetodosAxios.instanceAxios.put(`/ciudades/`,ciudad)
   };
 
+  static obtener_planes = () => {
+    return MetodosAxios.instanceAxios.get("/planes/")
+  };
+
+  static crear_plan=(data)=>{
+    return MetodosAxios.instanceAxios.post('/planes/', data);
+  }
+
+  static actualizar_plan=(data)=>{
+    return MetodosAxios.instanceAxios.put('/planes/', data);
+  }
+
+  static borrar_plan=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/planes/${id}`)
+  }
+
+  static obtener_publicidades = () => {
+    return MetodosAxios.instanceAxios.get("/publicidades/")
+  };
+
+  static crear_publicidad=(data)=>{
+    return MetodosAxios.instanceAxios.post('/publicidades/', data);
+  }
+
+  static actualizar_publicidad=(data)=>{
+    return MetodosAxios.instanceAxios.put('/publicidades/', data);
+  }
+
+  static borrar_publicidad=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/publicidades/${id}`)
+  }
+
+  static obtener_admin_user = (user) => {
+    return MetodosAxios.instanceAxios.get(`/adminUser/${user}`);
+  };
+
+  static obtener_admin_user_pass = (user, passw) => {
+    return MetodosAxios.instanceAxios.post(`/adminUserPass/`, {username: user, password: passw});
+  };
+
+  static logout = (token) => {
+    return MetodosAxios.instanceAxios.get(`/logout/${token}`);
+  };
 }
 

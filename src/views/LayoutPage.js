@@ -12,20 +12,50 @@ import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
 import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
+import MetodosAxios from "../requirements/MetodosAxios";
+import Insignias from "../components/insignias/Insignias";
+import Cupones from "../components/cupones/Cupones";
 
 import "./LayoutPage.css";
 import Politicas from "../components/politicas/Politica";
 import Sugerencia from "../components/sugerencias/SugLeidas/Sugerencia";
 import SugerenciaNoLeida from "../components/sugerencias/SugNoLeidas/SugerenciaNoLeida";
 import Provider from "../components/cuentas/provider/Proveedor";
+import Planes from "../components/planes/planes";
+import Publicidades from "../components/publicidades/publicidades";
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
 class LayoutPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            user: "",
+            email: "",
+            count: 0,
         };
+
     }
+
+    componentDidMount(){
+
+        if(this.state.user == ""){
+            if(localStorage.getItem('_cap_userName') != null){
+                this.setState({user: localStorage.getItem('_cap_userName')})
+            }
+            else{
+                this.setState({user: this.props.location.state.detail.admin.user_datos.user.username})
+                localStorage.setItem('_cap_userName', this.props.location.state.detail.admin.user_datos.user.username)
+                localStorage.setItem('token', this.props.location.state.detail.token)
+            }
+        }
+    }
+
+    logout(){
+        MetodosAxios.logout(localStorage.getItem('token')).then(res => {
+            window.localStorage.clear()
+        })
+    }
+
 
     render() {
         return (
@@ -45,8 +75,7 @@ class LayoutPage extends Component {
                     <Row className="logo" justify="center" align="middle">
                         <Col>
                             <Avatar size={75} icon={<UserOutlined />} />
-                            <p className="textoCorreoLogo">axell@piogram.com</p>
-                            <p className="textoLogo">Lorem Ipsum</p>
+                            <p className="textoCorreoLogo">{this.state.user}</p>
                         </Col>
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
@@ -86,9 +115,10 @@ class LayoutPage extends Component {
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
                         </Menu.Item>
-                        <SubMenu key="sub4" title="PUBLICIDAD">
-                            <Menu.Item key="8">Categorías</Menu.Item>
-                        </SubMenu>
+                        <Menu.Item key="sub4" title="PUBLICIDAD"  id="menu-item-only">
+                            PUBLICIDAD
+                            <Link to={`${this.props.match.path}/publicidad/`} />
+                        </Menu.Item>
                         <Menu.Item key="sub5" title="PROMOCIÓN" id="menu-item-only">
                             PROMOCIÓN
                             <Link to={`${this.props.match.path}/promociones/`} />
@@ -98,6 +128,10 @@ class LayoutPage extends Component {
                             <Link to={`${this.props.match.path}/politicas/`} />
                         </Menu.Item>
 
+                        <Menu.Item key="sub12" title="PLANES" id="menu-item-only">
+                            PLANES
+                            <Link to={`${this.props.match.path}/planes/`} />
+                        </Menu.Item>
                         <SubMenu key="sub7" title="SUGERENCIAS">
                             <Menu.Item key="7">
                                 Sugerencias Leídas
@@ -109,6 +143,14 @@ class LayoutPage extends Component {
                             </Menu.Item>
                         </SubMenu>
                         
+                        <Menu.Item key="sub8" title="INSIGNIAS" id="menu-item-only">
+                            INSIGNIAS
+                            <Link to={`${this.props.match.path}/insignias/`} />
+                        </Menu.Item>
+                        <Menu.Item key="sub9" title="CUPONES" id="menu-item-only">
+                            CUPONES
+                            <Link to={`${this.props.match.path}/cupones/`} />
+                        </Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout>
@@ -121,7 +163,7 @@ class LayoutPage extends Component {
                                 </Link>
                             </Col>
                             <Col>
-                                <Link to={`/`} style={{color:"white"}}>
+                                <Link to={`/`} style={{color:"white"}} onClick={this.logout}>
                                     Cerrar Sesión
                                 </Link>
                             </Col>
@@ -143,6 +185,10 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />
                                 <Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />
 
+                                <Route path={`${this.props.match.path}/planes/`} component={Planes} exact />
+                                <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />
+                                <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />
+                                <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
                             </Switch>
                         </div>
                     </Content>

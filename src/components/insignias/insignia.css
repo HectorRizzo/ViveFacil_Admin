@@ -1,0 +1,17 @@
+.columns{
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 5px;
+}
+
+.sub-itemm{
+    margin-left: 50px;
+}
+
+.input-round-prom-desc{
+    border: 1px solid #052434;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 5px;
+    width: 60px;
+}
