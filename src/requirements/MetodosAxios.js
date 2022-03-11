@@ -341,4 +341,48 @@ static update_pendiente_documento = ( data) => {
   static enviar_alerta =(correo,asunto,texto)=>{
     return MetodosAxios.instanceAxios.get(`/enviaralerta/${correo}/${asunto}/${texto}`)
   }
+
+  static obtener_planes = () => {
+    return MetodosAxios.instanceAxios.get("/planes/")
+  };
+
+  static crear_plan=(data)=>{
+    return MetodosAxios.instanceAxios.post('/planes/', data);
+  }
+
+  static actualizar_plan=(data)=>{
+    return MetodosAxios.instanceAxios.put('/planes/', data);
+  }
+
+  static borrar_plan=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/planes/${id}`)
+  }
+
+  static obtener_publicidades = () => {
+    return MetodosAxios.instanceAxios.get("/publicidades/")
+  };
+
+  static crear_publicidad=(data)=>{
+    return MetodosAxios.instanceAxios.post('/publicidades/', data);
+  }
+
+  static actualizar_publicidad=(data)=>{
+    return MetodosAxios.instanceAxios.put('/publicidades/', data);
+  }
+
+  static borrar_publicidad=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/publicidades/${id}`)
+  }
+
+  static obtener_admin_user = (user) => {
+    return MetodosAxios.instanceAxios.get(`/adminUser/${user}`);
+  };
+
+  static obtener_admin_user_pass = (user, passw) => {
+    return MetodosAxios.instanceAxios.post(`/adminUserPass/`, {username: user, password: passw});
+  };
+
+  static logout = (token) => {
+    return MetodosAxios.instanceAxios.get(`/logout/${token}`);
+  };
 }
