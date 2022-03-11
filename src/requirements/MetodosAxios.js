@@ -61,6 +61,10 @@ export default class MetodosAxios {
         return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
       };
 
+      static obtener_cupon = (id) => {
+        return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
+      };
+
     
 
 
@@ -335,6 +339,10 @@ static eliminar_promocion(id) {
   return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
 };
 
+static eliminar_cupon(id) {
+  return MetodosAxios.instanceAxios.delete(`/cupon_delete/${id}`)
+};
+
 
   /*
     obtener_Subcategorias
@@ -441,6 +449,10 @@ static update_pendiente_documento = ( data) => {
 
   static crear_promocion=(data)=>{
     return MetodosAxios.instanceAxios.post('/promociones/', data);
+  }
+
+  static crear_cupon=(data)=>{
+    return MetodosAxios.instanceAxios.post('/cupones/', data);
   }
 
 

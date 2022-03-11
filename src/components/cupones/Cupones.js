@@ -8,13 +8,13 @@ import Eliminar from "../../img/icons/eliminar.png";
 import Agregar from '../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import iconimg from '../../img/icons/imagen.png'
-//import AgregarPromocion from "./AgregarPromo";
+import AgregarCupon from "./AgregarCupon";
 //import EditarPromocion from "./EditarPromo";
 
-//import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
-//    from './validators';
+import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
+    from '../promocion/validators';
 
-//import { ValidarTexto } from '../servicios/Validacion/validaciones'
+import { ValidarTexto } from '../servicios/Validacion/validaciones'
 //import Insig from "./Insig";
 //import EditarInsignia from "./EditarInsignia";
 //import { ValidarTexto, validateParticipante } from '../servicios/Validacion/validaciones'
@@ -198,7 +198,7 @@ class Cupones extends Component {
     }
 
     showModal = (insignia) => {
-        MetodosAxios.obtener_promocion(insignia.key).then(res => {
+        MetodosAxios.obtener_cupon(insignia.key).then(res => {
             this.cuponSelected = res.data;
             this.setState({
                 visibleModalCupon: true,
@@ -241,7 +241,7 @@ class Cupones extends Component {
             for (let i = 0; i < this.state.selectedRowKeysCupon.length; i++) {
                 let id = this.state.selectedRowKeysCupon[i];
                 //console.log(id)
-                await MetodosAxios.eliminar_promocion(id).then(res => {
+                await MetodosAxios.eliminar_cupon(id).then(res => {
                     console.log(res)
                 })
             }
@@ -297,7 +297,7 @@ class Cupones extends Component {
     }
 
     AgregarPromocion() {
-        //this.state.code = makeid()
+        this.state.code = makeid()
         console.log(this.state.code)
         this.limpiarformpromo()
         {/*console.log("nombre",this.state.nombre) 
@@ -308,7 +308,7 @@ class Cupones extends Component {
 
 
 
-   /* validarform() {
+    validarform() {
         console.log(this.state.selected_cgtg)
         if (this.state.code !== '' && this.state.titulo0 !== '' &&
             this.state.fileimg !== null && this.state.descripcion0 !== '' &&
@@ -339,7 +339,7 @@ class Cupones extends Component {
             //validateDate('error-prom-date', this.state.fecha_limite)
         }
         if (this.state.puntos0 === '') {
-            ValidarTexto(false, 'puntos0')
+            ValidarTexto(false, 'errorpuntos0')
         }
         if (this.state.tipo_categoria0 === '') {
             ValidarTexto(false, 'errortipo_categoria0')
@@ -348,7 +348,7 @@ class Cupones extends Component {
             ValidarTexto(false, 'errordescripcion0')
         }
         return false
-    }*/
+    }
 
     onSelectChangePromocion = (selectedRowKeys, selectedRows) => {
         //console.log('Rows: ', selectedRows);
@@ -400,8 +400,8 @@ class Cupones extends Component {
 */
 
 
-    async guardarpromocion() {
-        //if (this.validarform()) {
+    async guardarcupon() {
+        if (this.validarform()) {
             //console.log(this.state.fileimg)
             var data = new FormData();
             //console.log('nombre: ', this.state.nombre0)
@@ -417,12 +417,12 @@ class Cupones extends Component {
             data.append('porcentaje', this.state.porcentaje0);
             data.append('fecha_iniciacion', this.state.fecha_iniciacion0);
             data.append('fecha_expiracion', this.state.fecha_expiracion0);
-            data.append('participantes', this.state.puntos0);
+            data.append('puntos', this.state.puntos0);
             data.append('tipo_categoria', this.state.tipo_categoria0);
             //console.log(data)
-            //await MetodosAxios.crear_promocion(data).then(res => {
-            //    console.log(res)
-            //})
+            await MetodosAxios.crear_cupon(data).then(res => {
+                console.log(res)
+            })
             //this.MostraCupones();
             //this.CerrarAgregar()
 
@@ -440,7 +440,7 @@ class Cupones extends Component {
             //})
             this.MostraCupones();
             this.CerrarAgregar()
-        ///}
+        }
 
     }
 
@@ -601,7 +601,7 @@ class Cupones extends Component {
                     {/** Modal para ver la informacion del pago */}
                 </div>
                 <Modal style={{ backgraoundColor: "white" }}
-                    title="Información de la Promoción"
+                    title="Información del Cupón"
                     visible={this.state.visibleModalCupon}
                     closable={false}
                     okText="Editar"
@@ -631,16 +631,16 @@ class Cupones extends Component {
 
                 <Modal
                     className="modal"
-                    title="Agregar Promoción"
+                    title="Agregar Cupón"
                     centered
                     visible={this.state.modalAggVisible}
                     okText="Guardar"
                     cancelText="Cancelar"
                     closable={false}
-                    onOk={() => this.guardarpromocion()}
+                    onOk={() => this.guardarcupon()}
                     onCancel={() => this.CerrarAgregar()}
                 >
-                    {/*<AgregarPromocion param={this.state} handleChangeimg={this.handleChangeimg} />*/}
+                    <AgregarCupon param={this.state} handleChangeimg={this.handleChangeimg} />
                 </Modal>
 
                 <Modal
@@ -661,7 +661,7 @@ class Cupones extends Component {
 
                 <Modal
                     className="modal"
-                    title="Eliminar Promoción"
+                    title="Eliminar Cupón(es)"
                     centered
                     visible={this.state.modalalert}
                     okText="Aceptar"
