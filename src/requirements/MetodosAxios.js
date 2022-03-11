@@ -17,6 +17,35 @@ export default class MetodosAxios {
   };
 
   /*
+    obtener_insignias
+    autor: Livingston
+    descripccion: Obtiene todos las insignias
+    parametros: None
+  */
+    static obtener_insignias = () => {
+      return MetodosAxios.instanceAxios.get("/insignias/")
+    };
+
+
+    /*
+    obtener_insignia
+    autor: Livingston
+    descripccion: Obtiene una insignia
+    parametros: None
+    */
+      static obtener_insignia = (id) => {
+        return MetodosAxios.instanceAxios.get(`/insignias/${id}`)
+      };
+
+      static obtener_promocion = (id) => {
+        return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
+      };
+
+    
+
+
+
+  /*
     obtener_administradores
     autor: Axell
     descripccion: Obtiene todos los administradores
@@ -180,6 +209,27 @@ export default class MetodosAxios {
   console.log(estado, id)
   return MetodosAxios.instanceAxios.put(`/categoria_update/${id}`, estado)
 };
+
+
+
+
+
+
+static cambio_insignia = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/insignia_update/${id}`, estado)
+};
+
+
+static cambio_promocion = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
+};
+
+
+
+
+
 /*
     eliminar_categoria
     autor: lilibeth
@@ -189,6 +239,20 @@ export default class MetodosAxios {
  static eliminar_categoria(id) {
   return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
 };
+
+
+static eliminar_insignia(id) {
+  return MetodosAxios.instanceAxios.delete(`/insignia_delete/${id}`)
+};
+
+
+
+
+static eliminar_promocion(id) {
+  return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
+};
+
+
   /*
     obtener_Subcategorias
     autor: Lilibeth
@@ -226,6 +290,12 @@ export default class MetodosAxios {
  static crear_categoria(data) {
   return MetodosAxios.instanceAxios.post(`/categorias/`,data)
 };
+
+static crear_insignia(data) {
+  return MetodosAxios.instanceAxios.post(`/insignias/`,data)
+};
+
+
 /*
     crear_subcategoria
     autor: lilibeth
@@ -268,6 +338,10 @@ static update_pendiente_documento = ( data) => {
 
   static obtener_promociones = ()=>{
     return MetodosAxios.instanceAxios.get('/promociones/');
+  }
+
+  static obtener_cupones = ()=>{
+    return MetodosAxios.instanceAxios.get('/cupones/');
   }
 
 
