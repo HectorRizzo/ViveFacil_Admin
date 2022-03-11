@@ -2,14 +2,18 @@ import MetodosAxios from "../../../requirements/MetodosAxios";
 
 export async function getProfesiones(username) {
     let _profesiones = ""
-    let response = await MetodosAxios.obtener_profesiones(username)
-    let profesiones = response.data
-    for (let i = 0; i < profesiones.length; i++) {
-        let _profesion = profesiones[i].profesion.nombre
-        if (i === (profesiones.length - 1)) _profesiones += _profesion;
-        else _profesiones += _profesion + " , "
+    if(username) {
+        let response = await MetodosAxios.obtener_profesiones(username)
+        let profesiones = response.data
+        for (let i = 0; i < profesiones.length; i++) {
+            let _profesion = profesiones[i].profesion.nombre
+            if (i === (profesiones.length - 1)) _profesiones += _profesion;
+            else _profesiones += _profesion + " , "
+        }
+        //console.log(_profesiones)
+        return _profesiones;
     }
-    //console.log(_profesiones)
+
     return _profesiones;
 }
 
@@ -39,6 +43,7 @@ function getDate(datestr) {
 }
 
 export async function getProveedor(proveedor, count) {
+    
     let _username = proveedor.user_datos.user.email;
     let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
     let fecha = getDate(proveedor.user_datos.fecha_creacion)
@@ -77,28 +82,29 @@ export async function getProveedor(proveedor, count) {
 
 
 export async function get_Pendientes(pendiente, count) {
-    let proveedor = pendiente.proveedor
-    let date = getDate(proveedor.user_datos.fecha_creacion)
+    //let proveedor = pendiente.proveedor
+    let proveedor = pendiente
+    let date = getDate(proveedor.fecha_creacion)
     let licencia = "No"
     pendiente.estado ? licencia = "Activa" : licencia = "No Activa"
-    let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
+    let fullName = proveedor.nombres + " " + proveedor.apellidos;
     let is_valid_profesion = await validateProfesion(pendiente.profesion)
     let element = {
         count: count,
         key: proveedor.id,
         proveedor_id: proveedor.id,
         pendiente_id: pendiente.id,
-        user_datos: proveedor.user_datos.id,
+        user_datos: proveedor.id,
         email: pendiente.email,
-        tipo_user: proveedor.user_datos.tipo,
-        nombres: proveedor.user_datos.nombres,
-        apellidos: proveedor.user_datos.apellidos,
+        tipo_user: proveedor.tipo,
+        nombres: proveedor.nombres,
+        apellidos: proveedor.apellidos,
         fullName: fullName,
-        ciudad: proveedor.user_datos.ciudad,
-        cedula: proveedor.user_datos.cedula,
-        telefono: proveedor.user_datos.telefono,
-        genero: proveedor.user_datos.genero,
-        foto: proveedor.user_datos.foto,
+        ciudad: proveedor.ciudad,
+        cedula: proveedor.cedula,
+        telefono: proveedor.telefono,
+        genero: proveedor.genero,
+        foto: proveedor.foto,
         descripcion: proveedor.descripcion,
         document: proveedor.document,  //lista
         estado: licencia,

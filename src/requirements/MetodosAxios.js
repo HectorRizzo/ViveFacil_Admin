@@ -12,19 +12,65 @@ export default class MetodosAxios {
     descripccion: Obtiene todos los solicitantes
     parametros: None
   */
-  static obtener_solicitantes = () => {
-    return MetodosAxios.instanceAxios.get("/solicitantes/")
+  // static obtener_solicitantes = () => {
+  //   return MetodosAxios.instanceAxios.get("/solicitantes/")
+  // };
+
+  static obtener_solicitantes = (page) => {
+    return MetodosAxios.instanceAxios.get(`/solicitantes/?page=${page}`)
   };
+
+
+
+  static obtener_solicitante = (user) => {
+    return MetodosAxios.instanceAxios.get(`/solicitante/${user}`);
+  };
+
+
+  static filtrar_solicitante = (fechaInicio, fechaFin,page) => {
+    return MetodosAxios.instanceAxios.get(`fechas-filtro/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+  static buscar_solicitante = (usuario,page)  => {
+    return MetodosAxios.instanceAxios.get(`filtro-usuario/${usuario}?page=${page}`)
+  }
+
 
   /*
     obtener_administradores
     autor: Axell
     descripccion: Obtiene todos los administradores
     parametros: None
-  */
+ */
+
+  static getAdmin= (page) => {
+    return MetodosAxios.instanceAxios.get(`/administradores/?page=${page}`)
+  };
+
+
   static obtener_administradores = () => {
     return MetodosAxios.instanceAxios.get("/administradores/")
   };
+
+  static obtener_administrador = (id) => {
+    return MetodosAxios.instanceAxios.get(`/administrador/${id}`)
+  };
+
+  static actualizar_administrador = (id,usuario) => {
+    return MetodosAxios.instanceAxios.put(`/administrador/${id}`,usuario)
+  };
+
+  static crear_admin = (user) => {
+    return MetodosAxios.instanceAxios.post(`/administradores/`,user)
+  };
+
+  static buscar_admin = (usuario,page)  => {
+    return MetodosAxios.instanceAxios.get(`admin-filtro/${usuario}?page=${page}`)
+  }
+
+  static filtrar_admin = (fechaInicio, fechaFin,page) => {
+    return MetodosAxios.instanceAxios.get(`fechas_admin/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
   /*
     cambio_solicitante_estado
     autor: Axell
@@ -62,9 +108,8 @@ export default class MetodosAxios {
     descripccion: Cambia estado de un administrador
     parametros: boolean estado, int id
   */
-  static cambio_administrador_estado = (estado, id) => {
-    console.log(estado, id)
-    return MetodosAxios.instanceAxios.put(`/administrador_estado/${id}`, estado)
+  static cambio_administrador_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`,estado)
   };
 
   /*
@@ -87,6 +132,10 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.delete(`/administrador_delete/${id}`)
   };
 
+  static eliminar_admin(id) {
+    return MetodosAxios.instanceAxios.delete(`/administrador/${id}`)
+  };
+
   /*
     obtener_proveedores
     autor: Kelly
@@ -97,6 +146,9 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get("/proveedores/")
   }
 
+  static obtener_providers = (page) => {
+    return MetodosAxios.instanceAxios.get(`/proveedores/?page=${page}`)
+  }
   /*
     obtener_proveedores_pendientes
     autor: Kelly
@@ -107,7 +159,22 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get("/proveedores_pendientes/")
   }
 
+  static obtener_pendientes = (page) => {
+    return MetodosAxios.instanceAxios.get(`/proveedores_pendientes/?page=${page}`)
+  }
+
+  static obt_proveedor_pendiente = (id) => {
+    return MetodosAxios.instanceAxios.get(`/proveedores_pendientes/${id}`)
+  }
+
+  static filtrar_pendientesName = (user,page) => {
+    console.log(`/pendientes-search/${user}?page=${page}`)
+    return MetodosAxios.instanceAxios.get(`/pendientes-search/${user}?page=${page}`)
+  }
   /*
+  
+
+  
     obtener_cuenta_proveedor
     autor: Kelly
     descripccion: Obtiene las de los proveedores
@@ -130,6 +197,18 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.post(url, data)
   }
 
+  static obtener_proveedorInfo = (id) => {
+    return MetodosAxios.instanceAxios.get(`/proveedor/${id}`)
+  }
+
+
+  static filtrar_providersName = (user) => {
+    return MetodosAxios.instanceAxios.get(`/providers-search/${user}`)
+  }
+
+  static filtrar_providersDate = (fechaInicio, fechaFin) => {
+    return MetodosAxios.instanceAxios.get(`dates-providers/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
+  }
   /*
     obtener_profesiones
     autor: Kelly
@@ -139,6 +218,10 @@ export default class MetodosAxios {
 
   static obtener_profesiones(user) {
     return MetodosAxios.instanceAxios.get(`/proveedor_profesiones/${user}`)
+  }
+
+  static filtrar_pendientes = (user) => {
+    return MetodosAxios.instanceAxios.get(`/pendientes-search/${user}`)
   }
 
   /*
@@ -341,4 +424,31 @@ static update_pendiente_documento = ( data) => {
   static enviar_alerta =(correo,asunto,texto)=>{
     return MetodosAxios.instanceAxios.get(`/enviaralerta/${correo}/${asunto}/${texto}`)
   }
+
+  static editar_sugerencia_estado =(sugerencia, id)=>{
+    return MetodosAxios.instanceAxios.put(`/suggestion/${id}`, sugerencia);
+  }
+
+  static obtener_sugerencia =(id)=>{
+    return MetodosAxios.instanceAxios.get(`/suggestion/${id}`);
+  }
+
+  static obtener_sugerenciasLeidas =(page)=>{
+    return MetodosAxios.instanceAxios.get(`/read-suggestions/?page=${page}`);
+  }
+
+  static obtener_sugerenciasNoLeidas =(page)=>{
+    return MetodosAxios.instanceAxios.get(`/unread-suggestions/?page= ${page}`);
+  }
+
+
+  static getCiudades= () => {
+    return MetodosAxios.instanceAxios.get(`/ciudades/`)
+  };
+
+  static crear_Ciudades= (ciudad) => {
+    return MetodosAxios.instanceAxios.put(`/ciudades/`,ciudad)
+  };
+
 }
+

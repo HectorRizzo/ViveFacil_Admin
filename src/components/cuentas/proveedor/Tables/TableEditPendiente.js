@@ -28,7 +28,9 @@ const TableEditPendiente = (props) => {
     const API_URL = 'http://tomesoft1.pythonanywhere.com'
 
     const getDocuments = (proveedor) => {
-        let documents = proveedor.document;
+        let documents = proveedor.planilla_servicios;
+        console.log(proveedor)
+        console.log(documents)
         try {
             return documents.map((doc, i) => {
                 return (

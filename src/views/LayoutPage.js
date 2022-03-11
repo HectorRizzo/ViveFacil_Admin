@@ -3,6 +3,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import { Layout, Menu, Avatar, Row, Col } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import tomeLogoB from "../img/tome-logo-blanco.png";
+import logoVive from "../img/logo-inicio.png";
 import AdmCuentas from "../components/cuentas/admcuentas/AdmCuentas";
 import Administrador from "../components/cuentas/administrador/Administrador";
 import Proveedor from "../components/cuentas/proveedor/Proveedor";
@@ -13,6 +14,10 @@ import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
 
 import "./LayoutPage.css";
+import Politicas from "../components/politicas/Politica";
+import Sugerencia from "../components/sugerencias/SugLeidas/Sugerencia";
+import SugerenciaNoLeida from "../components/sugerencias/SugNoLeidas/SugerenciaNoLeida";
+import Provider from "../components/cuentas/provider/Proveedor";
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
 class LayoutPage extends Component {
@@ -46,20 +51,24 @@ class LayoutPage extends Component {
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
                         <SubMenu key="sub1" title="CUENTAS">
-                            <Menu.Item key="1">
+                            {/* <Menu.Item key="1">
                                 Habilitar/inhabilitar cuentas
                                 <Link to={`${this.props.match.path}/administrar-cuentas/`} />
-                            </Menu.Item>
-                            <Menu.Item key="2">
+                            </Menu.Item> */}
+                            {/* <Menu.Item key="2">
                                 Proveedor
                                 <Link to={`${this.props.match.path}/proveedor/`} />
+                            </Menu.Item> */}
+                            <Menu.Item key="16">
+                                Proveedores
+                                <Link to={`${this.props.match.path}/provider/`} />
                             </Menu.Item>
                             <Menu.Item key="3">
-                                Solicitante
+                                Solicitantes
                                 <Link to={`${this.props.match.path}/solicitante/`} />
                             </Menu.Item>
                             <Menu.Item key="4">
-                                Administrador
+                                Administradores
                                 <Link to={`${this.props.match.path}/administrador/`} />
                             </Menu.Item>
                         </SubMenu>
@@ -73,7 +82,7 @@ class LayoutPage extends Component {
                                 <Link to={`${this.props.match.path}/sub-categorias/`} />
                             </Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="sub5" title="PAGOS" id="menu-item-only">
+                        <Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
                         </Menu.Item>
@@ -84,12 +93,22 @@ class LayoutPage extends Component {
                             PROMOCIÓN
                             <Link to={`${this.props.match.path}/promociones/`} />
                         </Menu.Item>
-                        <SubMenu key="sub6" title="POLÍTICAS">
-                            <Menu.Item key="10">Categorías</Menu.Item>
-                        </SubMenu>
+                        <Menu.Item key="sub6" title="POLÍTICAS" id="menu-item-only">
+                            POLÍTICAS
+                            <Link to={`${this.props.match.path}/politicas/`} />
+                        </Menu.Item>
+
                         <SubMenu key="sub7" title="SUGERENCIAS">
-                            <Menu.Item key="11">Categorías</Menu.Item>
+                            <Menu.Item key="7">
+                                Sugerencias Leídas
+                                <Link to={`${this.props.match.path}/sugerencias-leidas/`} />
+                            </Menu.Item>
+                            <Menu.Item key="8">
+                                Sugerencias No Leídas
+                                <Link to={`${this.props.match.path}/sugerencias-noleidas/`} />
+                            </Menu.Item>
                         </SubMenu>
+                        
                     </Menu>
                 </Sider>
                 <Layout>
@@ -97,7 +116,8 @@ class LayoutPage extends Component {
                         <Row justify="space-between" align="middle" style={{ height: "100%", width: "100%", paddingLeft: "3%", paddingRight: "3%" }}>
                             <Col>
                                 <Link to={`${this.props.match.path}/`}>
-                                    <img height="80px" width="auto" src={tomeLogoB} alt="Logo TOME" />
+                                    {/* <img height="80px" width="auto" src={tomeLogoB} alt="Logo TOME" /> */}
+                                    <img height="80px" width="auto" src={logoVive} alt="Logo Vive Facil" />
                                 </Link>
                             </Col>
                             <Col>
@@ -111,13 +131,18 @@ class LayoutPage extends Component {
                         <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
-                                <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact/>
+                                {/* <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact/> */}
+                                <Route path={`${this.props.match.path}/provider/`} component={Provider} exact/>
                                 <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
                                 <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
                                 <Route path={`${this.props.match.path}/categorias/`} component={Categorias} exact />
                                 <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />
+                                <Route path={`${this.props.match.path}/politicas/`} component={Politicas} exact />
                                 <Route path={`${this.props.match.path}/promociones/`} component={Promociones} exact />
                                 <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />
+                                <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />
+                                <Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />
+
                             </Switch>
                         </div>
                     </Content>
