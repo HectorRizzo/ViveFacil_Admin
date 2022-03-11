@@ -26,3 +26,18 @@ export async function ValidarTexto(bool, component) {
         }  
     }
 }
+
+export async function validateParticipante(id, part) {
+    var errorLabel = document.getElementById(id);
+    var result = part.trim().length;
+
+    if (errorLabel) {
+        if (result > 0) {
+            errorLabel.textContent = "";
+            return true;
+        } else {
+            errorLabel.textContent = "Seleccione una opcion";
+            return false;
+        }
+    }
+}

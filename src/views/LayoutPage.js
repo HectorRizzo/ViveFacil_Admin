@@ -11,6 +11,8 @@ import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
 import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
+import Insignias from "../components/insignias/Insignias";
+import Cupones from "../components/cupones/Cupones";
 
 import "./LayoutPage.css";
 const { Header, Content, Sider } = Layout;
@@ -73,7 +75,7 @@ class LayoutPage extends Component {
                                 <Link to={`${this.props.match.path}/sub-categorias/`} />
                             </Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="sub5" title="PAGOS" id="menu-item-only">
+                        <Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
                         </Menu.Item>
@@ -90,6 +92,14 @@ class LayoutPage extends Component {
                         <SubMenu key="sub7" title="SUGERENCIAS">
                             <Menu.Item key="11">Categorías</Menu.Item>
                         </SubMenu>
+                        <Menu.Item key="sub8" title="INSIGNIAS" id="menu-item-only">
+                            INSIGNIAS
+                            <Link to={`${this.props.match.path}/insignias/`} />
+                        </Menu.Item>
+                        <Menu.Item key="sub9" title="CUPONES" id="menu-item-only">
+                            CUPONES
+                            <Link to={`${this.props.match.path}/cupones/`} />
+                        </Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout>
@@ -118,6 +128,8 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />
                                 <Route path={`${this.props.match.path}/promociones/`} component={Promociones} exact />
                                 <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />
+                                <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />
+                                <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
                             </Switch>
                         </div>
                     </Content>
