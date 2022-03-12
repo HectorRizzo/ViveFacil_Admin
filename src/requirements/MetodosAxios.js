@@ -313,6 +313,11 @@ static cambio_promocion = (estado, id) => {
   return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
 };
 
+static cambio_cupon = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
+};
+
 
 
 

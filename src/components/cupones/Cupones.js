@@ -9,7 +9,7 @@ import Agregar from '../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import iconimg from '../../img/icons/imagen.png'
 import AgregarCupon from "./AgregarCupon";
-//import EditarPromocion from "./EditarPromo";
+import EditarCupon from "./EditarCupon";
 
 import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
     from '../promocion/validators';
@@ -27,6 +27,7 @@ const columns = [
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Estado', dataIndex: 'estado', className: 'columns-pendientes', responsive: ['lg'] },
@@ -125,6 +126,7 @@ class Cupones extends Component {
                     imagen: insig.foto,
                     codigo: insig.codigo,
                     titulo: insig.titulo,
+                    fecha_creacion: insig.fecha_creacion.split('T')[0],
                     fecha_iniciacion: fechaInicio,
                     fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                     estado: est,
@@ -296,7 +298,7 @@ class Cupones extends Component {
         })
     }
 
-    AgregarPromocion() {
+    AgregarCupon() {
         this.state.code = makeid()
         console.log(this.state.code)
         this.limpiarformpromo()
@@ -356,12 +358,12 @@ class Cupones extends Component {
         this.setState({ selectedRowKeysCupon: selectedRowKeys });
     };
 
-    /*validarformEdit() {
+    validarformEdit() {
         if (this.state.cuponInfo.codigo !== '' && this.state.cuponInfo.titulo !== '' &&
         //this.state.fileimg !== null && 
         this.state.cuponInfo.descripcion !== '' &&
         this.state.cuponInfo.porcentaje !== '' && this.state.cuponInfo.fecha_iniciacion !== '' &&
-        this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.participantes !== '' &&
+        this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.puntos !== '' &&
         this.state.cuponInfo.tipo_categoria !== '') {
 
             return true
@@ -386,8 +388,8 @@ class Cupones extends Component {
             ValidarTexto(false, 'errorfecha_expiracionE')
             //validateDate('error-prom-date', this.state.fecha_limite)
         }
-        if (this.state.cuponInfo.participantes === '') {
-            ValidarTexto(false, 'errorparticipantesE')
+        if (this.state.cuponInfo.puntos === '') {
+            ValidarTexto(false, 'errorpuntosE')
         }
         if (this.state.cuponInfo.tipo_categoria === '') {
             ValidarTexto(false, 'errortipo_categoriaE')
@@ -397,7 +399,7 @@ class Cupones extends Component {
         }
         return false
     }
-*/
+
 
 
     async guardarcupon() {
@@ -444,8 +446,8 @@ class Cupones extends Component {
 
     }
 
-    async editarPromocion() {
-        //if (this.validarformEdit()){
+    async editarCupon() {
+        if (this.validarformEdit()){
         this.setState({
             limpiarEdit: true,
 
@@ -464,7 +466,7 @@ class Cupones extends Component {
         data.append('porcentaje', this.state.cuponInfo.porcentaje);
         data.append('fecha_iniciacion', this.state.cuponInfo.fecha_iniciacion);
         data.append('fecha_expiracion', this.state.cuponInfo.fecha_expiracion);
-        data.append('participantes', this.state.cuponInfo.participantes);
+        data.append('puntos', this.state.cuponInfo.puntos);
         data.append('tipo_categoria', this.state.cuponInfo.tipo_categoria);
         if (this.state.fileimg != null) {
             data.append('foto', this.state.fileimg)
@@ -472,16 +474,16 @@ class Cupones extends Component {
         //data.append('imagen', this.state.cuponInfo.imagen);
         //}
 
-        //await MetodosAxios.cambio_promocion(data, this.state.cuponInfo.id).then(res => {
-        //    console.log(res)
-        //})
+        await MetodosAxios.cambio_cupon(data, this.state.cuponInfo.id).then(res => {
+            console.log(res)
+        })
 
-        //for (let value of data.keys()) {
-        //    console.log(value);
-        //}
-        //for (let values of data.values()) {
-        //    console.log(values);
-        //}
+        for (let value of data.keys()) {
+            console.log(value);
+        }
+        for (let values of data.values()) {
+            console.log(values);
+        }
 
 
 
@@ -493,7 +495,7 @@ class Cupones extends Component {
             modalEditVisible: false,
 
         })
-        //}
+        }
     }
 
     searchPromocion = (search) => {
@@ -543,7 +545,7 @@ class Cupones extends Component {
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
-                            onClick={() => { this.AgregarPromocion() }}
+                            onClick={() => { this.AgregarCupon() }}
                         />
                         <Search
                             placeholder="Buscar"
@@ -649,13 +651,13 @@ class Cupones extends Component {
                     closable={false}
                     okText="Guardar Cambios"
                     cancelText="Cancelar"
-                    onOk={() => this.editarPromocion()}
+                    onOk={() => this.editarCupon()}
                     onCancel={() => this.handleCerrarEdit()}
 
 
 
                 >
-                    {/*<EditarPromocion param={this.state} handleChangeimg={this.handleChangeimg} />*/}
+                    <EditarCupon param={this.state} handleChangeimg={this.handleChangeimg} />
 
                 </Modal>
 

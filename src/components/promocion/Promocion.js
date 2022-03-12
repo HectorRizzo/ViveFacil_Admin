@@ -27,6 +27,7 @@ const columns = [
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Estado', dataIndex: 'estado', className: 'columns-pendientes', responsive: ['lg'] },
@@ -125,6 +126,7 @@ class Promociones extends Component {
                     imagen: insig.foto,
                     codigo: insig.codigo,
                     titulo: insig.titulo,
+                    fecha_creacion: insig.fecha_creacion.split('T')[0],
                     fecha_iniciacion: fechaInicio,
                     fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                     estado: est,
@@ -420,9 +422,9 @@ class Promociones extends Component {
             data.append('participantes', this.state.participantes0);
             data.append('tipo_categoria', this.state.tipo_categoria0);
             //console.log(data)
-            //await MetodosAxios.crear_promocion(data).then(res => {
-            //    console.log(res)
-            //})
+            await MetodosAxios.crear_promocion(data).then(res => {
+                console.log(res)
+            })
             //this.MostrarPromociones();
             //this.CerrarAgregar()
 
@@ -472,9 +474,9 @@ class Promociones extends Component {
         //data.append('imagen', this.state.promocionInfo.imagen);
         //}
 
-        //await MetodosAxios.cambio_promocion(data, this.state.promocionInfo.id).then(res => {
-        //    console.log(res)
-        //})
+        await MetodosAxios.cambio_promocion(data, this.state.promocionInfo.id).then(res => {
+            console.log(res)
+        })
 
         //for (let value of data.keys()) {
         //    console.log(value);
