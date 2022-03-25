@@ -14,6 +14,7 @@ class ProveedorTab extends Component {
         super(props);
         this.state = {
             datos_proveedor:[],
+            allplanes: [],
             loadingTable:false,
             loadingCheck:false,
             visibleModalInfo: false,
@@ -22,7 +23,7 @@ class ProveedorTab extends Component {
             page:1,
             search:false,
             disabledButton:true,
-
+            selectedPlan: null
         };
     }    
 
@@ -30,7 +31,7 @@ class ProveedorTab extends Component {
     componentDidMount() {
 
         this.cargarPagina(1)
-    
+        this.loadPlanes()
     }
 
     cargarPagina = (page) => {
@@ -53,6 +54,16 @@ class ProveedorTab extends Component {
         })
     }
 
+    async loadPlanes() {
+        let response = await MetodosAxios.obtener_planes_estado();
+        let data = response.data;
+        let planes = []
+        for (let plan of data) {
+            planes.push(plan);
+        }
+        this.setState({ allplanes: planes });
+    }
+
     showModal = (prov) => {
         MetodosAxios.obtener_proveedorInfo(prov.key).then(res => {
             console.log(res)
@@ -61,6 +72,7 @@ class ProveedorTab extends Component {
             this.setState({
                 visibleModalInfo: true,
                 
+                selectedPlan: this.proveedorActual?.plan_proveedor[0]?.plan?.nombre
               });
         })  
     };
@@ -73,6 +85,78 @@ class ProveedorTab extends Component {
         })
         
     };
+
+    changePlan = (event) => {
+        let proveedor = this.proveedorActual
+        console.log(proveedor)
+        if(proveedor.plan_proveedor.length === 0){
+            let planes = this.state.allplanes
+
+            let plan = planes.find(plan => {return plan.nombre === event.target.value})
+            this.setState({selectedPlan: plan.nombre})
+            // como length es 0 se tiene q crear el planProveedor
+            
+            var currentdate = new Date(); 
+            var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds()
+
+            let fecha = moment(datetime, 'DD-MM-YYYY HH:mm:SS').format("YYYY-MM-DDTHH:mm:SS")
+            let fechaExp = moment(fecha, "YYYY-MM-DDTHH:mm:SS").add(plan.duracion, 'M').format("YYYY-MM-DDTHH:mm:SS")
+            let data = {
+                proveedor: proveedor.id,
+                planProveedor: plan.id,
+                fecha_inicio: fecha,
+                fecha_expiracion: fechaExp,
+                estado: true
+            }
+            console.log(data)
+            MetodosAxios.crear_plan_proveedor(data).then(res => {
+                message.success("Se ha añadido exitosamente el plan");
+                console.log(res)
+            })
+            
+        }
+        else{
+            // como length no es 0 se tiene q modificar el planProveedor
+
+            let planes = this.state.allplanes
+
+            let plan = planes.find(plan => {return plan.nombre === event.target.value})
+            this.setState({selectedPlan: plan.nombre})
+            // como length es 0 se tiene q crear el planProveedor
+            
+            var currentdate = new Date(); 
+            var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds()
+
+            let fecha = moment(datetime, 'DD-MM-YYYY HH:mm:SS').format("YYYY-MM-DDTHH:mm:SS")
+            let fechaExp = moment(fecha, "YYYY-MM-DDTHH:mm:SS").add(plan.duracion, 'M').format("YYYY-MM-DDTHH:mm:SS")
+
+            let planProveedor = this.proveedorActual.plan_proveedor[0]
+
+            let data = {
+                id: planProveedor.id,
+                planProveedor: plan.id,
+                fecha_inicio: fecha,
+                fecha_expiracion: fechaExp,
+            }
+            
+            MetodosAxios.actualizar_plan_proveedor(data).then(res => {
+                message.success("Se ha actualizado exitosamente el plan");
+            })
+
+            
+        }
+
+    }
 
     formatData  = (res) => {
         let datos_Proveedor = [];
@@ -290,6 +374,23 @@ class ProveedorTab extends Component {
                                     onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.id, switchValue)}
                                     defaultChecked={this.proveedorActual?.estado}
                                 />
+                            </div>
+                            <div style={{display: 'flex', alignContentCenter: 'center' }} >
+                                <p style={{paddingTop: 3 + 'px'}}><strong>Plan: </strong></p>
+                                <select className="select-prom"
+                                    name="planes"
+                                    style={{width: 150 + 'px', height: 30 + 'px', marginLeft: 5 + 'px'
+                                    }}
+                                    onChange={this.changePlan}
+                                    required
+                                    value={this.state.selectedPlan ? this.state.selectedPlan : "Elija un Plan"}>
+                                    
+                                    <option disabled="disabled" value='Elija un Plan' style={{display: 'none'}}>seleccione el plan</option>
+                                    {this.state.allplanes.map((ctg, i) => {
+                                        return <option key={ctg.nombre} value={ctg.nombre}>{ctg.nombre}</option>
+                                    })}
+
+                                </select>
                             </div>
                         <Divider orientation="center" className="divider-cuenta">Cuenta Bancaria</Divider>
                             <p><strong>Tipo Cuenta:  </strong>{this.proveedorActual?.tipo_cuenta}</p>

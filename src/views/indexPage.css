@@ -19,7 +19,6 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    background-color: white;
     transform: translate(-50%, -50%);
     width: 500px;
     height: 500px;
@@ -32,13 +31,14 @@
     display: flex;
     width: 100%;
     height: 200px;
-    background-color: white;
-    padding: 40px;
+
+    padding: 60px 20px 20px 70px;
     justify-content: center;
 }
 
 .logo-login{
-    max-width: 250px;
+  
+    max-width: 500px;
     max-height: 124px;
 }
 
@@ -55,11 +55,12 @@
     padding: 50px;
     }
     .login {
+    background-color: white;
     margin: 20px auto;
     width: 300px;
     }
     .login-screen {
-    background-color: #FFF;
+
     padding: 20px;
     border-radius: 5px
     }
@@ -70,7 +71,8 @@
     }
     
     .login-form {
-    text-align: center;
+      background-color: white;
+      text-align: center;
     }
     .control-group {
     margin-bottom: 10px;

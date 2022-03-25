@@ -1,12 +1,12 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal , Upload,  Form, Space, Switch} from 'antd';
+import { Input, Table, Button, Modal , Upload,  Form, Space, Switch, Pagination} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import File from '../servicios/File/FileUpload'
 import iconimg from '../../img/icons/imagen.png'
 import eliminarimg from '../../img/icons/eliminar.png'
 import './publicidades.css'
 import moment from 'moment'
-import { resetLabels }
+import { resetLabels, validarFechaInicio, validarFecha}
     from '../promocion/validators';
 const { Search } = Input;
 
@@ -63,22 +63,28 @@ class Publicidades extends Component {
             nompicture: "Ningun archivo seleccionado",
             pk: '',
             borrar: false,
+            size:0,
+            total:0,
+            page:1,
         }
         
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangefin = this.handleChangefin.bind(this);
+        this.handleChangeinicio = this.handleChangeinicio.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.deletepublicidad = this.deletepublicidad.bind(this);
         this.modalAceptar = this.modalAceptar.bind(this);
+
     }
 
     async componentDidMount() {
-        await this.loadpublicidades();
+        this.loadpublicidades(1);
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.is_changed !== prevState.is_changed) {
             if (this.state.is_changed) {
-                this.loadpublicidades()
+                this.loadpublicidades(1)
                 this.setState({ is_changed: false })
             }
         }
@@ -91,35 +97,55 @@ class Publicidades extends Component {
         }
     }
 
-    async loadpublicidades() {
-        this.setState({ loading_publicidades: true });
-        let publicidades = [];
-        let count = 1;
-        let value = await MetodosAxios.obtener_publicidades();
-        let data = value.data;
-        for (let publicidad of data) {
-            publicidad.id = publicidad.id
-            publicidad.key = count;
-            publicidad.count = count;
-            publicidad.fecha_inicio = publicidad.fecha_inicio
-            publicidad.fecha_expiracion = publicidad.fecha_expiracion
-            publicidad.url = publicidad.url
+    formatData  = (res) => {
+        let datos_Publicidad = [];
+        let count =1;
+        for(let publicidad of res.data.results){
+            
             if(publicidad.imagen != null){
                 publicidad.imagen = 'https://tomesoft1.pythonanywhere.com/'+ publicidad.imagen
             }
             else{
                 publicidad.imagen = iconimg
             }
-            publicidad.fecha_creacion = publicidad.fecha_creacion
-            publicidades.push(publicidad);
+            datos_Publicidad.push({
+                id: publicidad.id,
+                key: count,
+                count: count,
+                titulo: publicidad.titulo,
+                descripcion: publicidad.descripcion,
+                fecha_inicio: publicidad.fecha_inicio,
+                fecha_expiracion: publicidad.fecha_expiracion,
+                url: publicidad.url,
+                imagen: publicidad.imagen,
+                fecha_creacion: publicidad.fecha_creacion,
+                
+            })
             count++;
         }
+        return datos_Publicidad;
+    }
 
-        this.setState({
-            publicidades: publicidades,
-            allpublicidades: publicidades,
-            loading_publicidades: false,
-        });
+    loadpublicidades = (page) => {
+        this.setState({ loading_publicidades: true });
+        console.log(page)
+        MetodosAxios.obtener_publicidades(page).then(res => {
+            let value = res.data.results
+            let publicidades = this.formatData(res)
+            console.log(value)
+
+            this.setState({
+                size: res.data.page_size,
+                total: res.data.total_objects,
+                page: res.data.current_page_number,
+                publicidades: publicidades,
+                allpublicidades: publicidades,
+                loading_publicidades: false,
+        
+            });
+        })
+
+        
 
     }
 
@@ -310,28 +336,66 @@ class Publicidades extends Component {
         document.getElementById("date-add").setAttribute('min', date);
     }
 
-    onSearch = (value) => {
-        this.setState({ loading_publicidades: true });
-        let publicidades = [];
-        if (value != "") {
-            for (let i = 0; i < this.state.allpublicidades.length; i++) {
-                let publicidad = this.state.allpublicidades[i];
-                value = value.toLowerCase();
-                let titulo = publicidad.titulo.toLowerCase();
-                let desc = publicidad.descripcion.toLowerCase();
-                let isHere = desc.includes(value) || titulo.includes(value);
-                if (isHere) {
-                    publicidades.push(publicidad);
-                }
-            }
+    handleChangeinicio(event) {
+
+        let inicio = event.target.value
+        if (validarFechaInicio(inicio, "errorfecha_iniciacionE")) {
+            this.state.inicio = event.target.value
+            var inicioo = document.getElementById("errorfecha_iniciacionE");
+            if (inicioo) inicioo.textContent = ""
         } else {
-            publicidades = this.state.allpublicidades;
+            this.state.inicio = null
+        }
+        console.log(this.state.inicio)
+    }
+
+    handleChangefin(event){
+
+        if (this.state.inicio === '') {
+            var inicioo = document.getElementById("errorfecha_iniciacionE");
+            if (inicioo) inicioo.textContent = "Elija una fecha de Inicio"
+
+        } else {
+
+            let fin = event.target.value
+            if (validarFecha(this.state.inicio, fin, "errorfecha_expiracionE")) {
+                this.state.expiracion = event.target.value
+                var inicioo = document.getElementById("errorfecha_expiracionE");
+                if (inicioo) inicioo.textContent = ""
+
+            } else {
+                this.state.expiracion = null
+            }
+
         }
 
-        this.setState({
-            publicidades: publicidades,
-            loading_publicidades: false,
-        })
+        console.log(this.state.expiracion)
+
+    }
+
+    buscarPublicidad =(search) => { 
+        if(search!=""){
+            this.setState({
+                loadingTable:true,
+    
+            })
+            MetodosAxios.filtrar_publicidadName(search, 1).then(res => {
+                let datos_publicidades= this.formatData(res)
+                this.setState({
+                    publicidades: datos_publicidades,
+                    loading_publicidades: false,
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+
+
+                })
+            })
+        }
+        else{
+            this.loadpublicidades(1)
+        }
+
     }
 
     modalAceptar(event) {
@@ -390,7 +454,7 @@ class Publicidades extends Component {
                         <div className="flex-content">
                             <Search
                                 placeholder="Buscar" allowClear
-                                onSearch={this.onSearch} style={{ width: 200, margin: '0 10px' }}
+                                onSearch={this.buscarPublicidad} style={{ width: 200, margin: '0 10px' }}
                                 className="search-p" />
                             <Button onClick={this.handleAdd}>
                                 Agregar
@@ -400,7 +464,7 @@ class Publicidades extends Component {
                         <Table
                             onRow={(publicidad) => {
                                 return {
-                                    onClick: event => {
+                                    onClick: () => {
                                         this.handleEdit(publicidad)
                                     }
                                 }
@@ -408,9 +472,21 @@ class Publicidades extends Component {
                             loading={this.state.loading_publicidades}
                             columns={columns}
                             dataSource={this.state.publicidades}
+                            pagination={false}
                         >
                         </Table>
-
+                        <div style={{display: 'flex',  justifyContent:'center'}}>
+                            <Pagination
+                                current={this.state.page}
+                                pageSize={this.state.size}
+                                total={this.state.total}
+                                onChange= {
+                                    this.loadpublicidades
+                                } 
+                                responsive= {true}
+                                showSizeChanger={false}
+                            />
+                        </div>
 
                         <Modal style={{ backgraoundColor: "white" }}
                             key="modal-edit-prom"
@@ -465,10 +541,13 @@ class Publicidades extends Component {
                                                 name="inicio"
                                                 value={this.state.inicio}
                                                 key="input-inicio"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeinicio}
                                                 required
                                                 className="input-round-prom"
                                                 ></input>
+                                                <div className="Registroerror-div">
+                                                    <label className="error" id="errorfecha_iniciacionE"></label>
+                                                </div>
                                             </div>
 
                                             <div className="item" key="text-pro">
@@ -479,10 +558,13 @@ class Publicidades extends Component {
                                                 name="expiracion"
                                                 value={this.state.expiracion}
                                                 key="input-expiracion"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangefin}
                                                 required
                                                 className="input-round-prom"
                                                 ></input>
+                                                <div className="Registroerror-div">
+                                                    <label className="error" id="errorfecha_expiracionE"></label>
+                                                </div>
                                             </div>
 
                                         </div>
