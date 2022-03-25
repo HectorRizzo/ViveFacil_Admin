@@ -61,6 +61,10 @@ export default class MetodosAxios {
         return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
       };
 
+      static obtener_cupon = (id) => {
+        return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
+      };
+
     
 
 
@@ -139,6 +143,18 @@ export default class MetodosAxios {
   */
   static cambio_administrador_estado = (id,estado) => {
     return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`,estado)
+  };
+
+  static cambio_insignia_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/insignia_estado/?id=${id}`,estado)
+  };
+
+  static cambio_promocion_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/promocion_estado/?id=${id}`,estado)
+  };
+
+  static cambio_cupon_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`,estado)
   };
 
   /*
@@ -317,6 +333,11 @@ static cambio_promocion = (estado, id) => {
   return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
 };
 
+static cambio_cupon = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
+};
+
 
 
 
@@ -341,6 +362,10 @@ static eliminar_insignia(id) {
 
 static eliminar_promocion(id) {
   return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
+};
+
+static eliminar_cupon(id) {
+  return MetodosAxios.instanceAxios.delete(`/cupon_delete/${id}`)
 };
 
 
@@ -449,6 +474,10 @@ static update_pendiente_documento = ( data) => {
 
   static crear_promocion=(data)=>{
     return MetodosAxios.instanceAxios.post('/promociones/', data);
+  }
+
+  static crear_cupon=(data)=>{
+    return MetodosAxios.instanceAxios.post('/cupones/', data);
   }
 
 

@@ -1,5 +1,6 @@
 import React, { Component, } from "react";
-import { Tabs, Input, Switch, Table, Button, Modal, Select } from 'antd';
+import { Tabs, Input, Switch, Table, Button, Modal, Select, DatePicker, message } from 'antd';
+import * as moment from 'moment';
 import MetodosAxios from '../../requirements/MetodosAxios';
 //import Insig from "./Insig";
 import { formatTimeStr } from "antd/lib/statistic/utils";
@@ -8,25 +9,27 @@ import Eliminar from "../../img/icons/eliminar.png";
 import Agregar from '../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import iconimg from '../../img/icons/imagen.png'
-//import AgregarPromocion from "./AgregarPromo";
-//import EditarPromocion from "./EditarPromo";
+import AgregarCupon from "./AgregarCupon";
+import EditarCupon from "./EditarCupon";
 
-//import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
-//    from './validators';
+import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid, validarRango }
+    from '../promocion/validators';
 
-//import { ValidarTexto } from '../servicios/Validacion/validaciones'
+import { ValidarTexto } from '../servicios/Validacion/validaciones'
 //import Insig from "./Insig";
 //import EditarInsignia from "./EditarInsignia";
 //import { ValidarTexto, validateParticipante } from '../servicios/Validacion/validaciones'
 const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { RangePicker } = DatePicker
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Estado', dataIndex: 'estado', className: 'columns-pendientes', responsive: ['lg'] },
@@ -46,6 +49,8 @@ class Cupones extends Component {
             loadingCheck: false,
             visibleModalCupon: false,
             modalAggVisible: false,
+
+            disabledButton: true,
 
             allcategorias: [],
             allscategorias: [],
@@ -125,6 +130,7 @@ class Cupones extends Component {
                     imagen: insig.foto,
                     codigo: insig.codigo,
                     titulo: insig.titulo,
+                    fecha_creacion: insig.fecha_creacion.split('T')[0],
                     fecha_iniciacion: fechaInicio,
                     fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                     estado: est,
@@ -198,7 +204,7 @@ class Cupones extends Component {
     }
 
     showModal = (insignia) => {
-        MetodosAxios.obtener_promocion(insignia.key).then(res => {
+        MetodosAxios.obtener_cupon(insignia.key).then(res => {
             this.cuponSelected = res.data;
             this.setState({
                 visibleModalCupon: true,
@@ -241,7 +247,7 @@ class Cupones extends Component {
             for (let i = 0; i < this.state.selectedRowKeysCupon.length; i++) {
                 let id = this.state.selectedRowKeysCupon[i];
                 //console.log(id)
-                await MetodosAxios.eliminar_promocion(id).then(res => {
+                await MetodosAxios.eliminar_cupon(id).then(res => {
                     console.log(res)
                 })
             }
@@ -296,8 +302,8 @@ class Cupones extends Component {
         })
     }
 
-    AgregarPromocion() {
-        //this.state.code = makeid()
+    AgregarCupon() {
+        this.state.code = makeid()
         console.log(this.state.code)
         this.limpiarformpromo()
         {/*console.log("nombre",this.state.nombre) 
@@ -308,7 +314,7 @@ class Cupones extends Component {
 
 
 
-   /* validarform() {
+    validarform() {
         console.log(this.state.selected_cgtg)
         if (this.state.code !== '' && this.state.titulo0 !== '' &&
             this.state.fileimg !== null && this.state.descripcion0 !== '' &&
@@ -339,7 +345,7 @@ class Cupones extends Component {
             //validateDate('error-prom-date', this.state.fecha_limite)
         }
         if (this.state.puntos0 === '') {
-            ValidarTexto(false, 'puntos0')
+            ValidarTexto(false, 'errorpuntos0')
         }
         if (this.state.tipo_categoria0 === '') {
             ValidarTexto(false, 'errortipo_categoria0')
@@ -348,7 +354,7 @@ class Cupones extends Component {
             ValidarTexto(false, 'errordescripcion0')
         }
         return false
-    }*/
+    }
 
     onSelectChangePromocion = (selectedRowKeys, selectedRows) => {
         //console.log('Rows: ', selectedRows);
@@ -356,12 +362,12 @@ class Cupones extends Component {
         this.setState({ selectedRowKeysCupon: selectedRowKeys });
     };
 
-    /*validarformEdit() {
+    validarformEdit() {
         if (this.state.cuponInfo.codigo !== '' && this.state.cuponInfo.titulo !== '' &&
         //this.state.fileimg !== null && 
         this.state.cuponInfo.descripcion !== '' &&
         this.state.cuponInfo.porcentaje !== '' && this.state.cuponInfo.fecha_iniciacion !== '' &&
-        this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.participantes !== '' &&
+        this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.puntos !== '' &&
         this.state.cuponInfo.tipo_categoria !== '') {
 
             return true
@@ -386,8 +392,8 @@ class Cupones extends Component {
             ValidarTexto(false, 'errorfecha_expiracionE')
             //validateDate('error-prom-date', this.state.fecha_limite)
         }
-        if (this.state.cuponInfo.participantes === '') {
-            ValidarTexto(false, 'errorparticipantesE')
+        if (this.state.cuponInfo.puntos === '') {
+            ValidarTexto(false, 'errorpuntosE')
         }
         if (this.state.cuponInfo.tipo_categoria === '') {
             ValidarTexto(false, 'errortipo_categoriaE')
@@ -397,11 +403,11 @@ class Cupones extends Component {
         }
         return false
     }
-*/
 
 
-    async guardarpromocion() {
-        //if (this.validarform()) {
+
+    async guardarcupon() {
+        if (this.validarform()) {
             //console.log(this.state.fileimg)
             var data = new FormData();
             //console.log('nombre: ', this.state.nombre0)
@@ -417,12 +423,12 @@ class Cupones extends Component {
             data.append('porcentaje', this.state.porcentaje0);
             data.append('fecha_iniciacion', this.state.fecha_iniciacion0);
             data.append('fecha_expiracion', this.state.fecha_expiracion0);
-            data.append('participantes', this.state.puntos0);
+            data.append('puntos', this.state.puntos0);
             data.append('tipo_categoria', this.state.tipo_categoria0);
             //console.log(data)
-            //await MetodosAxios.crear_promocion(data).then(res => {
-            //    console.log(res)
-            //})
+            await MetodosAxios.crear_cupon(data).then(res => {
+                console.log(res)
+            })
             //this.MostraCupones();
             //this.CerrarAgregar()
 
@@ -440,12 +446,12 @@ class Cupones extends Component {
             //})
             this.MostraCupones();
             this.CerrarAgregar()
-        ///}
+        }
 
     }
 
-    async editarPromocion() {
-        //if (this.validarformEdit()){
+    async editarCupon() {
+        if (this.validarformEdit()){
         this.setState({
             limpiarEdit: true,
 
@@ -464,7 +470,7 @@ class Cupones extends Component {
         data.append('porcentaje', this.state.cuponInfo.porcentaje);
         data.append('fecha_iniciacion', this.state.cuponInfo.fecha_iniciacion);
         data.append('fecha_expiracion', this.state.cuponInfo.fecha_expiracion);
-        data.append('participantes', this.state.cuponInfo.participantes);
+        data.append('puntos', this.state.cuponInfo.puntos);
         data.append('tipo_categoria', this.state.cuponInfo.tipo_categoria);
         if (this.state.fileimg != null) {
             data.append('foto', this.state.fileimg)
@@ -472,16 +478,16 @@ class Cupones extends Component {
         //data.append('imagen', this.state.cuponInfo.imagen);
         //}
 
-        //await MetodosAxios.cambio_promocion(data, this.state.cuponInfo.id).then(res => {
-        //    console.log(res)
-        //})
+        await MetodosAxios.cambio_cupon(data, this.state.cuponInfo.id).then(res => {
+            console.log(res)
+        })
 
-        //for (let value of data.keys()) {
-        //    console.log(value);
-        //}
-        //for (let values of data.values()) {
-        //    console.log(values);
-        //}
+        for (let value of data.keys()) {
+            console.log(value);
+        }
+        for (let values of data.values()) {
+            console.log(values);
+        }
 
 
 
@@ -493,7 +499,63 @@ class Cupones extends Component {
             modalEditVisible: false,
 
         })
-        //}
+        }
+    }
+
+    validarfechas = (date) => {
+        if (date != null) {
+            this.fechaInicio = moment(date[0]?._d)?.format('YYYY-MM-DD');
+            this.fechaFin = moment(date[1]?._d)?.format('YYYY-MM-DD');
+            if (this.fechaInicio !== undefined && this.fechaInicio !== undefined) {
+                if (this.fechaInicio <= this.fechaFin) {
+                    //console.log("fecha correcta", this.fechaInicio +"  " + this.fechaFin)
+                    //console.log("Fecha Inicio: ", this.fechaInicio)
+                    //console.log("Fecha Fin: ", this.fechaFin)
+                    this.setState({
+                        disabledButton: false
+                    })
+                }
+            }
+        } else {
+            this.MostraCupones();
+        }
+
+    }
+
+    filtrar = () => {
+        this.setState({
+            loadingTable: true,
+        })
+        let data_cupon = []
+
+        //console.log("Fecha Inicio: ", this.fechaInicio)
+        //console.log("Fecha FIn: ", this.fechaFin)
+        //console.log("Fecha Expiracion: ", this.fechaInicio)
+
+        for (let i = 0; i < this.state.base_cupon.length; i++) {
+            let cupon = this.state.base_cupon[i];
+            let fechaExp = cupon.fecha_expiracion
+            //console.log("expitra: ", fechaExp)
+            if (validarRango(this.fechaInicio, this.fechaFin, fechaExp)) {
+                //console.log("si cumple")
+                data_cupon.push(cupon)
+
+
+            } else {
+                //console.log("no cumple")
+            }
+        }
+
+
+
+
+
+
+        this.setState({
+            disabledButton: true,
+            data_cupon: data_cupon,
+            loadingTable: false
+        })
     }
 
     searchPromocion = (search) => {
@@ -528,23 +590,63 @@ class Cupones extends Component {
         this.searchPromocion(search);
     }
 
+    async onChangeCheckCupon(id,estado,checked){
+        this.setState({
+            loadingCheck: true
+        })
+
+        console.log("id", id)
+        console.log("estados", estado)
+        console.log("check", checked)
+
+        //await MetodosAxios.cambio_administrador_estado(id,{ 'estado': checked }).then(res => {
+        //    message.success("Se ha cambiado el estado del usuario exitosamente")
+        //})
+        await MetodosAxios.cambio_cupon_estado(id,{ 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado de la insignia exitosamente")
+            message.success("Se ha cambiado el estado del cupon exitosamente")
+        })
+        this.MostraCupones();
+        this.setState({
+            visibleModalCupon: false,
+            loadingCheck: false
+        })
+
+    }
+
     render() {
         return (
             <>
-                <h1 className="titulo">Cupones</h1>
+                
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
+                <h1 className="titulo" style={{marginLeft: "2rem"}}>Cupones</h1>
+                <div style={{ display: "flex", marginRight: "2rem" }}>
+                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                            onClick={() => this.AgregarCupon()}>
+                            Agregar Cupón
+                        </Button>
+                    </div>
 
                     <Tabs tabBarExtraContent={<div>
-                        <Button
+                        <Button type="primary" size="default"
+                            disabled={this.state.disabledButton}
+                            onClick={this.filtrar}
+                        >
+                            Filtrar
+                        </Button>
+                        <RangePicker size={'middle'}
+                            onChange={this.validarfechas}
+                        />
+                        {/*<Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
-                            onClick={() => { this.AgregarPromocion() }}
-                        />
+                            onClick={() => { this.AgregarCupon() }}
+                    />*/}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -601,7 +703,7 @@ class Cupones extends Component {
                     {/** Modal para ver la informacion del pago */}
                 </div>
                 <Modal style={{ backgraoundColor: "white" }}
-                    title="Información de la Promoción"
+                    title="Información del Cupón"
                     visible={this.state.visibleModalCupon}
                     closable={false}
                     okText="Editar"
@@ -622,8 +724,20 @@ class Cupones extends Component {
                     <p><strong>Categoría:  </strong>{this.cuponSelected?.tipo_categoria}</p>
                     <p><strong>Descripcion:  </strong>{this.cuponSelected?.descripcion}</p>
                     <p><strong>Descuento:  </strong>{this.cuponSelected?.porcentaje}%</p>
-                    <p><strong>Fecha de creación:  </strong>{this.cuponSelected?.fecha_iniciacion.split('T')[0]}</p>
+                    <p><strong>Fecha de Inicio:  </strong>{this.cuponSelected?.fecha_iniciacion.split('T')[0]}</p>
                     <p><strong>Fecha de Expiración:  </strong>{this.cuponSelected?.fecha_expiracion.split('T')[0]}</p>
+                    <p><strong>Estado:  </strong>{this.cuponSelected?.estado ? 'Activo' : 'Inactivo'}</p>
+                    <div style={{display: 'flex'}} >
+                        {/* <Space> */}
+                        <p><strong>Habilitar / Deshabilitar: </strong>  </p>
+                            <Switch
+                                key={this.cuponSelected?.id}
+                                loading={this.state.loadingCheck}
+                                onChange={(switchValue) => this.onChangeCheckCupon(this.cuponSelected?.id,this.cuponSelected?.estado, switchValue)}
+                                defaultChecked={this.cuponSelected?.estado}
+                            />
+                        {/* </Space> */}
+                    </div>
 
 
 
@@ -631,16 +745,16 @@ class Cupones extends Component {
 
                 <Modal
                     className="modal"
-                    title="Agregar Promoción"
+                    title="Agregar Cupón"
                     centered
                     visible={this.state.modalAggVisible}
                     okText="Guardar"
                     cancelText="Cancelar"
                     closable={false}
-                    onOk={() => this.guardarpromocion()}
+                    onOk={() => this.guardarcupon()}
                     onCancel={() => this.CerrarAgregar()}
                 >
-                    {/*<AgregarPromocion param={this.state} handleChangeimg={this.handleChangeimg} />*/}
+                    <AgregarCupon param={this.state} handleChangeimg={this.handleChangeimg} />
                 </Modal>
 
                 <Modal
@@ -649,19 +763,19 @@ class Cupones extends Component {
                     closable={false}
                     okText="Guardar Cambios"
                     cancelText="Cancelar"
-                    onOk={() => this.editarPromocion()}
+                    onOk={() => this.editarCupon()}
                     onCancel={() => this.handleCerrarEdit()}
 
 
 
                 >
-                    {/*<EditarPromocion param={this.state} handleChangeimg={this.handleChangeimg} />*/}
+                    <EditarCupon param={this.state} handleChangeimg={this.handleChangeimg} />
 
                 </Modal>
 
                 <Modal
                     className="modal"
-                    title="Eliminar Promoción"
+                    title="Eliminar Cupón(es)"
                     centered
                     visible={this.state.modalalert}
                     okText="Aceptar"
