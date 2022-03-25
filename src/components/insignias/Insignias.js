@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Tabs, Input, Switch, Table, Button, Modal, Select } from 'antd';
+import { Tabs, Input, Switch, Table, Button, Modal, Select, message } from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 //import Insig from "./Insig";
 import { formatTimeStr } from "antd/lib/statistic/utils";
@@ -465,23 +465,54 @@ class Insignias extends Component {
         this.searchInsignia(search);
     }
 
+    async onChangeCheckInsignia(id,estado,checked){
+        this.setState({
+            loadingCheck: true
+        })
+
+        console.log("id", id)
+        console.log("estados", estado)
+        console.log("check", checked)
+
+        //await MetodosAxios.cambio_administrador_estado(id,{ 'estado': checked }).then(res => {
+        //    message.success("Se ha cambiado el estado del usuario exitosamente")
+        //})
+        await MetodosAxios.cambio_insignia_estado(id,{ 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado de la insignia exitosamente")
+            message.success("Se ha cambiado el estado de la insignia exitosamente")
+        })
+        this.MostrarInsignias();
+        this.setState({
+            visibleModalInsignia: false,
+            loadingCheck: false
+        })
+
+    }
+
     render() {
         return (
             <>
-                <h1 className="titulo">Insignias</h1>
+                
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
+                <h1 className="titulo" style={{marginLeft: "2rem"}}>Insignias</h1>
+                <div style={{ display: "flex", marginRight: "2rem" }}>
+                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                            onClick={() => this.AgregarInsignia()}>
+                            Agregar Insignia
+                        </Button>
+                    </div>
 
                     <Tabs tabBarExtraContent={<div>
-                        <Button
+                        {/*<Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarInsignia() }}
-                        />
+                    />*/}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -559,6 +590,18 @@ class Insignias extends Component {
                     <p><strong>Fecha de creación:  </strong>{this.insigniaSelected?.fecha_creacion.split('T')[0]}</p>
                     <p><strong>Tipo:  </strong>{this.insigniaSelected?.tipo}</p>
                     <p><strong>Servicio:  </strong>{this.insigniaSelected?.servicio}</p>
+                    <p><strong>Estado:  </strong>{this.insigniaSelected?.estado ? 'Activo' : 'Inactivo'}</p>
+                    <div style={{display: 'flex'}} >
+                        {/* <Space> */}
+                        <p><strong>Habilitar / Deshabilitar: </strong>  </p>
+                            <Switch
+                                key={this.insigniaSelected?.id}
+                                loading={this.state.loadingCheck}
+                                onChange={(switchValue) => this.onChangeCheckInsignia(this.insigniaSelected?.id,this.insigniaSelected?.estado, switchValue)}
+                                defaultChecked={this.insigniaSelected?.estado}
+                            />
+                        {/* </Space> */}
+                    </div>
 
                 </Modal>
 

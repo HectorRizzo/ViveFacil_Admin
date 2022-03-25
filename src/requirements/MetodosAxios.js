@@ -61,6 +61,10 @@ export default class MetodosAxios {
         return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
       };
 
+      static obtener_cupon = (id) => {
+        return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
+      };
+
     
 
 
@@ -139,6 +143,18 @@ export default class MetodosAxios {
   */
   static cambio_administrador_estado = (id,estado) => {
     return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`,estado)
+  };
+
+  static cambio_insignia_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/insignia_estado/?id=${id}`,estado)
+  };
+
+  static cambio_promocion_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/promocion_estado/?id=${id}`,estado)
+  };
+
+  static cambio_cupon_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`,estado)
   };
 
   /*
@@ -264,6 +280,14 @@ export default class MetodosAxios {
   static filtrar_providersDate = (fechaInicio, fechaFin, page) => {
     return MetodosAxios.instanceAxios.get(`dates-providers/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
   }
+
+  static filtrar_planProvidersDate = (fechaInicio, fechaFin, page) => {
+    return MetodosAxios.instanceAxios.get(`dates-planproviders/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+  static filtrar_planprovidersNameDate = (user, fechaInicio, fechaFin, page) => {
+    return MetodosAxios.instanceAxios.get(`/providersdate_search/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}&user=${user}`)
+  }
   /*
     obtener_profesiones
     autor: Kelly
@@ -335,6 +359,11 @@ static cambio_promocion = (estado, id) => {
   return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
 };
 
+static cambio_cupon = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
+};
+
 
 
 
@@ -359,6 +388,10 @@ static eliminar_insignia(id) {
 
 static eliminar_promocion(id) {
   return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
+};
+
+static eliminar_cupon(id) {
+  return MetodosAxios.instanceAxios.delete(`/cupon_delete/${id}`)
 };
 
 
@@ -469,6 +502,10 @@ static update_pendiente_documento = ( data) => {
     return MetodosAxios.instanceAxios.post('/promociones/', data);
   }
 
+  static crear_cupon=(data)=>{
+    return MetodosAxios.instanceAxios.post('/cupones/', data);
+  }
+
 
   /*
     crear_promocion
@@ -566,9 +603,13 @@ static update_pendiente_documento = ( data) => {
     return MetodosAxios.instanceAxios.delete(`/planes/${id}`)
   }
 
-  static obtener_publicidades = () => {
-    return MetodosAxios.instanceAxios.get("/publicidades/")
+  static obtener_publicidades = (page) => {
+    return MetodosAxios.instanceAxios.get(`/publicidades/?page=${page}`)
   };
+
+  static filtrar_publicidadName = (buscar, page) => {
+    return MetodosAxios.instanceAxios.get(`/publicidades_search/?page=${page}&buscar=${buscar}`)
+  }
 
   static crear_publicidad=(data)=>{
     return MetodosAxios.instanceAxios.post('/publicidades/', data);
@@ -604,6 +645,25 @@ static update_pendiente_documento = ( data) => {
     return MetodosAxios.instanceAxios.post(`/notificacion-anuncio/`,data);
   };
 
+  static obtener_plan_proveedor = () => {
+    return MetodosAxios.instanceAxios.get("/planes/")
+  };
+
+  static crear_plan_proveedor=(data)=>{
+    return MetodosAxios.instanceAxios.post('/planProveedor/', data);
+  }
+
+  static actualizar_plan_proveedor=(data)=>{
+    return MetodosAxios.instanceAxios.put('/planProveedor/', data);
+  }
+
+  static borrar_plan_proveedor=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/planProveedor/${id}`)
+  }
+
+  static obtener_planes_estado = () => {
+    return MetodosAxios.instanceAxios.get("/planesEstado/")
+  };
   
 }
 

@@ -24,11 +24,16 @@ import Provider from "../components/cuentas/provider/Proveedor";
 import Planes from "../components/planes/planes";
 import Publicidades from "../components/publicidades/publicidades";
 import Notificaciones from "../components/notificaciones/Notificacion";
+import planesProveedor from "../components/planesProveedor/planesProveedor";
+import Roles from "../components/roles/roles";
+
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
+
 class LayoutPage extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             user: "",
             email: "",
@@ -38,27 +43,32 @@ class LayoutPage extends Component {
     }
 
     componentDidMount(){
-
-        if(this.state.user == ""){
-            if(localStorage.getItem('_cap_userName') != null){
-                this.setState({user: localStorage.getItem('_cap_userName')})
-            }
-            else{
-                this.setState({user: this.props.location.state.detail.admin.user_datos.user.username})
-                localStorage.setItem('_cap_userName', this.props.location.state.detail.admin.user_datos.user.username)
-                localStorage.setItem('token', this.props.location.state.detail.token)
+        if(localStorage.getItem('_cap_userName') == null)
+            this.props.history.push({pathname: '/'})
+        else{
+            if(this.state.user == ""){
+                if(localStorage.getItem('_cap_userName') != null){
+                    this.setState({user: localStorage.getItem('_cap_userName')})
+                }
+                else{
+                    this.setState({user: this.props.location.state.detail.admin.user_datos.user.username})
+                }
             }
         }
+        
     }
 
-    logout(){
+    logout = (props) =>{
+
         MetodosAxios.logout(localStorage.getItem('token')).then(res => {
             window.localStorage.clear()
+            props.history.push({pathname: '/'})
         })
     }
 
 
     render() {
+
         return (
             <Layout>
                 <Sider
@@ -80,6 +90,14 @@ class LayoutPage extends Component {
                         </Col>
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
+                        <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
+                            PLANES DE PROVEEDORES
+                            <Link to={`${this.props.match.path}/planes-proveedor/`} />
+                        </Menu.Item>
+                        <Menu.Item key="sub50" title="ROLES" id="menu-item-only">
+                            ROLES
+                            <Link to={`${this.props.match.path}/roles/`} />
+                        </Menu.Item>
                         <SubMenu key="sub1" title="CUENTAS">
                             {/* <Menu.Item key="1">
                                 Habilitar/inhabilitar cuentas
@@ -162,13 +180,10 @@ class LayoutPage extends Component {
                     <Header className="site-layout-sub-header-background" style={{ padding: 0 }}>
                         <Row justify="space-between" align="middle" style={{ height: "100%", width: "100%", paddingLeft: "3%", paddingRight: "3%" }}>
                             <Col>
-                                <Link to={`${this.props.match.path}/`}>
-                                    {/* <img height="80px" width="auto" src={tomeLogoB} alt="Logo TOME" /> */}
-                                    <img height="80px" width="auto" src={logoVive} alt="Logo Vive Facil" />
-                                </Link>
+                                <img height="80px" width="auto" src={logoVive} alt="Logo Vive Facil" />
                             </Col>
                             <Col>
-                                <Link to={`/`} style={{color:"white"}} onClick={this.logout}>
+                                <Link to={`/`} style={{color:"white"}} onClick={() =>this.logout(this.props)}>
                                     Cerrar Sesión
                                 </Link>
                             </Col>
@@ -190,12 +205,13 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />
                                 <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />
                                 <Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />
-
+                                <Route path={`${this.props.match.path}/planes-proveedor/`} component={planesProveedor} exact />
                                 <Route path={`${this.props.match.path}/planes/`} component={Planes} exact />
                                 <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />
                                 <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />
                                 <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
                                 <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />
+                                <Route path={`${this.props.match.path}/roles/`} component={Roles} exact />
                             </Switch>
                         </div>
                     </Content>

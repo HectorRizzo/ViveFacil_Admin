@@ -1,5 +1,6 @@
 import React, { Component, } from "react";
-import { Tabs, Input, Switch, Table, Button, Modal, Select } from 'antd';
+import { Tabs, Input, Switch, Table, Button, Modal, Select, DatePicker, message } from 'antd';
+import * as moment from 'moment';
 import MetodosAxios from '../../requirements/MetodosAxios';
 //import Insig from "./Insig";
 import { formatTimeStr } from "antd/lib/statistic/utils";
@@ -11,7 +12,7 @@ import iconimg from '../../img/icons/imagen.png'
 import AgregarPromocion from "./AgregarPromo";
 import EditarPromocion from "./EditarPromo";
 
-import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
+import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid, validarRango }
     from './validators';
 
 import { ValidarTexto } from '../servicios/Validacion/validaciones'
@@ -21,12 +22,14 @@ import { ValidarTexto } from '../servicios/Validacion/validaciones'
 const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { RangePicker } = DatePicker
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Estado', dataIndex: 'estado', className: 'columns-pendientes', responsive: ['lg'] },
@@ -46,6 +49,8 @@ class Promociones extends Component {
             loadingCheck: false,
             visibleModalPromocion: false,
             modalAggVisible: false,
+
+            disabledButton: true,
 
             allcategorias: [],
             allscategorias: [],
@@ -125,6 +130,7 @@ class Promociones extends Component {
                     imagen: insig.foto,
                     codigo: insig.codigo,
                     titulo: insig.titulo,
+                    fecha_creacion: insig.fecha_creacion.split('T')[0],
                     fecha_iniciacion: fechaInicio,
                     fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                     estado: est,
@@ -358,11 +364,11 @@ class Promociones extends Component {
 
     validarformEdit() {
         if (this.state.promocionInfo.codigo !== '' && this.state.promocionInfo.titulo !== '' &&
-        //this.state.fileimg !== null && 
-        this.state.promocionInfo.descripcion !== '' &&
-        this.state.promocionInfo.porcentaje !== '' && this.state.promocionInfo.fecha_iniciacion !== '' &&
-        this.state.promocionInfo.fecha_expiracion !== '' && this.state.promocionInfo.participantes !== '' &&
-        this.state.promocionInfo.tipo_categoria !== '') {
+            //this.state.fileimg !== null && 
+            this.state.promocionInfo.descripcion !== '' &&
+            this.state.promocionInfo.porcentaje !== '' && this.state.promocionInfo.fecha_iniciacion !== '' &&
+            this.state.promocionInfo.fecha_expiracion !== '' && this.state.promocionInfo.participantes !== '' &&
+            this.state.promocionInfo.tipo_categoria !== '') {
 
             return true
         }
@@ -420,9 +426,9 @@ class Promociones extends Component {
             data.append('participantes', this.state.participantes0);
             data.append('tipo_categoria', this.state.tipo_categoria0);
             //console.log(data)
-            //await MetodosAxios.crear_promocion(data).then(res => {
-            //    console.log(res)
-            //})
+            await MetodosAxios.crear_promocion(data).then(res => {
+                console.log(res)
+            })
             //this.MostrarPromociones();
             //this.CerrarAgregar()
 
@@ -445,55 +451,111 @@ class Promociones extends Component {
     }
 
     async editarPromocion() {
-        if (this.validarformEdit()){
-        this.setState({
-            limpiarEdit: true,
+        if (this.validarformEdit()) {
+            this.setState({
+                limpiarEdit: true,
 
-        })
-        var data = new FormData();
-        //data.append('nombre', this.state.nombre);
-        //data.append('descripcion', this.state.descripcion);
-        //data.append('imagen', this.state.fileimg);
-        //data.append('servicio', this.state.servicio);
-        //data.append('pedidos', this.state.pedidos);
-        //data.append('tipo', this.state.tipo);
+            })
+            var data = new FormData();
+            //data.append('nombre', this.state.nombre);
+            //data.append('descripcion', this.state.descripcion);
+            //data.append('imagen', this.state.fileimg);
+            //data.append('servicio', this.state.servicio);
+            //data.append('pedidos', this.state.pedidos);
+            //data.append('tipo', this.state.tipo);
 
-        data.append('codigo', this.state.promocionInfo.codigo);
-        data.append('titulo', this.state.promocionInfo.titulo);
-        data.append('descripcion', this.state.promocionInfo.descripcion);
-        data.append('porcentaje', this.state.promocionInfo.porcentaje);
-        data.append('fecha_iniciacion', this.state.promocionInfo.fecha_iniciacion);
-        data.append('fecha_expiracion', this.state.promocionInfo.fecha_expiracion);
-        data.append('participantes', this.state.promocionInfo.participantes);
-        data.append('tipo_categoria', this.state.promocionInfo.tipo_categoria);
-        if (this.state.fileimg != null) {
-            data.append('foto', this.state.fileimg)
-        } //else {
-        //data.append('imagen', this.state.promocionInfo.imagen);
-        //}
+            data.append('codigo', this.state.promocionInfo.codigo);
+            data.append('titulo', this.state.promocionInfo.titulo);
+            data.append('descripcion', this.state.promocionInfo.descripcion);
+            data.append('porcentaje', this.state.promocionInfo.porcentaje);
+            data.append('fecha_iniciacion', this.state.promocionInfo.fecha_iniciacion);
+            data.append('fecha_expiracion', this.state.promocionInfo.fecha_expiracion);
+            data.append('participantes', this.state.promocionInfo.participantes);
+            data.append('tipo_categoria', this.state.promocionInfo.tipo_categoria);
+            if (this.state.fileimg != null) {
+                data.append('foto', this.state.fileimg)
+            } //else {
+            //data.append('imagen', this.state.promocionInfo.imagen);
+            //}
 
-        //await MetodosAxios.cambio_promocion(data, this.state.promocionInfo.id).then(res => {
-        //    console.log(res)
-        //})
+            await MetodosAxios.cambio_promocion(data, this.state.promocionInfo.id).then(res => {
+                console.log(res)
+            })
 
-        //for (let value of data.keys()) {
-        //    console.log(value);
-        //}
-        //for (let values of data.values()) {
-        //    console.log(values);
-        //}
-
-
+            //for (let value of data.keys()) {
+            //    console.log(value);
+            //}
+            //for (let values of data.values()) {
+            //    console.log(values);
+            //}
 
 
 
-        this.MostrarPromociones();
-        this.setState({
-            limpiarEdit: true,
-            modalEditVisible: false,
 
-        })
+
+            this.MostrarPromociones();
+            this.setState({
+                limpiarEdit: true,
+                modalEditVisible: false,
+
+            })
         }
+    }
+
+    validarfechas = (date) => {
+        if (date != null) {
+            this.fechaInicio = moment(date[0]?._d)?.format('YYYY-MM-DD');
+            this.fechaFin = moment(date[1]?._d)?.format('YYYY-MM-DD');
+            if (this.fechaInicio !== undefined && this.fechaInicio !== undefined) {
+                if (this.fechaInicio <= this.fechaFin) {
+                    //console.log("fecha correcta", this.fechaInicio +"  " + this.fechaFin)
+                    //console.log("Fecha Inicio: ", this.fechaInicio)
+                    //console.log("Fecha Fin: ", this.fechaFin)
+                    this.setState({
+                        disabledButton: false
+                    })
+                }
+            }
+        } else {
+            this.MostrarPromociones();
+        }
+
+    }
+
+    filtrar = () => {
+        this.setState({
+            loadingTable: true,
+        })
+        let data_promocion = []
+
+        //console.log("Fecha Inicio: ", this.fechaInicio)
+        //console.log("Fecha FIn: ", this.fechaFin)
+        //console.log("Fecha Expiracion: ", this.fechaInicio)
+
+        for (let i = 0; i < this.state.base_promocion.length; i++) {
+            let promo = this.state.base_promocion[i];
+            let fechaExp = promo.fecha_expiracion
+            //console.log("expitra: ", fechaExp)
+            if (validarRango(this.fechaInicio, this.fechaFin, fechaExp)) {
+                //console.log("si cumple")
+                data_promocion.push(promo)
+
+
+            } else {
+                //console.log("no cumple")
+            }
+        }
+
+
+
+
+
+
+        this.setState({
+            disabledButton: true,
+            data_promocion: data_promocion,
+            loadingTable: false
+        })
     }
 
     searchPromocion = (search) => {
@@ -528,23 +590,60 @@ class Promociones extends Component {
         this.searchPromocion(search);
     }
 
+    async onChangeCheckPromocion(id,estado,checked){
+        this.setState({
+            loadingCheck: true
+        })
+
+        console.log("id", id)
+        console.log("estados", estado)
+        console.log("check", checked)
+
+        await MetodosAxios.cambio_promocion_estado(id,{ 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado de la insignia exitosamente")
+            message.success("Se ha cambiado el estado de la promocion exitosamente")
+        })
+        this.MostrarPromociones();
+        this.setState({
+            visibleModalPromocion: false,
+            loadingCheck: false
+        })
+
+    }
+
     render() {
         return (
             <>
-                <h1 className="titulo">Promociones</h1>
+                
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
+                <h1 className="titulo" style={{marginLeft: "2rem"}}>Promociones</h1>
+                    <div style={{ display: "flex", marginRight: "2rem" }}>
+                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                            onClick={() => this.AgregarPromocion()}>
+                            Agregar Promoción
+                        </Button>
+                    </div>
 
                     <Tabs tabBarExtraContent={<div>
-                        <Button
+                        <Button type="primary" size="default"
+                            disabled={this.state.disabledButton}
+                            onClick={this.filtrar}
+                        >
+                            Filtrar
+                        </Button>
+                        <RangePicker size={'middle'}
+                            onChange={this.validarfechas}
+                        />
+                        {/*<Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarPromocion() }}
-                        />
+                    />*/}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -622,8 +721,20 @@ class Promociones extends Component {
                     <p><strong>Categoría:  </strong>{this.promocionSelected?.tipo_categoria}</p>
                     <p><strong>Descripcion:  </strong>{this.promocionSelected?.descripcion}</p>
                     <p><strong>Descuento:  </strong>{this.promocionSelected?.porcentaje}%</p>
-                    <p><strong>Fecha de creación:  </strong>{this.promocionSelected?.fecha_iniciacion.split('T')[0]}</p>
+                    <p><strong>Fecha de Inicio:  </strong>{this.promocionSelected?.fecha_iniciacion.split('T')[0]}</p>
                     <p><strong>Fecha de Expiración:  </strong>{this.promocionSelected?.fecha_expiracion.split('T')[0]}</p>
+                    <p><strong>Estado:  </strong>{this.promocionSelected?.estado ? 'Activo' : 'Inactivo'}</p>
+                    <div style={{display: 'flex'}} >
+                        {/* <Space> */}
+                        <p><strong>Habilitar / Deshabilitar: </strong>  </p>
+                            <Switch
+                                key={this.promocionSelected?.id}
+                                loading={this.state.loadingCheck}
+                                onChange={(switchValue) => this.onChangeCheckPromocion(this.promocionSelected?.id,this.promocionSelected?.estado, switchValue)}
+                                defaultChecked={this.promocionSelected?.estado}
+                            />
+                        {/* </Space> */}
+                    </div>
 
 
 

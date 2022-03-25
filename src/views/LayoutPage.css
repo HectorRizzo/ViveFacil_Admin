@@ -110,3 +110,7 @@
   color:rgba(10,68,91) !important;
   font-weight: bold !important;
 }
+
+body{
+  padding: 0%;
+}

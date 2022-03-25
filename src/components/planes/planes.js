@@ -99,13 +99,6 @@ class Planes extends Component {
             img.addEventListener('click', this.modalAceptar) 
         }
 
-        let arregloSwitch = document.getElementsByClassName('estado')
-
-        for(let i = 0; i< arregloSwitch.length; i++){
-            let interruptor = arregloSwitch[i]
-            interruptor.className += ` ${i}`
-            interruptor.addEventListener('click', (event) => this.actualizarEstado(event)) 
-        }
     }
 
     async loadplanes() {

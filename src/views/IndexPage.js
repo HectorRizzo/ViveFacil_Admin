@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import admin from "../img/admin.png";
-import tome_logo from "../img/tome.jpg"
+import logoVive from "../img/logo-inicio.png";
 import MetodosAxios from "../requirements/MetodosAxios";
 import eye_password from "../img/icons/eye_password.png"
 import hidden_password from "../img/icons/hidden_password.png"
@@ -15,6 +15,11 @@ class IndexPage extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.connect = this.connect.bind(this);
+    }
+
+    async componentDidMount() {
+        if(localStorage.getItem('_cap_userName'))
+            this.props.history.push({pathname: 'inicio'})
     }
 
     handleChange(event) {
@@ -32,8 +37,11 @@ class IndexPage extends Component {
 
         MetodosAxios.obtener_admin_user_pass(user, pass).then(res => {
             if(res.data["token"]){
+                localStorage.setItem('_cap_userName', res.data.admin.user_datos.user.username)
+                localStorage.setItem('token', res.data.token)
                 this.props.history.push({pathname: 'inicio', state: {detail: res.data}})
             }
+            console.log(res)
         })
 
     }
@@ -64,11 +72,11 @@ class IndexPage extends Component {
                         </div>
                         
                             <div class="credentials">
-                                <Link to="/inicio">
+
                                     <div className="logo-div">
-                                        <img src={tome_logo} className="logo-login" alt="Logo" />
+                                        <img src={logoVive} className="logo-login" alt="Logo" />
                                     </div>
-                                </Link>
+
                                 <div className="form">
                                     <div class="login">
                                     <div class="login-screen">
