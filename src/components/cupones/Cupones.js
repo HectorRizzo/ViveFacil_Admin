@@ -1,5 +1,6 @@
 import React, { Component, } from "react";
-import { Tabs, Input, Switch, Table, Button, Modal, Select } from 'antd';
+import { Tabs, Input, Switch, Table, Button, Modal, Select, DatePicker, message } from 'antd';
+import * as moment from 'moment';
 import MetodosAxios from '../../requirements/MetodosAxios';
 //import Insig from "./Insig";
 import { formatTimeStr } from "antd/lib/statistic/utils";
@@ -11,7 +12,7 @@ import iconimg from '../../img/icons/imagen.png'
 import AgregarCupon from "./AgregarCupon";
 import EditarCupon from "./EditarCupon";
 
-import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid }
+import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid, validarRango }
     from '../promocion/validators';
 
 import { ValidarTexto } from '../servicios/Validacion/validaciones'
@@ -21,6 +22,7 @@ import { ValidarTexto } from '../servicios/Validacion/validaciones'
 const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { RangePicker } = DatePicker
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -47,6 +49,8 @@ class Cupones extends Component {
             loadingCheck: false,
             visibleModalCupon: false,
             modalAggVisible: false,
+
+            disabledButton: true,
 
             allcategorias: [],
             allscategorias: [],
@@ -498,6 +502,62 @@ class Cupones extends Component {
         }
     }
 
+    validarfechas = (date) => {
+        if (date != null) {
+            this.fechaInicio = moment(date[0]?._d)?.format('YYYY-MM-DD');
+            this.fechaFin = moment(date[1]?._d)?.format('YYYY-MM-DD');
+            if (this.fechaInicio !== undefined && this.fechaInicio !== undefined) {
+                if (this.fechaInicio <= this.fechaFin) {
+                    //console.log("fecha correcta", this.fechaInicio +"  " + this.fechaFin)
+                    //console.log("Fecha Inicio: ", this.fechaInicio)
+                    //console.log("Fecha Fin: ", this.fechaFin)
+                    this.setState({
+                        disabledButton: false
+                    })
+                }
+            }
+        } else {
+            this.MostraCupones();
+        }
+
+    }
+
+    filtrar = () => {
+        this.setState({
+            loadingTable: true,
+        })
+        let data_cupon = []
+
+        //console.log("Fecha Inicio: ", this.fechaInicio)
+        //console.log("Fecha FIn: ", this.fechaFin)
+        //console.log("Fecha Expiracion: ", this.fechaInicio)
+
+        for (let i = 0; i < this.state.base_cupon.length; i++) {
+            let cupon = this.state.base_cupon[i];
+            let fechaExp = cupon.fecha_expiracion
+            //console.log("expitra: ", fechaExp)
+            if (validarRango(this.fechaInicio, this.fechaFin, fechaExp)) {
+                //console.log("si cumple")
+                data_cupon.push(cupon)
+
+
+            } else {
+                //console.log("no cumple")
+            }
+        }
+
+
+
+
+
+
+        this.setState({
+            disabledButton: true,
+            data_cupon: data_cupon,
+            loadingTable: false
+        })
+    }
+
     searchPromocion = (search) => {
         this.setState({
             loadingTable: true
@@ -530,23 +590,63 @@ class Cupones extends Component {
         this.searchPromocion(search);
     }
 
+    async onChangeCheckCupon(id,estado,checked){
+        this.setState({
+            loadingCheck: true
+        })
+
+        console.log("id", id)
+        console.log("estados", estado)
+        console.log("check", checked)
+
+        //await MetodosAxios.cambio_administrador_estado(id,{ 'estado': checked }).then(res => {
+        //    message.success("Se ha cambiado el estado del usuario exitosamente")
+        //})
+        await MetodosAxios.cambio_cupon_estado(id,{ 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado de la insignia exitosamente")
+            message.success("Se ha cambiado el estado del cupon exitosamente")
+        })
+        this.MostraCupones();
+        this.setState({
+            visibleModalCupon: false,
+            loadingCheck: false
+        })
+
+    }
+
     render() {
         return (
             <>
-                <h1 className="titulo">Cupones</h1>
+                
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
+                <h1 className="titulo" style={{marginLeft: "2rem"}}>Cupones</h1>
+                <div style={{ display: "flex", marginRight: "2rem" }}>
+                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                            onClick={() => this.AgregarCupon()}>
+                            Agregar Cupón
+                        </Button>
+                    </div>
 
                     <Tabs tabBarExtraContent={<div>
-                        <Button
+                        <Button type="primary" size="default"
+                            disabled={this.state.disabledButton}
+                            onClick={this.filtrar}
+                        >
+                            Filtrar
+                        </Button>
+                        <RangePicker size={'middle'}
+                            onChange={this.validarfechas}
+                        />
+                        {/*<Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarCupon() }}
-                        />
+                    />*/}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -624,8 +724,20 @@ class Cupones extends Component {
                     <p><strong>Categoría:  </strong>{this.cuponSelected?.tipo_categoria}</p>
                     <p><strong>Descripcion:  </strong>{this.cuponSelected?.descripcion}</p>
                     <p><strong>Descuento:  </strong>{this.cuponSelected?.porcentaje}%</p>
-                    <p><strong>Fecha de creación:  </strong>{this.cuponSelected?.fecha_iniciacion.split('T')[0]}</p>
+                    <p><strong>Fecha de Inicio:  </strong>{this.cuponSelected?.fecha_iniciacion.split('T')[0]}</p>
                     <p><strong>Fecha de Expiración:  </strong>{this.cuponSelected?.fecha_expiracion.split('T')[0]}</p>
+                    <p><strong>Estado:  </strong>{this.cuponSelected?.estado ? 'Activo' : 'Inactivo'}</p>
+                    <div style={{display: 'flex'}} >
+                        {/* <Space> */}
+                        <p><strong>Habilitar / Deshabilitar: </strong>  </p>
+                            <Switch
+                                key={this.cuponSelected?.id}
+                                loading={this.state.loadingCheck}
+                                onChange={(switchValue) => this.onChangeCheckCupon(this.cuponSelected?.id,this.cuponSelected?.estado, switchValue)}
+                                defaultChecked={this.cuponSelected?.estado}
+                            />
+                        {/* </Space> */}
+                    </div>
 
 
 

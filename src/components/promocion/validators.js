@@ -205,3 +205,26 @@ export function validarFechaInicio(dateInicio, param) {
     return true
 
 }
+
+export function validarRango(dateInicio, dateFin, dateExpi){
+    var dateIni = new Date(dateInicio)
+    var dateFIn = new Date(dateFin)
+    var dateExp = new Date(dateExpi)
+
+    dateIni.setMinutes(dateIni.getMinutes() + dateIni.getTimezoneOffset())
+    dateIni.setHours(0, 0, 0, 0);
+
+    dateFIn.setMinutes(dateFIn.getMinutes() + dateFIn.getTimezoneOffset())
+    dateFIn.setHours(0, 0, 0, 0);
+
+    dateExp.setMinutes(dateExp.getMinutes() + dateExp.getTimezoneOffset())
+    dateExp.setHours(0, 0, 0, 0);
+
+    if ((dateExp >= dateIni) && (dateExp <= dateFIn)){
+        return true
+
+    }else{
+        return false
+    }
+
+}

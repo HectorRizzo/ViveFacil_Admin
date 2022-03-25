@@ -145,6 +145,18 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`,estado)
   };
 
+  static cambio_insignia_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/insignia_estado/?id=${id}`,estado)
+  };
+
+  static cambio_promocion_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/promocion_estado/?id=${id}`,estado)
+  };
+
+  static cambio_cupon_estado = (id,estado) => {
+    return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`,estado)
+  };
+
   /*
     eliminar_proveedor
     autor: Axell
