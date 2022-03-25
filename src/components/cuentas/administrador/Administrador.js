@@ -32,18 +32,19 @@ class Administrador extends Component {
             genero:'',
             password:'',
             confpassword:'',
-            fileimg: null,
-            uploadValue: 0,
-            nompicture: "Ningun archivo seleccionado",
-            picture: iconimg,
             visibleModalAdmin: false,
             visibleModalFields: false,
             visibleModalError:false,
             limpiarEdit:false,
-            limpiar:false,
+            limpiar: false,
             size: 0,
             total_data:0,
             search:false,
+            fileimg: null,
+            fileimgup: null,
+            uploadValue: 0,
+            nompicture: "Ningun archivo seleccionado",
+            picture: iconimg,
         };
     }
     componentDidMount() {
@@ -105,6 +106,14 @@ class Administrador extends Component {
     }
 
 
+    handleEnviarCorreo  = (data) => {
+        MetodosAxios.enviar_email(data).then( respuesta => {
+            console.log(respuesta)
+            
+        })
+        window.location.reload()
+        
+    }
 
     
     addAdministrador= (event)  => {
@@ -134,13 +143,13 @@ class Administrador extends Component {
 
     handleChangeimg = async (imgurl, uploadValue, nompicture, fileimg) => {
         this.setState({
-          img: imgurl,
-          uploadValue: uploadValue,
-          nompicture: nompicture,
-          fileimg: fileimg,
-          data: null,
+            img: imgurl,
+            uploadValue: uploadValue,
+            nompicture: nompicture,
+            fileimg: fileimg
         });
     }
+
 
 
     //AgregarAdmin
@@ -184,7 +193,15 @@ class Administrador extends Component {
                             genero:'',
                             
                         })
-                        window.location.reload()
+
+                        let datosProveedor = res.data
+                        let creado = {
+                            password: datosProveedor.pass,
+                            email: datosProveedor.email,
+                            tipo: "Administrador"
+                        }
+                        this.handleEnviarCorreo(creado)
+                        
                     }
             })
     

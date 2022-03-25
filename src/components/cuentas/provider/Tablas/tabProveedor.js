@@ -1,13 +1,20 @@
 import React, { Component } from "react";
-import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message} from 'antd';
+import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message, Row,Col} from 'antd';
 import MetodosAxios from "../../../../requirements/MetodosAxios";
 import * as moment from 'moment';
-
+import { API_URL } from "../../../../Constants";
+import docsImage from "../../../../img/docs.png"
 const { Search } = Input;
 const {RangePicker} = DatePicker
 
 
 class ProveedorTab extends Component {
+
+    search = null;
+    proveedorSearch = null;
+    filter = null;
+    fechaInicio= null;
+    fechaFin= null;
 
     proveedorActual= null;
     constructor(props) {
@@ -30,27 +37,53 @@ class ProveedorTab extends Component {
     componentDidMount() {
 
         this.cargarPagina(1)
-    
+
     }
 
     cargarPagina = (page) => {
         this.setState({
             loadingTable:true,
         })
-        if(this.state.search){
-            console.log("filtro")
+        if(!this.search && !this.filter){
+            MetodosAxios.obtener_providers(page,this.proveedorSearch).then(res  => {
+                let datos = this.formatData(res)
+                this.setState({
+                    datos_proveedor: datos,
+                    loadingTable: false,
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+    
+                })   
+            })
         }
-        MetodosAxios.obtener_providers(page).then(res  => {
-            let datos = this.formatData(res)
-            this.setState({
-                datos_proveedor: datos,
-                loadingTable: false,
-                size: res.data.page_size,
-                total: res.data.total_objects,
-                page: res.data.current_page_number,
+        else if (this.search){
+            MetodosAxios.filtrar_providersName(this.proveedorSearch,page).then(res => {
+                let prov_filtros= this.formatData(res)
+                this.setState({
+                    datos_proveedor: prov_filtros,
+                    loadingTable: false,
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
 
-            })   
-        })
+
+                })
+            })
+        }
+        else if(this.filter){
+            MetodosAxios.filtrar_providersDate(this.fechaInicio,this.fechaFin,page).then(res=> {     
+                let usuarios_fecha= this.formatData(res);
+                this.setState({
+                    datos_proveedor: usuarios_fecha,
+                    loadingTable: false,
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    numberPage: res.data.current_page_number,
+                })
+    
+            })
+        }
     }
 
     showModal = (prov) => {
@@ -80,24 +113,26 @@ class ProveedorTab extends Component {
             datos_Proveedor.push({
                 key: provider.id,
                 nombres: provider.user_datos.nombres + " " + provider.user_datos.apellidos,
-                profesion: "",
+                profesion: provider.profesion,
                 cedula: provider.user_datos.cedula,
                 correo: provider.user_datos.user.email,
                 telefono: provider.user_datos.telefono,
                 fecha_creacion: provider.user_datos.fecha_creacion.split('T')[0],
-                licencia: "",
+                licencia: provider.licencia,
             })
         }
         return datos_Proveedor;
     }
     
     buscarProveedor =(search) => { 
+        this.proveedorSearch = search;
         if(search!=""){
+            this.search= true;
             this.setState({
                 loadingTable:true,
     
             })
-            MetodosAxios.filtrar_providersName(search).then(res => {
+            MetodosAxios.filtrar_providersName(search,1).then(res => {
                 let prov_filtros= this.formatData(res)
                 this.setState({
                     datos_proveedor: prov_filtros,
@@ -111,6 +146,7 @@ class ProveedorTab extends Component {
             })
         }
         else{
+            this.search= false;
             this.cargarPagina(1)
         }
 
@@ -130,16 +166,18 @@ class ProveedorTab extends Component {
                     }
                 }
         }else{
+            this.filter = false;
             this.cargarPagina(1);
         }
 
     }
 
     filtrar = () =>{
+        this.filter = true;
         this.setState({
             loadingTable:true,
         })
-        MetodosAxios.filtrar_providersDate(this.fechaInicio,this.fechaFin).then(res=> {     
+        MetodosAxios.filtrar_providersDate(this.fechaInicio,this.fechaFin,1).then(res=> {     
             let usuarios_fecha= this.formatData(res);
             this.setState({
                 datos_proveedor: usuarios_fecha,
@@ -169,6 +207,32 @@ class ProveedorTab extends Component {
         })
 
 
+    }
+
+    cargarProfesion= (user) =>{
+        let _profesiones = ""
+
+        MetodosAxios.obtener_profesiones(user).then(res =>{
+            
+            for(let p of res.data){
+
+                _profesiones += p.profesion.nombre + ""
+            }
+            return _profesiones
+        })
+        console.log(_profesiones)
+        // if(username) {
+        //     let response = await MetodosAxios.obtener_profesiones(username)
+        //     let profesiones = response.data
+        //     for (let i = 0; i < profesiones.length; i++) {
+        //         let _profesion = profesiones[i].profesion.nombre
+        //         if (i === (profesiones.length - 1)) _profesiones += _profesion;
+        //         else _profesiones += _profesion + " , "
+        //     }
+        //     return _profesiones;
+    
+        // }
+       
     }
 
     render() {
@@ -262,8 +326,13 @@ class ProveedorTab extends Component {
                             />
                         </div>
                         <Modal
+                          title= {<p style={{textAlign:"center"}}>
+                            Información Proveedor 
+                        </p>}
                         visible={this.state.visibleModalInfo}
                         closable= {false}
+                        style={{ top: 25 }}    
+                        width={1200}
                         footer={[
                             <Button key="close" onClick={this.handleCerrar}>
                                 Cerrar
@@ -272,34 +341,101 @@ class ProveedorTab extends Component {
                        
 
                     >      
-                    <div style={{ padding:"2em"}}>
+                    <Row >
+                        <Col span={7}>
                     
-                        <Divider orientation="center" className="divider-personal">Información Personal</Divider>
+                        <Divider orientation="center" className="divider-edit">Información Personal</Divider>
                             <p><strong>Nombres:  </strong>{this.proveedorActual?.user_datos.nombres}</p>
                             <p><strong>Apellidos:  </strong>{this.proveedorActual?.user_datos.apellidos}</p>
                             <p><strong>Cédula:   </strong>{this.proveedorActual?.user_datos.cedula}</p>
+                            <p><strong>Documentación Cédula:   </strong>
+                            {this.proveedorActual?.copiaCedula!==null && this.proveedorActual?.copiaCedula!==undefined
+                                ?<a href= {API_URL + this.proveedorActual?.copiaCedula} target="_blank" download>
+                                <img src={docsImage} width={30}/> </a>
+                                : "No presenta Copia Cédula" 
+                            }
+                            </p>
                             <p><strong>Ciudad:   </strong>{this.proveedorActual?.user_datos.ciudad}</p>
+                            <p><strong>Dirección:   </strong>{this.proveedorActual?.ciudad}</p>
                             <p><strong>Teléfono:  </strong>{this.proveedorActual?.user_datos.telefono}</p>
                             <p><strong>Género:  </strong>{this.proveedorActual?.user_datos.genero}</p>
                             <p><strong>Correo:  </strong>{this.proveedorActual?.user_datos.user.email}</p>
                             <div style={{display: 'flex' }} >
-                            <p><strong>Estado: </strong></p>
-                                <Switch
-                                    key={this.proveedorActual?.id}
-                                    loading={this.state.loadingCheck}
-                                    onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.id, switchValue)}
-                                    defaultChecked={this.proveedorActual?.estado}
-                                />
+                                <p><strong>Estado: </strong></p>
+                                    <Switch
+                                        key={this.proveedorActual?.id}
+                                        loading={this.state.loadingCheck}
+                                        onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.id, switchValue)}
+                                        defaultChecked={this.proveedorActual?.estado}
+                                    />
                             </div>
-                        <Divider orientation="center" className="divider-cuenta">Cuenta Bancaria</Divider>
+                            <p><strong>Descripción:  </strong></p>
+                            <p>{this.proveedorActual?.descripcion}</p>
+                            <p><strong>Licencia:  </strong>{this.proveedorActual?.licencia}</p>
+                        
+                            <p><strong>Documentación Licencia:   </strong>
+                            {this.proveedorActual?.copiaLicencia!==null && this.proveedorActual?.copiaLicencia!==undefined
+                                ?<a href= {API_URL + this.proveedorActual?.copiaLicencia} target="_blank" download>
+                                <img src={docsImage} width={30}/> </a>
+                                : "No presenta Licencia" 
+                            }
+                            
+
+                            </p>
+
+
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={7}>
+                        
+                        <Divider orientation="center" className="divider-edit">Cuenta Bancaria</Divider>
                             <p><strong>Tipo Cuenta:  </strong>{this.proveedorActual?.tipo_cuenta}</p>
                             <p><strong>Nº Cuenta:  </strong>{this.proveedorActual?.numero_cuenta}</p>
                             <p><strong>Banco:   </strong>{this.proveedorActual?.banco}</p>
-                        <Divider orientation="center" className="divider-cuenta">Profesión</Divider>
+                        <Divider orientation="center" className="divider-edit">Profesión</Divider>
                             {/* <p><strong>Licencia:  </strong>{this.proveedorActual?.estado}</p> */}
-                            <p><strong>Profesiones Previas:  </strong>{this.proveedorActual?.profesion}</p>
-                            <p><strong>Documentación:   </strong></p>
-                    </div>
+                            <p><strong>Profesiones:  </strong>{this.proveedorActual?.profesion}</p>
+                            <p><strong>Documentación Adicional:   </strong></p>
+                            <p>
+                            {this.proveedorActual?.document.length>0 
+
+                                ?  this.proveedorActual?.document.map((documento) => {
+                                    return  <> <br></br> <div  style={{display: "flex", justifyContent: "space-between"}}>
+                                            <a href={API_URL + documento.documento} target="_blank" download>
+                                                <img src={docsImage} width={30}/>
+                                            </a></div>
+                                    </>
+                                    })
+                                : "No ha subido documentación"
+                                    
+                            }
+                            </p>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={7}>
+                            <Divider orientation="center" className="divider-edit">Planes y Servicios</Divider> 
+                            {<p style={{textAlign:"center"}}> <strong>Servicios</strong></p>}
+                            <p><strong>Servicios:  </strong>{this.proveedorActual?.servicios}</p>
+                            <p><strong>Rating:  </strong>{this.proveedorActual?.rating}</p>
+                            {<p style={{textAlign:"center"}}> <strong>Planes</strong></p>}
+
+                            <p>
+                            {this.proveedorActual?.plan_proveedor.length>0 
+                            ? <>
+                                <p><strong>Nombre Plan: </strong>{this.proveedorActual?.plan_proveedor[0]?.plan?.nombre}</p>
+                                <p><strong>Precio Plan: </strong>{this.proveedorActual?.plan_proveedor[0]?.plan?.precio}</p>
+                                <p><strong>Duración Plan: </strong>{this.proveedorActual?.plan_proveedor[0]?.plan?.duracion}</p>
+                                <p><strong>Fecha Inicio: </strong>{moment(this.proveedorActual?.plan_proveedor[0]?.fecha_inicio, 'DD-MM-YYYY HH:mm:ss')?.format('DD-MM-YYYY')}</p>
+                                <p><strong>Fecha Expiración: </strong>{moment(this.proveedorActual?.plan_proveedor[0]?.fecha_expiracion, 'DD-MM-YYYY HH:mm:ss')?.format('DD-MM-YYYY')}</p>
+                            </>
+                            : "No tiene asignado un plan"
+                            }
+                            </p>
+                            </Col>
+
+
+                        </Row>
+                        
                     </Modal>
 
                 </div>

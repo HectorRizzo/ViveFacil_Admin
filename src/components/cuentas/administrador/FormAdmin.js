@@ -3,7 +3,7 @@ import { Form, Input ,Divider} from 'antd';
 import File from '../../servicios/File/FileUpload';
 
 const AgregarAdmin =(props) => {
-    const {param,handleChangeimg} = props
+    const {param, handleChangeimg} = props
     const generos =["Hombre","Mujer","Otro"]
     const [formAdmin] = Form.useForm();
     const layout ={

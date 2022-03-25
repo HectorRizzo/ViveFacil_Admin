@@ -23,6 +23,7 @@ import SugerenciaNoLeida from "../components/sugerencias/SugNoLeidas/SugerenciaN
 import Provider from "../components/cuentas/provider/Proveedor";
 import Planes from "../components/planes/planes";
 import Publicidades from "../components/publicidades/publicidades";
+import Notificaciones from "../components/notificaciones/Notificacion";
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
 class LayoutPage extends Component {
@@ -151,6 +152,10 @@ class LayoutPage extends Component {
                             CUPONES
                             <Link to={`${this.props.match.path}/cupones/`} />
                         </Menu.Item>
+                        <Menu.Item key="sub10" title="Notificaciones"  id="menu-item-only">
+                            NOTIFICACIONES PUSH
+                            <Link to={`${this.props.match.path}/notificaciones/`} />
+                        </Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout>
@@ -170,6 +175,7 @@ class LayoutPage extends Component {
                         </Row>
                     </Header>
                     <Content >
+                        {/* <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}> */}
                         <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
@@ -189,6 +195,7 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />
                                 <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />
                                 <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
+                                <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />
                             </Switch>
                         </div>
                     </Content>

@@ -140,7 +140,6 @@ class AdminTab extends Component {
             else{
                 datos.append('emailNuevo',this.state.adminInfo?.user_datos.user.email)
             }
-            
             if (this.state.fileimg!=null){
                 datos.append('foto',this.state.fileimg)
             }
@@ -159,10 +158,14 @@ class AdminTab extends Component {
                     visibleModalConfir: false,
         
                 })
+
+
                 this.fetchAdmin(1)
             }
         })
     }
+
+
 
     handleCancelar = () => {
         this.setState({

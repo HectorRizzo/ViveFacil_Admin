@@ -14,7 +14,6 @@ class SolicitantesTab extends Component {
     userSearch= null;
     search= false;
     filter = false;
-    dataSol = [];
     solicianteInfo = null;
     fechaInicio= null;
     fechaFin= null;

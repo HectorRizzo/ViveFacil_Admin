@@ -189,7 +189,7 @@ export default class MetodosAxios {
   }
 
   static obtener_pendientes = (page) => {
-    return MetodosAxios.instanceAxios.get(`/proveedores_pendientes/?page=${page}`)
+    return MetodosAxios.instanceAxios.get(`/proveedor_pendiente/?page=${page}`)
   }
 
   static obt_proveedor_pendiente = (id) => {
@@ -197,9 +197,30 @@ export default class MetodosAxios {
   }
 
   static filtrar_pendientesName = (user,page) => {
-    console.log(`/pendientes-search/${user}?page=${page}`)
     return MetodosAxios.instanceAxios.get(`/pendientes-search/${user}?page=${page}`)
   }
+
+  static filtrar_pendienteDate = (fechaInicio, fechaFin,page) => {
+    return MetodosAxios.instanceAxios.get(`pendientes-filterDate/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+
+  static editar_pendiente = (id,data) => {
+    return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/${id}`,data)
+    
+  }
+
+  static eliminarDocPendiente = (id) => {
+    return MetodosAxios.instanceAxios.delete(`/documentos_pendientes/?id=${id}`)
+    
+  }
+
+  static eliminarPendiente = (id) => {
+    return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${id}`)
+    
+  }
+
+
   /*
   
 
@@ -231,12 +252,17 @@ export default class MetodosAxios {
   }
 
 
-  static filtrar_providersName = (user) => {
-    return MetodosAxios.instanceAxios.get(`/providers-search/${user}`)
+  static crear_proveedor = (data) => {
+    return MetodosAxios.instanceAxios.post(`/proveedores_registro/`,data)
   }
 
-  static filtrar_providersDate = (fechaInicio, fechaFin) => {
-    return MetodosAxios.instanceAxios.get(`dates-providers/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
+
+  static filtrar_providersName = (user, page) => {
+    return MetodosAxios.instanceAxios.get(`/providers-search/${user}?page=${page}`)
+  }
+
+  static filtrar_providersDate = (fechaInicio, fechaFin, page) => {
+    return MetodosAxios.instanceAxios.get(`dates-providers/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
   }
   /*
     obtener_profesiones
@@ -567,5 +593,17 @@ static update_pendiente_documento = ( data) => {
   static logout = (token) => {
     return MetodosAxios.instanceAxios.get(`/logout/${token}`);
   };
+
+
+  // static get_notificaciones = (page) => {
+  //   return MetodosAxios.instanceAxios.get(`/notificaciones/?page=${page}`);
+  // };
+
+
+  static send_notificacion = (data) => {
+    return MetodosAxios.instanceAxios.post(`/notificacion-anuncio/`,data);
+  };
+
+  
 }
 
