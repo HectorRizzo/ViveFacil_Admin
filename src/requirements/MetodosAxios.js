@@ -27,11 +27,11 @@ export default class MetodosAxios {
   };
 
 
-  static filtrar_solicitante = (fechaInicio, fechaFin,page) => {
+  static filtrar_solicitante = (fechaInicio, fechaFin, page) => {
     return MetodosAxios.instanceAxios.get(`fechas-filtro/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
   }
 
-  static buscar_solicitante = (usuario,page)  => {
+  static buscar_solicitante = (usuario, page) => {
     return MetodosAxios.instanceAxios.get(`filtro-usuario/${usuario}?page=${page}`)
   }
 
@@ -42,30 +42,34 @@ export default class MetodosAxios {
     descripccion: Obtiene todos las insignias
     parametros: None
   */
-    static obtener_insignias = () => {
-      return MetodosAxios.instanceAxios.get("/insignias/")
-    };
+  static obtener_insignias = () => {
+    return MetodosAxios.instanceAxios.get("/insignias/")
+  };
+
+  static obtener_cargos = () => {
+    return MetodosAxios.instanceAxios.get("/cargos/")
+  };
 
 
-    /*
-    obtener_insignia
-    autor: Livingston
-    descripccion: Obtiene una insignia
-    parametros: None
-    */
-      static obtener_insignia = (id) => {
-        return MetodosAxios.instanceAxios.get(`/insignias/${id}`)
-      };
+  /*
+  obtener_insignia
+  autor: Livingston
+  descripccion: Obtiene una insignia
+  parametros: None
+  */
+  static obtener_insignia = (id) => {
+    return MetodosAxios.instanceAxios.get(`/insignias/${id}`)
+  };
 
-      static obtener_promocion = (id) => {
-        return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
-      };
+  static obtener_promocion = (id) => {
+    return MetodosAxios.instanceAxios.get(`/promociones/${id}`)
+  };
 
-      static obtener_cupon = (id) => {
-        return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
-      };
+  static obtener_cupon = (id) => {
+    return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
+  };
 
-    
+
 
 
 
@@ -76,7 +80,7 @@ export default class MetodosAxios {
     parametros: None
  */
 
-  static getAdmin= (page) => {
+  static getAdmin = (page) => {
     return MetodosAxios.instanceAxios.get(`/administradores/?page=${page}`)
   };
 
@@ -89,21 +93,35 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/administrador/${id}`)
   };
 
-  static actualizar_administrador = (id,usuario) => {
-    return MetodosAxios.instanceAxios.put(`/administrador/${id}`,usuario)
+  static actualizar_administrador = (id, usuario) => {
+    return MetodosAxios.instanceAxios.put(`/administrador/${id}`, usuario)
   };
 
   static crear_admin = (user) => {
-    return MetodosAxios.instanceAxios.post(`/administradores/`,user)
+    return MetodosAxios.instanceAxios.post(`/administradores/`, user)
   };
 
-  static buscar_admin = (usuario,page)  => {
+  static buscar_admin = (usuario, page) => {
     return MetodosAxios.instanceAxios.get(`admin-filtro/${usuario}?page=${page}`)
   }
 
-  static filtrar_admin = (fechaInicio, fechaFin,page) => {
+  static filtrar_admin = (fechaInicio, fechaFin, page) => {
     return MetodosAxios.instanceAxios.get(`fechas_admin/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
   }
+
+  static filtrar_efectivo = (fechaInicio, fechaFin, page) => {
+    console.log(fechaInicio)
+    console.log(fechaFin)
+    return MetodosAxios.instanceAxios.get(`fechas_efectivo/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+  static filtrar_tarjeta = (fechaInicio, fechaFin, page) => {
+    console.log(fechaInicio)
+    console.log(fechaFin)
+    return MetodosAxios.instanceAxios.get(`fechas_tarjeta/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+
   /*
     cambio_solicitante_estado
     autor: Axell
@@ -141,20 +159,20 @@ export default class MetodosAxios {
     descripccion: Cambia estado de un administrador
     parametros: boolean estado, int id
   */
-  static cambio_administrador_estado = (id,estado) => {
-    return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`,estado)
+  static cambio_administrador_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/administrador_estado/?id=${id}`, estado)
   };
 
-  static cambio_insignia_estado = (id,estado) => {
-    return MetodosAxios.instanceAxios.put(`/insignia_estado/?id=${id}`,estado)
+  static cambio_insignia_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/insignia_estado/?id=${id}`, estado)
   };
 
-  static cambio_promocion_estado = (id,estado) => {
-    return MetodosAxios.instanceAxios.put(`/promocion_estado/?id=${id}`,estado)
+  static cambio_promocion_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/promocion_estado/?id=${id}`, estado)
   };
 
-  static cambio_cupon_estado = (id,estado) => {
-    return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`,estado)
+  static cambio_cupon_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`, estado)
   };
 
   /*
@@ -212,28 +230,28 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/proveedores_pendientes/${id}`)
   }
 
-  static filtrar_pendientesName = (user,page) => {
+  static filtrar_pendientesName = (user, page) => {
     return MetodosAxios.instanceAxios.get(`/pendientes-search/${user}?page=${page}`)
   }
 
-  static filtrar_pendienteDate = (fechaInicio, fechaFin,page) => {
+  static filtrar_pendienteDate = (fechaInicio, fechaFin, page) => {
     return MetodosAxios.instanceAxios.get(`pendientes-filterDate/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
   }
 
 
-  static editar_pendiente = (id,data) => {
-    return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/${id}`,data)
-    
+  static editar_pendiente = (id, data) => {
+    return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/${id}`, data)
+
   }
 
   static eliminarDocPendiente = (id) => {
     return MetodosAxios.instanceAxios.delete(`/documentos_pendientes/?id=${id}`)
-    
+
   }
 
   static eliminarPendiente = (id) => {
     return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${id}`)
-    
+
   }
 
 
@@ -269,7 +287,7 @@ export default class MetodosAxios {
 
 
   static crear_proveedor = (data) => {
-    return MetodosAxios.instanceAxios.post(`/proveedores_registro/`,data)
+    return MetodosAxios.instanceAxios.post(`/proveedores_registro/`, data)
   }
 
 
@@ -314,85 +332,85 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.post('/email/', data)
   }
 
-  static obtener_todas_profesiones(){
+  static obtener_todas_profesiones() {
     return MetodosAxios.instanceAxios.get('/profesiones/')
   }
 
-  static actualizar_pendiente(url, data){
+  static actualizar_pendiente(url, data) {
     return MetodosAxios.instanceAxios.post(url, data)
   }
 
-  
+
   /*
     obtener_categorias
     autor: Lilibeth
     descripccion: Obtiene todas las categorias
     parametros: None
   */
- static obtener_categorias = () => {
-  return MetodosAxios.instanceAxios.get("/categorias/")
-};
- /*
-    cambio_categoria_estado
-    autor: Lilibeth
-    descripccion: Cambia estado de una categoria
-    parametros: boolean estado, int id
-  */
- static cambio_categoria_update = (estado, id) => {
-  console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/categoria_update/${id}`, estado)
-};
+  static obtener_categorias = () => {
+    return MetodosAxios.instanceAxios.get("/categorias/")
+  };
+  /*
+     cambio_categoria_estado
+     autor: Lilibeth
+     descripccion: Cambia estado de una categoria
+     parametros: boolean estado, int id
+   */
+  static cambio_categoria_update = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/categoria_update/${id}`, estado)
+  };
 
 
 
 
 
 
-static cambio_insignia = (estado, id) => {
-  console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/insignia_update/${id}`, estado)
-};
+  static cambio_insignia = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/insignia_update/${id}`, estado)
+  };
 
 
-static cambio_promocion = (estado, id) => {
-  console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
-};
+  static cambio_promocion = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/promocion_update/${id}`, estado)
+  };
 
-static cambio_cupon = (estado, id) => {
-  console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
-};
-
-
-
-
-
-/*
-    eliminar_categoria
-    autor: lilibeth
-    descripccion: Elimina una categoria
-    parametros: int id
-  */
- static eliminar_categoria(id) {
-  return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
-};
-
-
-static eliminar_insignia(id) {
-  return MetodosAxios.instanceAxios.delete(`/insignia_delete/${id}`)
-};
+  static cambio_cupon = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
+  };
 
 
 
 
-static eliminar_promocion(id) {
-  return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
-};
 
-static eliminar_cupon(id) {
-  return MetodosAxios.instanceAxios.delete(`/cupon_delete/${id}`)
-};
+  /*
+      eliminar_categoria
+      autor: lilibeth
+      descripccion: Elimina una categoria
+      parametros: int id
+    */
+  static eliminar_categoria(id) {
+    return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
+  };
+
+
+  static eliminar_insignia(id) {
+    return MetodosAxios.instanceAxios.delete(`/insignia_delete/${id}`)
+  };
+
+
+
+
+  static eliminar_promocion(id) {
+    return MetodosAxios.instanceAxios.delete(`/promocion_delete/${id}`)
+  };
+
+  static eliminar_cupon(id) {
+    return MetodosAxios.instanceAxios.delete(`/cupon_delete/${id}`)
+  };
 
 
   /*
@@ -401,75 +419,79 @@ static eliminar_cupon(id) {
     descripccion: Obtiene todas las sub-categorias
     parametros: None
   */
- static obtener_subcategorias = () => {
-  return MetodosAxios.instanceAxios.get("/servicios/")
-};
- /*
-    cambio_subcategoria_estado
-    autor: Lilibeth
-    descripccion: Cambia estado de una subcategoria
-    parametros: boolean estado, int id
-  */
- static cambio_subcategoria_update = (estado, id) => {
-  console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/servicios_update/${id}`, estado)
-};
-/*
-    eliminar_subcategoria
-    autor: lilibeth
-    descripccion: Elimina una subcategoria
-    parametros: int id
-  */
- static eliminar_subcategoria(id) {
-  return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
-};
-/*
-    crear_categoria
-    autor: lilibeth
-    descripccion: crear una categoria
-    parametros: none
-  */
- static crear_categoria(data) {
-  return MetodosAxios.instanceAxios.post(`/categorias/`,data)
-};
+  static obtener_subcategorias = () => {
+    return MetodosAxios.instanceAxios.get("/servicios/")
+  };
+  /*
+     cambio_subcategoria_estado
+     autor: Lilibeth
+     descripccion: Cambia estado de una subcategoria
+     parametros: boolean estado, int id
+   */
+  static cambio_subcategoria_update = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/servicios_update/${id}`, estado)
+  };
+  /*
+      eliminar_subcategoria
+      autor: lilibeth
+      descripccion: Elimina una subcategoria
+      parametros: int id
+    */
+  static eliminar_subcategoria(id) {
+    return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
+  };
+  /*
+      crear_categoria
+      autor: lilibeth
+      descripccion: crear una categoria
+      parametros: none
+    */
+  static crear_categoria(data) {
+    return MetodosAxios.instanceAxios.post(`/categorias/`, data)
+  };
 
-static crear_insignia(data) {
-  return MetodosAxios.instanceAxios.post(`/insignias/`,data)
-};
+  static crear_insignia(data) {
+    return MetodosAxios.instanceAxios.post(`/insignias/`, data)
+  };
+
+  static crear_cargo(data) {
+    return MetodosAxios.instanceAxios.post(`/cargos/`, data)
+  };
 
 
-/*
-    crear_subcategoria
-    autor: lilibeth
-    descripccion: crea una subcategoria
-    parametros: none
-  */
- static crear_subcategoria(data) {
-  return MetodosAxios.instanceAxios.post(`/servicios/`,data)
-};
-/*
-    crear_profesiones_proveedor
-    autor: lilibeth
-    descripccion: crea una profesion a un proveedor
-    parametros: user
-  */
+  /*
+      crear_subcategoria
+      autor: lilibeth
+      descripccion: crea una subcategoria
+      parametros: none
+    */
+  static crear_subcategoria(data) {
+    return MetodosAxios.instanceAxios.post(`/servicios/`, data)
+  };
+  /*
+      crear_profesiones_proveedor
+      autor: lilibeth
+      descripccion: crea una profesion a un proveedor
+      parametros: user
+    */
 
-static crear_profesiones_proveedor(user,data){
-  return MetodosAxios.instanceAxios.post(`/proveedor_profesiones/${user}`,data)
-};
-/*
-    eliminar proveedor pendiente
-    autor: lilibeth
-    descripccion: elimina proveedor pendiente
-    parametros: user
-  */
-static eliminar_proveedores_pendientes = (user,data) => {
-  return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}/${data}`)
-}
+  static crear_profesiones_proveedor(user, data) {
+    return MetodosAxios.instanceAxios.post(`/proveedor_profesiones/${user}`, data)
+  };
+  /*
+      eliminar proveedor pendiente
+      autor: lilibeth
+      descripccion: elimina proveedor pendiente
+      parametros: user
+    */
+  static eliminar_proveedores_pendientes = (user, data) => {
+    return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}/${data}`)
+  }
 
-static update_pendiente_documento = ( data) => {
-  return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/`, data)
-};
+  static update_pendiente_documento = (data) => {
+    return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/`, data)
+  };
 
   /*
     obtener_promociones
@@ -478,16 +500,16 @@ static update_pendiente_documento = ( data) => {
     parametros: None
   */
 
-  static obtener_promociones = ()=>{
+  static obtener_promociones = () => {
     return MetodosAxios.instanceAxios.get('/promociones/');
   }
 
-  static obtener_cupones = ()=>{
+  static obtener_cupones = () => {
     return MetodosAxios.instanceAxios.get('/cupones/');
   }
 
 
-  static obtener_grupos=()=>{
+  static obtener_grupos = () => {
     return MetodosAxios.instanceAxios.get('/grupos/');
   }
 
@@ -498,11 +520,11 @@ static update_pendiente_documento = ( data) => {
     parametros: data
   */
 
-  static crear_promocion=(data)=>{
+  static crear_promocion = (data) => {
     return MetodosAxios.instanceAxios.post('/promociones/', data);
   }
 
-  static crear_cupon=(data)=>{
+  static crear_cupon = (data) => {
     return MetodosAxios.instanceAxios.post('/cupones/', data);
   }
 
@@ -514,9 +536,9 @@ static update_pendiente_documento = ( data) => {
     parametros: data
   */
 
- static actualizar_promocion=(data)=>{
-  return MetodosAxios.instanceAxios.put('/promociones/', data);
-}
+  static actualizar_promocion = (data) => {
+    return MetodosAxios.instanceAxios.put('/promociones/', data);
+  }
 
   /*
     obtener_ctgprom
@@ -525,20 +547,42 @@ static update_pendiente_documento = ( data) => {
     parametros: codigo de la promocion
   */
 
-  static obtener_ctgprom =(promCode)=>{
+  static obtener_ctgprom = (promCode) => {
     return MetodosAxios.instanceAxios.get(`/promcategorias/${promCode}`);
   }
 
-    /*
-    obtener_pagos_efectivo
-    autor: Kelly
-    descripccion: Retorna todas los pagos en efectivo
-    parametros: none
-  */
+  /*
+  obtener_pagos_efectivo
+  autor: Kelly
+  descripccion: Retorna todas los pagos en efectivo
+  parametros: none
+*/
 
-  static obtener_pagos_efectivo =()=>{
+  static obtener_pagos_efectivo = () => {
     return MetodosAxios.instanceAxios.get('/pago_efectivos/');
   }
+
+  static obtener_pagos_efectivoP = (page) => {
+    return MetodosAxios.instanceAxios.get(`/pago_efectivosP/?page=${page}`);
+  }
+
+  static obtener_pagos_tarjetaP = (page) => {
+    return MetodosAxios.instanceAxios.get(`/pago_tarjetasP/?page=${page}`);
+  }
+
+
+  static valor_total_efectivo = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_efectivo/`)
+  }
+
+  static valor_total_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_tarjeta/`)
+  }
+
+  static valor_total = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total/`)
+  }
+
   /*
     obtener_pagos_tarjeta
     autor: Kelly
@@ -546,60 +590,60 @@ static update_pendiente_documento = ( data) => {
     parametros: none
   */
 
-  static obtener_pagos_tarjeta =()=>{
+  static obtener_pagos_tarjeta = () => {
     return MetodosAxios.instanceAxios.get('/pago_tarjetas/');
   }
 
-  static obtener_pago_solE=(pago_ID)=>{
+  static obtener_pago_solE = (pago_ID) => {
     return MetodosAxios.instanceAxios.get(`/pagosol_efectivo/${pago_ID}`);
   }
 
-  static obtener_pago_solT=(pago_ID)=>{
+  static obtener_pago_solT = (pago_ID) => {
     return MetodosAxios.instanceAxios.get(`/pagosol_tarjeta/${pago_ID}`);
   }
 
-  static enviar_alerta =(correo,asunto,texto)=>{
+  static enviar_alerta = (correo, asunto, texto) => {
     return MetodosAxios.instanceAxios.get(`/enviaralerta/${correo}/${asunto}/${texto}`)
   }
 
-  static editar_sugerencia_estado =(sugerencia, id)=>{
+  static editar_sugerencia_estado = (sugerencia, id) => {
     return MetodosAxios.instanceAxios.put(`/suggestion/${id}`, sugerencia);
   }
 
-  static obtener_sugerencia =(id)=>{
+  static obtener_sugerencia = (id) => {
     return MetodosAxios.instanceAxios.get(`/suggestion/${id}`);
   }
 
-  static obtener_sugerenciasLeidas =(page)=>{
+  static obtener_sugerenciasLeidas = (page) => {
     return MetodosAxios.instanceAxios.get(`/read-suggestions/?page=${page}`);
   }
 
-  static obtener_sugerenciasNoLeidas =(page)=>{
+  static obtener_sugerenciasNoLeidas = (page) => {
     return MetodosAxios.instanceAxios.get(`/unread-suggestions/?page= ${page}`);
   }
 
 
-  static getCiudades= () => {
+  static getCiudades = () => {
     return MetodosAxios.instanceAxios.get(`/ciudades/`)
   };
 
-  static crear_Ciudades= (ciudad) => {
-    return MetodosAxios.instanceAxios.put(`/ciudades/`,ciudad)
+  static crear_Ciudades = (ciudad) => {
+    return MetodosAxios.instanceAxios.put(`/ciudades/`, ciudad)
   };
 
   static obtener_planes = () => {
     return MetodosAxios.instanceAxios.get("/planes/")
   };
 
-  static crear_plan=(data)=>{
+  static crear_plan = (data) => {
     return MetodosAxios.instanceAxios.post('/planes/', data);
   }
 
-  static actualizar_plan=(data)=>{
+  static actualizar_plan = (data) => {
     return MetodosAxios.instanceAxios.put('/planes/', data);
   }
 
-  static borrar_plan=(id)=>{
+  static borrar_plan = (id) => {
     return MetodosAxios.instanceAxios.delete(`/planes/${id}`)
   }
 
@@ -611,15 +655,15 @@ static update_pendiente_documento = ( data) => {
     return MetodosAxios.instanceAxios.get(`/publicidades_search/?page=${page}&buscar=${buscar}`)
   }
 
-  static crear_publicidad=(data)=>{
+  static crear_publicidad = (data) => {
     return MetodosAxios.instanceAxios.post('/publicidades/', data);
   }
 
-  static actualizar_publicidad=(data)=>{
+  static actualizar_publicidad = (data) => {
     return MetodosAxios.instanceAxios.put('/publicidades/', data);
   }
 
-  static borrar_publicidad=(id)=>{
+  static borrar_publicidad = (id) => {
     return MetodosAxios.instanceAxios.delete(`/publicidades/${id}`)
   }
 
@@ -628,7 +672,7 @@ static update_pendiente_documento = ( data) => {
   };
 
   static obtener_admin_user_pass = (user, passw) => {
-    return MetodosAxios.instanceAxios.post(`/adminUserPass/`, {username: user, password: passw});
+    return MetodosAxios.instanceAxios.post(`/adminUserPass/`, { username: user, password: passw });
   };
 
   static logout = (token) => {
@@ -642,22 +686,22 @@ static update_pendiente_documento = ( data) => {
 
 
   static send_notificacion = (data) => {
-    return MetodosAxios.instanceAxios.post(`/notificacion-anuncio/`,data);
+    return MetodosAxios.instanceAxios.post(`/notificacion-anuncio/`, data);
   };
 
   static obtener_plan_proveedor = () => {
     return MetodosAxios.instanceAxios.get("/planes/")
   };
 
-  static crear_plan_proveedor=(data)=>{
+  static crear_plan_proveedor = (data) => {
     return MetodosAxios.instanceAxios.post('/planProveedor/', data);
   }
 
-  static actualizar_plan_proveedor=(data)=>{
+  static actualizar_plan_proveedor = (data) => {
     return MetodosAxios.instanceAxios.put('/planProveedor/', data);
   }
 
-  static borrar_plan_proveedor=(id)=>{
+  static borrar_plan_proveedor = (id) => {
     return MetodosAxios.instanceAxios.delete(`/planProveedor/${id}`)
   }
 

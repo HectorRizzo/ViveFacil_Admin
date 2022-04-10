@@ -12,6 +12,13 @@ import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
 import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
+
+import Efectivo from "../components/pagoss/efectivo/Efectivo";
+import Tarjeta from "../components/pagoss/tarjeta/Tarjeta";
+import Cargos from "../components/pagoss/cargos/Cargos";
+
+
+
 import MetodosAxios from "../requirements/MetodosAxios";
 import Insignias from "../components/insignias/Insignias";
 import Cupones from "../components/cupones/Cupones";
@@ -152,11 +159,44 @@ class LayoutPage extends Component {
                                 Sub-categorías
                                 <Link to={`${this.props.match.path}/sub-categorias/`} />
                             </Menu.Item>}
-                        </SubMenu>}
-                        <Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
+                        </SubMenu>
+                        }
+                        {/*<Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
-                        </Menu.Item>
+                        </Menu.Item>*/}
+
+
+                        {((this.state.permisos.filter(element => { return element.includes('pagos')}).length >0) || this.state.permisos.includes('all')) && <SubMenu key="sub100" title="PAGOS">
+                            {/* <Menu.Item key="1">
+                                Habilitar/inhabilitar cuentas
+                                <Link to={`${this.props.match.path}/administrar-cuentas/`} />
+                            </Menu.Item> */}
+                            {/* <Menu.Item key="2">
+                                Proveedor
+                                <Link to={`${this.props.match.path}/proveedor/`} />
+                            </Menu.Item> */}
+                            <Menu.Item key="101">
+                                Cargos
+                                <Link to={`${this.props.match.path}/cargos/`} />
+                            </Menu.Item>
+                            <Menu.Item key="102">
+                                Efectivo
+                                <Link to={`${this.props.match.path}/efectivo/`} />
+                            </Menu.Item>
+                            <Menu.Item key="103">
+                                Tarjeta
+                                <Link to={`${this.props.match.path}/tarjeta/`} />
+                            </Menu.Item>
+                            
+                        </SubMenu>}
+
+
+
+
+
+
+
                         {((this.state.permisos.filter(element => { return element.includes('publicidad')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub4" title="PUBLICIDAD"  id="menu-item-only">
                             PUBLICIDAD
                             <Link to={`${this.props.match.path}/publicidad/`} />
@@ -233,7 +273,9 @@ class LayoutPage extends Component {
                                 {((this.state.permisos.filter(element => { return element.includes('publicidad')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />}
                                 {((this.state.permisos.filter(element => { return element.includes('insignia')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />}
                                 {((this.state.permisos.filter(element => { return element.includes('cupon')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />}
-                                <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />
+                                <Route path={`${this.props.match.path}/efectivo/`} component={Efectivo} exact/>
+                                <Route path={`${this.props.match.path}/tarjeta/`} component={Tarjeta} exact />
+                                <Route path={`${this.props.match.path}/cargos/`} component={Cargos} exact />
                                 {this.state.permisos.includes('all') && <Route path={`${this.props.match.path}/roles/`} component={Roles} exact />}
                             </Switch>
                         </div>
