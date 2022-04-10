@@ -67,7 +67,7 @@ const AgregarCargo = (props) => {
                         className="form"
                     >
 
-                        <Input min="1" max="100" required key="input-desc" type="number" initialValues="" className="input" onChange={value => { handleChangeporcentaje(value) }} />
+                        <Input min="1" max="100" required key="input-desc" type="number" className="input" onChange={value => { handleChangeporcentaje(value) }} />
 
 
 

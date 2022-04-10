@@ -6,6 +6,7 @@ import Eliminar from "../../../img/icons/eliminar.png";
 import { ValidarTexto, validateParticipante } from '../../servicios/Validacion/validaciones'
 
 import AgregarCargo from "./AgregarCargo";
+import EditarCargo from "./EditarCargo";
 
 
 import moment from 'moment'
@@ -20,17 +21,18 @@ const columns = [
 ];
 
 class Cargos extends Component{
+    cargoSelected = null;
 
     constructor(props) {
         super(props);
         this.state = {
             selectedRowKeysCargo: [],
-            insigniaInfo: null,
+            cargoInfo: null,
             selectedRowKeysSugerencia: [],
             data_cargo: [],
             base_cargo: [],
             loadingCheck: false,
-            visibleModalInsignia: false,
+            visibleModalCargo: false,
             modalAggVisible: false,
 
             //allcategorias: [],
@@ -131,7 +133,7 @@ class Cargos extends Component{
     }
 
     validarform() {
-        console.log(this.state.selected_cgtg)
+        //console.log(this.state.selected_cgtg)
         if (this.state.nombre0 !== '' && this.state.porcentaje0 !== '') {
             return true
         }
@@ -140,6 +142,20 @@ class Cargos extends Component{
         }
         if (this.state.porcentaje0 === '') {
             ValidarTexto(false, 'errorporcentaje0')
+        }
+        return false
+    }
+
+    validarformEdit() {
+        //console.log( "edit")
+        if (this.state.cargoInfo.nombre !== '' && this.state.cargoInfo.porcentaje !== '') {
+            return true
+        }
+        if (this.state.cargoInfo.nombre === '') {
+            ValidarTexto(false, 'errornombre')
+        }
+        if (this.state.cargoInfo.porcentaje === '') {
+            ValidarTexto(false, 'errorporcentaje')
         }
         return false
     }
@@ -203,13 +219,94 @@ class Cargos extends Component{
             for (let i = 0; i < this.state.selectedRowKeysCargo.length; i++) {
                 let id = this.state.selectedRowKeysCargo[i];
                 console.log(id)
-                //await MetodosAxios.eliminar_insignia(id).then(res => {
-                //    console.log(res)
-                //})
+                await MetodosAxios.eliminar_cargo(id).then(res => {
+                    //console.log(res)
+                })
             }
         }
         this.MostrarCargos();
         this.setModalAlertVisible(false)
+    }
+
+    showModal = (cargo) => {
+        MetodosAxios.obtener_cargo(cargo.key).then(res => {
+            this.cargoSelected = res.data;
+            this.setState({
+                visibleModalCargo: true,
+                cargoInfo: res.data,
+
+            });
+        })
+
+
+    };
+
+    handleCerrar = () => {
+        this.setState({
+            visibleModalCargo: false,
+        })
+
+    };
+
+    handleOk = () => {
+        this.setState({
+            visibleModalCargo: false,
+            limpiarEdit: true,
+            modalEditVisible: true,
+        })
+
+    };
+
+    handleCerrarEdit = () => {
+        this.setState({
+            limpiar: true,
+            modalEditVisible: false,
+        })
+
+    }
+
+
+    async editarCargo() {
+        
+        if (this.validarformEdit()) {
+            //this.setState({
+            //    limpiarEdit: true,
+
+            //})
+            var data = new FormData();
+            //data.append('nombre', this.state.nombre);
+            //data.append('descripcion', this.state.descripcion);
+            //data.append('imagen', this.state.fileimg);
+            //data.append('servicio', this.state.servicio);
+            //data.append('pedidos', this.state.pedidos);
+            //data.append('tipo', this.state.tipo);
+
+            data.append('nombre', this.state.cargoInfo.nombre);
+            data.append('descripcion', this.state.cargoInfo.porcentaje);
+            
+
+            await MetodosAxios.cambio_cargo(data, this.state.cargoInfo.id).then(res => {
+                console.log(res)
+            })
+
+            for (let value of data.keys()) {
+                console.log(value);
+            }
+            for (let values of data.values()) {
+                console.log(values);
+            }
+
+
+
+
+
+            this.MostrarCargos();
+            this.setState({
+                limpiarEdit: true,
+                modalEditVisible: false,
+
+            })
+        }
     }
 
 
@@ -282,7 +379,7 @@ class Cargos extends Component{
                             onRow={(cargo) => {
                                 return {
                                     onClick: event => {
-                                        //this.showModal(cargo)
+                                        this.showModal(cargo)
                                     }
                                 }
                             }}
@@ -294,8 +391,8 @@ class Cargos extends Component{
                     {/** Modal para ver la informacion del pago */}
                 </div>
                 <Modal style={{ backgraoundColor: "white" }}
-                    title="Información de la Insignia"
-                    visible={this.state.visibleModalInsignia}
+                    title="Información del Cargo"
+                    visible={this.state.visibleModalCargo}
                     closable={false}
                     okText="Editar"
                     cancelText="Cerrar"
@@ -306,23 +403,9 @@ class Cargos extends Component{
                 >
                     
 
-                    <p><strong>{this.insigniaSelected?.nombre}</strong></p>
-                    <p><strong>Descripcion:  </strong>{this.insigniaSelected?.descripcion}</p>
-                    <p><strong>Fecha de creación:  </strong>{this.insigniaSelected?.fecha_creacion.split('T')[0]}</p>
-                    <p><strong>Tipo:  </strong>{this.insigniaSelected?.tipo}</p>
-                    <p><strong>Servicio:  </strong>{this.insigniaSelected?.servicio}</p>
-                    <p><strong>Estado:  </strong>{this.insigniaSelected?.estado ? 'Activo' : 'Inactivo'}</p>
-                    <div style={{display: 'flex'}} >
-                        {/* <Space> */}
-                        <p><strong>Habilitar / Deshabilitar: </strong>  </p>
-                            <Switch
-                                key={this.insigniaSelected?.id}
-                                loading={this.state.loadingCheck}
-                                onChange={(switchValue) => this.onChangeCheckInsignia(this.insigniaSelected?.id,this.insigniaSelected?.estado, switchValue)}
-                                defaultChecked={this.insigniaSelected?.estado}
-                            />
-                        {/* </Space> */}
-                    </div>
+                    <p><strong>Nombre del Cargo:  </strong>{this.cargoSelected?.nombre}</p>
+                    <p><strong>Porcentaje a aplicar:  </strong>{this.cargoSelected?.porcentaje}%</p>
+                    
 
                 </Modal>
 
@@ -341,18 +424,18 @@ class Cargos extends Component{
                 </Modal>
 
                 <Modal
-                    title="Editar Insignia"
+                    title="Editar Cargo"
                     visible={this.state.modalEditVisible}
                     closable={false}
                     okText="Guardar Cambios"
                     cancelText="Cancelar"
-                    onOk={() => this.editarInsignia()}
+                    onOk={() => this.editarCargo()}
                     onCancel={() => this.handleCerrarEdit()}
 
 
 
                 >
-                    {/*<EditarInsignia param={this.state} handleChangeimg={this.handleChangeimg} />*/}
+                    <EditarCargo param={this.state} />
 
                 </Modal>
 

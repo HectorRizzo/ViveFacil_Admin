@@ -11,11 +11,23 @@ const { RangePicker } = DatePicker
 const columns = [
 
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
+    { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes'},
     { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
     { title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
+    //{
+    //    Headers: 'Cargo',
+    //    columns: [
+    //        { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
+    //        { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
+    //    ]
+    //},
+    { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cargo Sistema ($)', dataIndex: 'cargo_sistema', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', className: 'columns-pendientes', responsive: ['lg'] },
+    //{ title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
 
 
 ];
@@ -116,12 +128,15 @@ class Tarjeta extends Component {
                 descuento = "Aplica";
             }
 
+            let cargo_pay = (tarjeta.valor * 1.5) / 100
+
             datos_Tarjeta.push({
                 key: tarjeta.carrier_id,
                 concepto: tarjeta.concepto,
                 fecha_creacion: tarjeta.fecha_creacion.split('T')[0],
                 valor: '$' + tarjeta.valor,
                 tiene_descuento: descuento,
+                cargo_pay: cargo_pay,
 
             })
         }
@@ -153,12 +168,12 @@ class Tarjeta extends Component {
 
 
 
-    MostrarCargos() {
+    /*MostrarCargos() {
         this.setState({
             showCargos: true,
         })
 
-    }
+    }*/
 
     handleCerrar = () => {
         this.setState({
@@ -244,13 +259,13 @@ class Tarjeta extends Component {
                     <div style={{ marginBottom: 16 }}></div>
                     <div className="card-container">
 
-                        <div style={{ display: "flex", marginRight: "2rem" }}>
+                        {/*<div style={{ display: "flex", marginRight: "2rem" }}>
                             <Button type="primary" style={{ marginLeft: "2rem" }}
                                 onClick={() => this.MostrarCargos()}
                             >
                                 Cargos
                             </Button>
-                        </div>
+        </div>*/}
 
                         <div style={{ display: 'flex', flexDirection: 'column', marginRight: "1rem" }}>
                             <br></br>
@@ -259,9 +274,8 @@ class Tarjeta extends Component {
 
 
 
-                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', justifyContent: 'space-between' }}>
-                                <h2 style={{ marginLeft: "2rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
-                                <h2 style={{ marginLeft: "2rem" }}>Total Dinero: ${this.state.totalValor}</h2>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
+                                
                                 <Space>
                                     <Button type="primary" size="default" disabled={this.state.disabledButton}
                                         onClick={this.filtrarFechas}>
@@ -277,6 +291,19 @@ class Tarjeta extends Component {
         />
                                 </Space>
                             </div>
+                            <br></br>
+
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', justifyContent: 'space-between' }}>
+
+                            <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Dinero: ${this.state.totalValor}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: $0</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Banco: $0</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: $0</h2>
+                                
+                                
+                            </div>
+                            
 
                         </div>
 
@@ -308,7 +335,7 @@ class Tarjeta extends Component {
                             />
                         </div>
 
-                        <Modal style={{ backgraoundColor: "white" }}
+                        {/*<Modal style={{ backgraoundColor: "white" }}
                             title="Información de los Cargos"
                             visible={this.state.showCargos}
                             closable={false}
@@ -329,7 +356,7 @@ class Tarjeta extends Component {
 
 
 
-                        </Modal>
+                        </Modal>*/}
 
 
 

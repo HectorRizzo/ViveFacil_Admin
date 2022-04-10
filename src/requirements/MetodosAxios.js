@@ -69,6 +69,10 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/cupones/${id}`)
   };
 
+  static obtener_cargo = (id) => {
+    return MetodosAxios.instanceAxios.get(`/cargos/${id}`)
+  };
+
 
 
 
@@ -382,6 +386,11 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.put(`/cupon_update/${id}`, estado)
   };
 
+  static cambio_cargo = (estado, id) => {
+    console.log(estado, id)
+    return MetodosAxios.instanceAxios.put(`/cargo_update/${id}`, estado)
+  };
+
 
 
 
@@ -399,6 +408,10 @@ export default class MetodosAxios {
 
   static eliminar_insignia(id) {
     return MetodosAxios.instanceAxios.delete(`/insignia_delete/${id}`)
+  };
+
+  static eliminar_cargo(id) {
+    return MetodosAxios.instanceAxios.delete(`/cargo_delete/${id}`)
   };
 
 
