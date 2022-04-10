@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message, Row,Col} from 'antd';
+import { Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message, Row,Col} from 'antd';
 import MetodosAxios from "../../../../requirements/MetodosAxios";
 import * as moment from 'moment';
 import { API_URL } from "../../../../Constants";
@@ -473,7 +473,7 @@ class ProveedorTab extends Component {
                         <Col span={1}></Col>
                         <Col span={7}>
                         
-                        <Divider orientation="center" className="divider-edit">Cuenta Bancaria</Divider>
+                        <Divider orientation="center" className="divider-edit">Cambio de Plan</Divider>
                             <div style={{display: 'flex', alignContentCenter: 'center' }} >
                                 <p style={{paddingTop: 3 + 'px'}}><strong>Plan: </strong></p>
                                 <select className="select-prom"
@@ -491,13 +491,26 @@ class ProveedorTab extends Component {
 
                                 </select>
                             </div>
-                        <Divider orientation="center" className="divider-cuenta">Cuenta Bancaria</Divider>
+                        <Divider orientation="center" className="divider-edit">Cuenta Bancaria</Divider>
                             <p><strong>Tipo Cuenta:  </strong>{this.proveedorActual?.tipo_cuenta}</p>
                             <p><strong>Nº Cuenta:  </strong>{this.proveedorActual?.numero_cuenta}</p>
                             <p><strong>Banco:   </strong>{this.proveedorActual?.banco}</p>
-                        <Divider orientation="center" className="divider-edit">Profesión</Divider>
-                            {/* <p><strong>Licencia:  </strong>{this.proveedorActual?.estado}</p> */}
-                            <p><strong>Profesiones:  </strong>{this.proveedorActual?.profesion}</p>
+                        <Divider orientation="center" className="divider-edit">Profesiones</Divider>
+                            {this.proveedorActual?.profesion.split(',').length>1  
+                                ?  
+                                this.proveedorActual?.profesion.split(',').map((profesion,i)=>{
+                                   return  <> 
+                                    <p><strong>Profesión:  </strong>{profesion}</p>
+                                    <p><strong>Años de Experiencia:  </strong>{this.proveedorActual?.ano_profesion.split(',')[i]}</p>
+                                    </>
+                                })
+                                
+                                : 
+                                <> 
+                                    <p><strong>Profesión:  </strong>{this.proveedorActual?.profesion}</p>
+                                    <p><strong>Años de Experiencia:  </strong>{this.proveedorActual?.ano_profesion}</p>
+                                </>
+                            }
                             <p><strong>Documentación Adicional:   </strong></p>
                             <p>
                             {this.proveedorActual?.document.length>0 
@@ -520,7 +533,7 @@ class ProveedorTab extends Component {
                             {<p style={{textAlign:"center"}}> <strong>Servicios</strong></p>}
                             <p><strong>Servicios:  </strong>{this.proveedorActual?.servicios}</p>
                             <p><strong>Rating:  </strong>{this.proveedorActual?.rating}</p>
-                            {<p style={{textAlign:"center"}}> <strong>Planes</strong></p>}
+                            {<p style={{textAlign:"center"}}> <strong>Plan</strong></p>}
 
                             <p>
                             {this.proveedorActual?.plan_proveedor.length>0 

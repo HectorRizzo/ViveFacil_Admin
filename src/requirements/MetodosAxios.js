@@ -321,6 +321,10 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/proveedor_profesiones/${user}`)
   }
 
+  static get_profesiones() {
+    return MetodosAxios.instanceAxios.get(`/profesiones/`)
+  }
+
   static filtrar_pendientes = (user) => {
     return MetodosAxios.instanceAxios.get(`/pendientes-search/${user}`)
   }
@@ -435,25 +439,35 @@ export default class MetodosAxios {
   static obtener_subcategorias = () => {
     return MetodosAxios.instanceAxios.get("/servicios/")
   };
-  /*
-     cambio_subcategoria_estado
-     autor: Lilibeth
-     descripccion: Cambia estado de una subcategoria
-     parametros: boolean estado, int id
-   */
-  static cambio_subcategoria_update = (estado, id) => {
-    console.log(estado, id)
-    return MetodosAxios.instanceAxios.put(`/servicios_update/${id}`, estado)
+
+  static add_profesion = (data) => {
+    return MetodosAxios.instanceAxios.post("/profesiones/",data)
   };
-  /*
-      eliminar_subcategoria
-      autor: lilibeth
-      descripccion: Elimina una subcategoria
-      parametros: int id
-    */
-  static eliminar_subcategoria(id) {
-    return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
+
+  static delete_profesion = (id) => {
+    return MetodosAxios.instanceAxios.delete(`/profesiones/${id}`)
   };
+
+  
+ /*
+    cambio_subcategoria_estado
+    autor: Lilibeth
+    descripccion: Cambia estado de una subcategoria
+    parametros: boolean estado, int id
+  */
+ static cambio_subcategoria_update = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/servicios_update/${id}`, estado)
+};
+/*
+    eliminar_subcategoria
+    autor: lilibeth
+    descripccion: Elimina una subcategoria
+    parametros: int id
+  */
+ static eliminar_subcategoria(id) {
+  return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
+};
   /*
       crear_categoria
       autor: lilibeth
@@ -693,14 +707,16 @@ export default class MetodosAxios {
   };
 
 
-  // static get_notificaciones = (page) => {
-  //   return MetodosAxios.instanceAxios.get(`/notificaciones/?page=${page}`);
-  // };
+  static get_notificacion = (page) => {
+    return MetodosAxios.instanceAxios.get(`/notificacion-anuncio/`);
+  };
 
 
   static send_notificacion = (data) => {
     return MetodosAxios.instanceAxios.post(`/notificacion-anuncio/`, data);
   };
+
+
 
   static obtener_plan_proveedor = () => {
     return MetodosAxios.instanceAxios.get("/planes/")
@@ -722,5 +738,60 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get("/planesEstado/")
   };
 
+  static obtener_roles = () => {
+    return MetodosAxios.instanceAxios.get("/grupos/")
+  };
+
+  static crear_rol=(data)=>{
+    return MetodosAxios.instanceAxios.post('/roles-permisos/', data);
+  }
+
+  static actualizar_rol=(data)=>{
+    return MetodosAxios.instanceAxios.put('/roles-permisos/', data);
+  }
+  
+  static obtener_solicitudes = (page) => {
+    return MetodosAxios.instanceAxios.get(`/solicitudes-proveedores/?page=${page}`)
+  };
+
+  static solicitudesByUser = (usuario, page) => {
+    return MetodosAxios.instanceAxios.get(`/solicitudesUser_search/${usuario}?page=${page}`)
+  }
+
+  static solicitudesByDate = (fechaInicio, fechaFin, page) => {
+    return MetodosAxios.instanceAxios.get(`/solicitudesDate_search/?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&page=${page}`)
+  }
+
+  static solicitudDetail = (id) => {
+    return MetodosAxios.instanceAxios.get(`/solicitud-profesion/${id}`)
+  };
+
+  static solicitudChange = (id,data) => {
+    return MetodosAxios.instanceAxios.put(`/change-solicitud/${id}`,data)
+  };
+
+  static solicitudDelete= (id) => {
+    return MetodosAxios.instanceAxios.delete(`/change-solicitud/${id}`)
+  };
+
+  static editarProveedor = (id,data) => {
+    return MetodosAxios.instanceAxios.put(`/proveedor/${id}`,data)
+  };
+
+  static correoSolicitud = (data) => {
+    return MetodosAxios.instanceAxios.post(`/correo-solicitud/`,data)
+  };
+
+  static borrar_rol=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/roles-permisos/${id}`);
+  }
+
+  static obtener_rol = (name) => {
+    return MetodosAxios.instanceAxios.get(`/roles-permisos/${name}`);
+  }
+
+  static obtener_permisos = () => {
+    return MetodosAxios.instanceAxios.get(`/permisos`);
+  }
 }
 

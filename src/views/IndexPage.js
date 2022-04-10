@@ -39,6 +39,8 @@ class IndexPage extends Component {
             if(res.data["token"]){
                 localStorage.setItem('_cap_userName', res.data.admin.user_datos.user.username)
                 localStorage.setItem('token', res.data.token)
+                localStorage.setItem('rol', res.data.admin.user_datos.user.groups[0]?.name? res.data.admin.user_datos.user.groups[0].name: '')
+                localStorage.setItem('super', res.data.admin.user_datos.user.is_superuser)
                 this.props.history.push({pathname: 'inicio', state: {detail: res.data}})
             }
             console.log(res)
@@ -47,7 +49,7 @@ class IndexPage extends Component {
     }
 
     visibility (){
-        console.log('test')
+
         var password = document.getElementById('login-pass')
         var type = password?.getAttribute('type');
         var eyes = document.getElementById('eye-img')

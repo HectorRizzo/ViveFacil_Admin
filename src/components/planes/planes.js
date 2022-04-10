@@ -4,10 +4,12 @@ import MetodosAxios from '../../requirements/MetodosAxios';
 import File from '../servicios/File/FileUpload'
 import iconimg from '../../img/icons/imagen.png'
 import eliminarimg from '../../img/icons/eliminar.png'
+import Permisos from '../../requirements/Permisos'
 import './planes.css'
 import { resetLabels }
     from '../promocion/validators';
 const { Search } = Input;
+let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -81,6 +83,10 @@ class Planes extends Component {
     }
 
     async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
+
         await this.loadplanes();
     }
 
@@ -93,44 +99,51 @@ class Planes extends Component {
         }
 
         let arregloImg = document.getElementsByClassName('delete')
-        
+        let perm= ((permisos.filter(element => { return element.includes('Can delete planes')}).length >0) || permisos.includes('all'))
         for(let i = 0; i< arregloImg.length; i++){
             let img = arregloImg[i]
-            img.addEventListener('click', this.modalAceptar) 
+            if(perm){
+                img.addEventListener('click', this.modalAceptar) 
+            }
+            else{
+                img.style.display = 'none'
+            }
         }
 
     }
 
     async loadplanes() {
-        this.setState({ loading_planes: true });
-        let planes = [];
-        let count = 1;
-        let value = await MetodosAxios.obtener_planes();
-        let data = value.data;
-        for (let plan of data) {
-            plan.id = plan.id
-            plan.key = count;
-            plan.count = count;
-            plan.precio = plan.precio;
-            plan.duracion = plan.duracion;
-            plan.estado = plan.estado;
-            if(plan.imagen != null){
-                plan.imagen = 'https://tomesoft1.pythonanywhere.com/'+ plan.imagen
-            }
-            else{
-                plan.imagen = iconimg
-            }
-            plan.fecha_creacion = plan.fecha_creacion
-            planes.push(plan);
-            count++;
-        }
+        let perm= ((permisos.filter(element => { return element.includes('Can view planes')}).length >0) || permisos.includes('all'))
+        if(perm){
+                this.setState({ loading_planes: true });
+                let planes = [];
+                let count = 1;
+                let value = await MetodosAxios.obtener_planes();
+                let data = value.data;
+                for (let plan of data) {
+                    plan.id = plan.id
+                    plan.key = count;
+                    plan.count = count;
+                    plan.precio = plan.precio;
+                    plan.duracion = plan.duracion;
+                    plan.estado = plan.estado;
+                    if(plan.imagen != null){
+                        plan.imagen = 'https://tomesoft1.pythonanywhere.com/'+ plan.imagen
+                    }
+                    else{
+                        plan.imagen = iconimg
+                    }
+                    plan.fecha_creacion = plan.fecha_creacion
+                    planes.push(plan);
+                    count++;
+                }
 
-        this.setState({
-            planes: planes,
-            allPlanes: planes,
-            loading_planes: false,
-        });
-
+                this.setState({
+                    planes: planes,
+                    allPlanes: planes,
+                    loading_planes: false,
+                });
+            }
     }
 
     handleChangeimg = async (imgurl, uploadValue, nompicture, fileimg) => {
@@ -414,9 +427,9 @@ class Planes extends Component {
                                 placeholder="Buscar" allowClear
                                 onSearch={this.onSearch} style={{ width: 200, margin: '0 10px' }}
                                 className="search-p" />
-                            <Button onClick={this.handleAdd}>
+                            {((permisos.filter(element => { return element.includes('Can add planes')}).length >0) || permisos.includes('all')) && <Button onClick={this.handleAdd}>
                                 Agregar
-                                </Button>
+                            </Button>}
                         </div>
 
                         <Table

@@ -4,11 +4,13 @@ import MetodosAxios from '../../requirements/MetodosAxios';
 import File from '../servicios/File/FileUpload'
 import iconimg from '../../img/icons/imagen.png'
 import eliminarimg from '../../img/icons/eliminar.png'
+import Permisos from '../../requirements/Permisos'
 import './publicidades.css'
 import moment from 'moment'
 import { resetLabels, validarFechaInicio, validarFecha}
     from '../promocion/validators';
 const { Search } = Input;
+let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -27,7 +29,7 @@ const columns = [
         title: '',
         dataIndex: 'id',
         render: id => <img alt={id} src={eliminarimg} style={{ width: 25 + 'px'}} className='delete'/>,
-        className: 'columns-pendientes'
+        className: 'columns-pendientes',
     }, 
     
 ];
@@ -74,11 +76,15 @@ class Publicidades extends Component {
         this.handleCancel = this.handleCancel.bind(this);
         this.deletepublicidad = this.deletepublicidad.bind(this);
         this.modalAceptar = this.modalAceptar.bind(this);
-
+        
     }
 
     async componentDidMount() {
-        this.loadpublicidades(1);
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+            console.log(permisos)
+        })
+        await this.loadpublicidades(1);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -90,10 +96,15 @@ class Publicidades extends Component {
         }
 
         let arregloImg = document.getElementsByClassName('delete')
-        
+        let perm= ((permisos.filter(element => { return element.includes('Can delete publicidad')}).length >0) || permisos.includes('all'))
         for(let i = 0; i< arregloImg.length; i++){
             let img = arregloImg[i]
-            img.addEventListener('click', this.modalAceptar) 
+            if(perm){
+                img.addEventListener('click', this.modalAceptar) 
+            }
+            else{
+                img.style.display = 'none'
+            }
         }
     }
 
@@ -126,8 +137,10 @@ class Publicidades extends Component {
         return datos_Publicidad;
     }
 
-    loadpublicidades = (page) => {
+    loadpublicidades = (page) =>{
+        let perm= ((permisos.filter(element => { return element.includes('Can view publicidad')}).length >0) || permisos.includes('all'))
         this.setState({ loading_publicidades: true });
+        if(perm){
         console.log(page)
         MetodosAxios.obtener_publicidades(page).then(res => {
             let value = res.data.results
@@ -144,6 +157,7 @@ class Publicidades extends Component {
         
             });
         })
+    }
 
         
 
@@ -266,11 +280,13 @@ class Publicidades extends Component {
     }
 
     handleEdit = (prom) => {
-        this.fillData(prom);
-        this.setState({
-            show: true,
-            edit: true,
-        });
+        if(((permisos.filter(element => { return element.includes('Can change publicidad')}).length >0) || permisos.includes('all'))){
+            this.fillData(prom);
+            this.setState({
+                show: true,
+                edit: true,
+            });
+        }
     }
 
     handleCrearP = async () => {
@@ -456,9 +472,9 @@ class Publicidades extends Component {
                                 placeholder="Buscar" allowClear
                                 onSearch={this.buscarPublicidad} style={{ width: 200, margin: '0 10px' }}
                                 className="search-p" />
-                            <Button onClick={this.handleAdd}>
+                            {((permisos.filter(element => { return element.includes('Can add publicidad')}).length >0) || permisos.includes('all')) && <Button onClick={this.handleAdd}>
                                 Agregar
-                                </Button>
+                            </Button>}
                         </div>
 
                         <Table

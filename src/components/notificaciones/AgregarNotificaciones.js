@@ -48,7 +48,7 @@ const AgregarNotificacion =(props) => {
 
             <Row >
             <Col span={10}>
-            <Form.Item  name="destinatario" label="Destinatario:" style={{ color: "red !important" }}  
+            {/* <Form.Item  name="destinatario" label="Destinatario:" style={{ color: "red !important" }}  
             rules={[
                         {
                             required: true,
@@ -56,7 +56,7 @@ const AgregarNotificacion =(props) => {
                         },
                         ]}
                         >
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item  name="titulo" label="Título:" style={{ color: "red !important" }} 
                         rules={[
@@ -67,7 +67,7 @@ const AgregarNotificacion =(props) => {
                         ]}
                 
                 >
-                    <Input placeholder="título" onChange={onChangetitulo} className="edit-input"
+                    <Input placeholder={param.lastNotificacion.titulo} onChange={onChangetitulo} className="edit-input"
                         style={{ fontSize: "small", color: "#052434" }} />
             </Form.Item>
 
@@ -80,7 +80,7 @@ const AgregarNotificacion =(props) => {
                         ]}
                 
                 >
-                    <Input.TextArea  rows="5" placeholder="descripcion" onChange={onChangeCuerpoMensaje}
+                    <Input.TextArea  rows="5" placeholder={param.lastNotificacion.mensaje} onChange={onChangeCuerpoMensaje}
                         style={{ fontSize: "small", color: "#052434" }} />
             </Form.Item>
             </Col>
@@ -95,16 +95,19 @@ const AgregarNotificacion =(props) => {
                         ]}
                 
                 >
-                    <Input.TextArea  rows="5" placeholder="mensaje" onChange={onChangeDescripcion}
+                    <Input.TextArea  rows="5" placeholder={param.lastNotificacion.descripcion} onChange={onChangeDescripcion}
                         style={{ fontSize: "small", color: "#052434" }} />
             </Form.Item>
 
-            <Form.Item   name="imagen"
-                label="Imagen"
+            <Form.Item   
+                name="foto"
+                label="Foto"
                 className="form"
                 labelAlign="left"
                 >
+
                 <File param={param} handleChangeimg={handleChangeimg} />
+
             </Form.Item>
             </Col>
             </Row>

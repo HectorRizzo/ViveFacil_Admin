@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import SelectedContext from '../../../../context/SelectedContext';
 import { Button } from 'antd';
 import pdf from '../../../../img/icons/pdf.png';
-import { getProfesiones} from '../functions';
 
 const TablePendiente = (props) => {
     const { selected,profesionesPrevias } = useContext(SelectedContext)
@@ -18,7 +17,7 @@ const TablePendiente = (props) => {
         try{
             return documents.map((doc, i) => {
                 return (
-                    !doc.estado &&doc.descripcion.split("&")[1].toUpperCase()==selected.profesion.toUpperCase()&&
+                    !doc.estado &&doc.descripcion.split("&")[1].toUpperCase()===selected.profesion.toUpperCase()&&
                     <div className="document-container" key={"pendiente-doc-proveedor-"+proveedor.id}>
                         <a href={API_URL + doc.documento} target="_blank" className="document-link" rel="noreferrer">
                             <Button key="accept" onClick={() => { }}
@@ -80,12 +79,12 @@ const TablePendiente = (props) => {
                         <th className="column-name">Profesión</th>
                         <th className="column-data">{selected.profesion}</th>
                     </tr>
-                    {profesionesPrevias!=""&&
+                    {profesionesPrevias!==""&&
                     <tr className="row" key="dato-10">
                         <th className="column-name">Profesiones Previas</th>
                         <th className="column-data">{profesionesPrevias}</th>
                     </tr>}
-                    {profesionesPrevias==""&&
+                    {profesionesPrevias===""&&
                     <tr className="row" key="dato-11">
                         <th className="column-name">Profesiones Previas</th>
                         <th className="column-data">None</th>
