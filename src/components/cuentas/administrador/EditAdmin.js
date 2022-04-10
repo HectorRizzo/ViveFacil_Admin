@@ -57,6 +57,11 @@ const EditAdmin =(props) => {
 
     }
 
+    const onChangeRol = (value) => {
+        param.rol= value.target.value
+        console.log(value.target.value)
+
+    }
 
     const handleSubmitted = () => {
         
@@ -176,6 +181,28 @@ const EditAdmin =(props) => {
 
                     </select>
                 </Form.Item>
+
+                <Form.Item name="rol" label="Rol" 
+                    rules={[
+                        {
+                            required: true,
+                            message: "Ingrese un Rol"
+                        },
+                        ]} 
+                    
+                    >
+                     <select initialvalues="" onChange={value => {onChangeRol(value)}}>
+
+                    <option value="">{param.adminInfo?.user_datos?.user?.groups[0]?.name? param.adminInfo?.user_datos?.user?.groups[0]?.name: 'Seleccione un rol'}</option> 
+
+                    {param.grupos.map((grupo)=>{
+                        return <option key={grupo} value={grupo}> {grupo}</option> 
+                    })}
+
+
+                    </select>
+                </Form.Item>
+
                 <Form.Item 
                     name="foto"
                     label="Foto"

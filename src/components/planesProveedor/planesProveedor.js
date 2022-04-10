@@ -2,10 +2,12 @@ import React, { Component, } from "react";
 import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import './planesProveedor.css'
+import Permisos from '../../requirements/Permisos'
 import * as moment from 'moment';
 import reload from '../../img/icons/reload.png'
 const { Search } = Input;
 const {RangePicker} = DatePicker
+let permisos = [];
 const columns = [
     { title: 'Nombre', dataIndex: 'nombres', className: 'columns-pendientes' },
     { title: 'Plan', dataIndex: 'plan', className: 'columns-pendientes', responsive: ['lg'] },
@@ -54,13 +56,18 @@ class planesProveedor extends Component {
             inicio: "",
             fin: "",
             reload: false,
-            is_changed: false
+            is_changed: false,
+            disableCheck: true
         }
         this.modalAceptar = this.modalAceptar.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
     }
 
     async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
+
         await this.loadproveedores(1);
     }
 
@@ -73,10 +80,15 @@ class planesProveedor extends Component {
         }
 
         let arregloImg = document.getElementsByClassName('reload')
-        
+        let perm= ((permisos.filter(element => { return element.includes('Can delete publicidad')}).length >0) || permisos.includes('all'))
         for(let i = 0; i< arregloImg.length; i++){
             let img = arregloImg[i]
-            img.addEventListener('click', this.modalAceptar) 
+            if(perm){
+                img.addEventListener('click', this.modalAceptar) 
+            }
+            else{
+                img.style.display = 'none'
+            }
         }
 
     }
@@ -138,6 +150,9 @@ class planesProveedor extends Component {
     }
 
     showModal = (prov) => {
+        if((permisos.filter(element => { return element.includes('Can delete publicidad')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_proveedorInfo(prov.key).then(res => {
             console.log(res)
             console.log(res.data)
@@ -351,6 +366,7 @@ class planesProveedor extends Component {
                                     <Switch
                                         key={this.proveedorActual?.id}
                                         loading={this.state.loadingCheck}
+                                        disabled={this.state.disableCheck}
                                         onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.plan_proveedor[0]?.id, switchValue)}
                                         defaultChecked={this.proveedorActual?.estado}
                                     />

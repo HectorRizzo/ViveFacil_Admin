@@ -64,7 +64,10 @@ const AgregarAdmin =(props) => {
 
     const onChangeGenero= (value) => {
         param.genero= value.target.value
-        
+    }
+
+    const onChangeRol = (value) => {
+        param.rol= value.target.value
     }
 
 
@@ -173,6 +176,27 @@ const AgregarAdmin =(props) => {
                         
                     </select>
                     
+                </Form.Item>
+                
+                <Form.Item name="rol" label="Rol" 
+                    rules={[
+                        {
+                            required: true,
+                            message: "Ingrese un Rol"
+                        },
+                        ]} 
+                    
+                    >
+                     <select initialvalues="" onChange={value => {onChangeRol(value)}}>
+
+                    <option value="">Seleccione un rol</option> 
+
+                    {param.grupos.map((grupo)=>{
+                        return <option key={grupo} value={grupo}> {grupo}</option> 
+                    })}
+
+
+                    </select>
                 </Form.Item>
 
                 <Form.Item name="contrasena"label="Contraseña" rules={[

@@ -11,10 +11,17 @@ import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
 import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
+
+import Efectivo from "../components/pagoss/efectivo/Efectivo";
+import Tarjeta from "../components/pagoss/tarjeta/Tarjeta";
+import Cargos from "../components/pagoss/cargos/Cargos";
+
+
+
 import MetodosAxios from "../requirements/MetodosAxios";
 import Insignias from "../components/insignias/Insignias";
 import Cupones from "../components/cupones/Cupones";
-
+import Permisos from '../requirements/Permisos'
 import "./LayoutPage.css";
 import Politicas from "../components/politicas/Politica";
 import Sugerencia from "../components/sugerencias/SugLeidas/Sugerencia";
@@ -31,6 +38,8 @@ import Solicitudes from "../components/solicitudesProfesiones/tabSolicitudes";
 
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
+const cuentas = ['administrador', 'proveedor', 'solicitante']
+const serviciosCat = ['categoria', 'sub categoria']
 
 class LayoutPage extends Component {
     constructor(props) {
@@ -39,7 +48,10 @@ class LayoutPage extends Component {
         this.state = {
             user: "",
             email: "",
+            permisos: [],
+            rol: '',
             count: 0,
+            superuser: false,
         };
 
     }
@@ -50,12 +62,29 @@ class LayoutPage extends Component {
         else{
             if(this.state.user == ""){
                 if(localStorage.getItem('_cap_userName') != null){
-                    this.setState({user: localStorage.getItem('_cap_userName')})
+                    this.setState({
+                        user: localStorage.getItem('_cap_userName'),
+                        rol: localStorage.getItem('rol'),
+                        superuser: (localStorage.getItem('super') === 'true')
+                    })
                 }
                 else{
-                    this.setState({user: this.props.location.state.detail.admin.user_datos.user.username})
+                    let permisos = []
+                    for(let permiso of this.props.location.state.detail.admin.user_datos.user.groups[0].permissions){
+                        permisos.push(permiso)
+                    }
+                    this.setState({
+                        user: this.props.location.state.detail.admin.user_datos.user.username,
+                        rol: this.props.location.state.detail.admin.user_datos.user.groups[0].name,
+                        permisos: permisos,
+                        superuser: this.props.location.state.detail.admin.user_datos.user.is_superuser
+                    })
                 }
+
             }
+            console.log(this.state.superuser)
+
+            Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), this.state.permisos).then(res => this.setState({permisos: res}))
         }
         
     }
@@ -89,6 +118,7 @@ class LayoutPage extends Component {
                         <Col>
                             <Avatar size={75} icon={<UserOutlined />} />
                             <p className="textoCorreoLogo">{this.state.user}</p>
+                            <p className="textoCorreoLogo">{this.state.rol}</p>
                         </Col>
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
@@ -98,15 +128,15 @@ class LayoutPage extends Component {
                             <Link to={`${this.props.match.path}/PROFESIONES/`} />
                         </Menu.Item>
 
-                        <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
+                        {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&  <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
                             PLANES DE PROVEEDORES
                             <Link to={`${this.props.match.path}/planes-proveedor/`} />
-                        </Menu.Item>
-                        <Menu.Item key="sub51" title="ROLES" id="menu-item-only">
+                        </Menu.Item>}
+                        { this.state.permisos.includes('all') && <Menu.Item key="sub50" title="ROLES" id="menu-item-only">
                             ROLES
-                            <Link to={`${this.props.match.path}/roles/`} />
-                        </Menu.Item>
-                        <SubMenu key="sub1" title="CUENTAS">
+                            <Link to={{pathname:`${this.props.match.path}/roles/`}}/>
+                        </Menu.Item>}
+                        {((cuentas.some(cuenta => this.state.permisos.filter(element => { return element.includes(cuenta)}).length >0)) || this.state.permisos.includes('all')) && <SubMenu key="sub1" title="CUENTAS">
                             {/* <Menu.Item key="1">
                                 Habilitar/inhabilitar cuentas
                                 <Link to={`${this.props.match.path}/administrar-cuentas/`} />
@@ -115,51 +145,84 @@ class LayoutPage extends Component {
                                 Proveedor
                                 <Link to={`${this.props.match.path}/proveedor/`} />
                             </Menu.Item> */}
-                            <Menu.Item key="16">
+                            {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&  <Menu.Item key="16">
                                 Proveedores
                                 <Link to={`${this.props.match.path}/provider/`} />
-                            </Menu.Item>
-                            <Menu.Item key="3">
+                            </Menu.Item>}
+                            {((this.state.permisos.filter(element => { return element.includes('solicitante')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="3">
                                 Solicitantes
                                 <Link to={`${this.props.match.path}/solicitante/`} />
-                            </Menu.Item>
-                            <Menu.Item key="4">
+                            </Menu.Item>}
+                            {((this.state.permisos.filter(element => { return element.includes('administrador')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="4">
                                 Administradores
                                 <Link to={`${this.props.match.path}/administrador/`} />
-                            </Menu.Item>
-                        </SubMenu>
-                        <SubMenu key="sub2" title="SERVICIOS">
-                            <Menu.Item key="5">
+                            </Menu.Item>}
+                        </SubMenu>}
+                        {((serviciosCat.some(servicioCat => this.state.permisos.filter(element => { return element.includes(servicioCat)}).length >0)) || this.state.permisos.includes('all')) &&  <SubMenu key="sub2" title="SERVICIOS">
+                            {((this.state.permisos.filter(element => { return element.includes('categoria')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="5">
                                 Categorías
                                 <Link to={`${this.props.match.path}/categorias/`} />
-                            </Menu.Item>
-                            <Menu.Item key="6">
+                            </Menu.Item>}
+                            {((this.state.permisos.filter(element => { return element.includes('sub categoria')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="6">
                                 Sub-categorías
                                 <Link to={`${this.props.match.path}/sub-categorias/`} />
-                            </Menu.Item>
+                            </Menu.Item>}
                         </SubMenu>
-                        <Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
+                        }
+                        {/*<Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
-                        </Menu.Item>
-                        <Menu.Item key="sub4" title="PUBLICIDAD"  id="menu-item-only">
+                        </Menu.Item>*/}
+
+
+                        {((this.state.permisos.filter(element => { return element.includes('pagos')}).length >0) || this.state.permisos.includes('all')) && <SubMenu key="sub100" title="PAGOS">
+                            {/* <Menu.Item key="1">
+                                Habilitar/inhabilitar cuentas
+                                <Link to={`${this.props.match.path}/administrar-cuentas/`} />
+                            </Menu.Item> */}
+                            {/* <Menu.Item key="2">
+                                Proveedor
+                                <Link to={`${this.props.match.path}/proveedor/`} />
+                            </Menu.Item> */}
+                            <Menu.Item key="101">
+                                Cargos
+                                <Link to={`${this.props.match.path}/cargos/`} />
+                            </Menu.Item>
+                            <Menu.Item key="102">
+                                Efectivo
+                                <Link to={`${this.props.match.path}/efectivo/`} />
+                            </Menu.Item>
+                            <Menu.Item key="103">
+                                Tarjeta
+                                <Link to={`${this.props.match.path}/tarjeta/`} />
+                            </Menu.Item>
+                            
+                        </SubMenu>}
+
+
+
+
+
+
+
+                        {((this.state.permisos.filter(element => { return element.includes('publicidad')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub4" title="PUBLICIDAD"  id="menu-item-only">
                             PUBLICIDAD
                             <Link to={`${this.props.match.path}/publicidad/`} />
-                        </Menu.Item>
-                        <Menu.Item key="sub5" title="PROMOCIÓN" id="menu-item-only">
+                        </Menu.Item>}
+                        {((this.state.permisos.filter(element => { return element.includes('promocion')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub5" title="PROMOCIÓN" id="menu-item-only">
                             PROMOCIÓN
                             <Link to={`${this.props.match.path}/promociones/`} />
-                        </Menu.Item>
-                        <Menu.Item key="sub6" title="POLÍTICAS" id="menu-item-only">
+                        </Menu.Item>}
+                        {((this.state.permisos.filter(element => { return element.includes('politicas')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub6" title="POLÍTICAS" id="menu-item-only">
                             POLÍTICAS
                             <Link to={`${this.props.match.path}/politicas/`} />
-                        </Menu.Item>
+                        </Menu.Item>}
 
-                        <Menu.Item key="sub12" title="PLANES" id="menu-item-only">
+                        {((this.state.permisos.filter(element => { return element.includes('planes')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub12" title="PLANES" id="menu-item-only">
                             PLANES
                             <Link to={`${this.props.match.path}/planes/`} />
-                        </Menu.Item>
-                        <SubMenu key="sub7" title="SUGERENCIAS">
+                        </Menu.Item>}
+                        {((this.state.permisos.filter(element => { return element.includes('suggestion')}).length >0) || this.state.permisos.includes('all')) && <SubMenu key="sub7" title="SUGERENCIAS">
                             <Menu.Item key="7">
                                 Sugerencias Leídas
                                 <Link to={`${this.props.match.path}/sugerencias-leidas/`} />
@@ -168,16 +231,16 @@ class LayoutPage extends Component {
                                 Sugerencias No Leídas
                                 <Link to={`${this.props.match.path}/sugerencias-noleidas/`} />
                             </Menu.Item>
-                        </SubMenu>
+                        </SubMenu>}
                         
-                        <Menu.Item key="sub8" title="INSIGNIAS" id="menu-item-only">
+                        {((this.state.permisos.filter(element => { return element.includes('insignia')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub8" title="INSIGNIAS" id="menu-item-only">
                             INSIGNIAS
                             <Link to={`${this.props.match.path}/insignias/`} />
-                        </Menu.Item>
-                        <Menu.Item key="sub9" title="CUPONES" id="menu-item-only">
+                        </Menu.Item>}
+                        {((this.state.permisos.filter(element => { return element.includes('cupon')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub9" title="CUPONES" id="menu-item-only">
                             CUPONES
                             <Link to={`${this.props.match.path}/cupones/`} />
-                        </Menu.Item>
+                        </Menu.Item>}
                         <Menu.Item key="sub10" title="Notificaciones"  id="menu-item-only">
                             NOTIFICACIONES PUSH
                             <Link to={`${this.props.match.path}/notificaciones/`} />
@@ -208,25 +271,27 @@ class LayoutPage extends Component {
                             <Switch>
                                 <Route path={`${this.props.match.path}/profesiones/`} component={Profesiones} exact />
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
-                                <Route path={`${this.props.match.path}/provider/`} component={Provider} exact/>
-                                <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
-                                <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
-                                <Route path={`${this.props.match.path}/categorias/`} component={Categorias} exact />
-                                <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />
-                                <Route path={`${this.props.match.path}/politicas/`} component={Politicas} exact />
-                                <Route path={`${this.props.match.path}/promociones/`} component={Promociones} exact />
-                                <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />
-                                <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />
-                                <Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />
-                                <Route path={`${this.props.match.path}/planes-proveedor/`} component={planesProveedor} exact />
-                                <Route path={`${this.props.match.path}/planes/`} component={Planes} exact />
-                                <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />
-                                <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />
-                                <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
-                                <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />
-                                <Route path={`${this.props.match.path}/roles/`} component={Roles} exact />
+                                {/* <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact/> */}
+                                {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/provider/`} component={Provider} exact/>}
+                                {((this.state.permisos.filter(element => { return element.includes('solicitante')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('administrador')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('categoria')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/categorias/`} component={Categorias} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('sub categoria')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('politicas')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/politicas/`} component={Politicas} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('promocion')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/promociones/`} component={Promociones} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('pago')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('suggestion')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('suggestion')}).length >0) || this.state.permisos.includes('all')) &&<Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&<Route path={`${this.props.match.path}/planes-proveedor/`} component={planesProveedor} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('planes')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/planes/`} component={Planes} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('publicidad')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('insignia')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('cupon')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />}
+                                <Route path={`${this.props.match.path}/efectivo/`} component={Efectivo} exact/>
+                                <Route path={`${this.props.match.path}/tarjeta/`} component={Tarjeta} exact />
+                                <Route path={`${this.props.match.path}/cargos/`} component={Cargos} exact />
                                 <Route path={`${this.props.match.path}/solicitudes/`} component={Solicitudes} exact />
-
+                                {this.state.permisos.includes('all') && <Route path={`${this.props.match.path}/roles/`} component={Roles} exact />}
                             </Switch>
                         </div>
                     </Content>

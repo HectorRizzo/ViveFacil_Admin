@@ -33,6 +33,7 @@ class AdminTab extends Component {
             adminInfo: null,
             fileimg: null,
             uploadValue: 0,
+            rol: '',
             nompicture: "Ningun archivo seleccionado",
             picture: iconimg,
             limpiarEdit: false,
@@ -40,11 +41,13 @@ class AdminTab extends Component {
             nuevoCorreo:null,
             defaultPage:1,
             ciudades: [],
+            grupos: [],
         };
     }    
 
     componentDidMount() {
         this.cargarCiudades()
+        this.cargarRoles()
         this.fetchAdmin(1)
     }
 
@@ -56,6 +59,18 @@ class AdminTab extends Component {
             }
             this.setState({
                 ciudades: ciudades
+            })    
+        })
+    }
+
+    cargarRoles(){
+        MetodosAxios.obtener_roles().then(res => {
+            let roles=[];
+            for(let rol of res.data){
+                roles.push(rol.name)
+            }
+            this.setState({
+                grupos: roles
             })    
         })
     }
@@ -134,6 +149,9 @@ class AdminTab extends Component {
             datos.append('cedula',this.state.adminInfo.user_datos.cedula)
             datos.append('telefono', this.state.adminInfo.user_datos.telefono)
             datos.append('genero',this.state.adminInfo.user_datos.genero)
+            if(this.state.rol!=''){
+                datos.append('rol', this.state.rol)
+            }
             if(this.state.nuevoCorreo!=null){
                 datos.append('emailNuevo',this.state.nuevoCorreo)
             }
@@ -153,6 +171,7 @@ class AdminTab extends Component {
             else{
                 message.success("!Admin modificado exitosamente!")
                 this.setState({
+                    rol: '',
                     limpiarEdit: true,
                     visibleModalEdit: false,
                     visibleModalConfir: false,
@@ -448,6 +467,7 @@ class AdminTab extends Component {
                     <p><strong>Ciudad:   </strong>{this.state.adminInfo?.user_datos.ciudad}</p>
                     <p><strong>Teléfono:  </strong>{this.state.adminInfo?.user_datos.telefono}</p>
                     <p><strong>Correo:  </strong>{this.state.adminInfo?.user_datos.user.email}</p>
+                    <p><strong>Rol:  </strong>{this.state.adminInfo?.user_datos?.user?.groups[0]?.name? this.state.adminInfo?.user_datos?.user?.groups[0].name: ""}</p>
                     <p><strong>Estado:  </strong>{this.state.adminInfo?.estado ? 'Activo' : 'Inactivo'}</p>
                         <div style={{display: 'flex'}} >
                         {/* <Space> */}
