@@ -14,7 +14,7 @@ class Notificaciones extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastNotificacion: null,
+            lastNotificacion: '',
             titulo:'',
             mensaje:'',
             descripcion:'',
@@ -35,9 +35,16 @@ class Notificaciones extends Component {
     }
 
     cargarNotificacion =  () => {
-        this.setState({
-            lastNotificacion: "",
+
+        MetodosAxios.get_notificacion().then( res => {
+            console.log(res)
+            let dataNoti= res.data
+            this.setState({
+                lastNotificacion: dataNoti,
+            })
         })
+        
+        console.log(this.state.lastNotificacion)
     }
 
     handleAddNotificacion =  () => {
@@ -50,27 +57,24 @@ class Notificaciones extends Component {
         if(this.state.fileimg!=null){
             dataNotificacion.append('imagen',this.state.fileimg)
         }
-        dataNotificacion.append('ruta','./home')
+        dataNotificacion.append('ruta','./notificaciones')
 
 
-
-        // let notificacion = {
-        //     title : this.state.titulo,
-        //     message : this.state.mensaje,
-        //     descripcion: this.state.descripcion,
-        //     imagen : this.state.fileimg,
-        //     ruta : ''
-        // }
-
-        // console.log(notificacion)
         MetodosAxios.send_notificacion(dataNotificacion).then(res=> {
             console.log(res)
         })
+
+        this.setState({
+            visibleModalAgregar: false,
+        })
+        this.cargarNotificacion()
+
     }
 
     handleCancel=  () => {
         this.setState({
             visibleModalAgregar: false,
+            limpiar: true,
         })
     }
 
@@ -86,6 +90,7 @@ class Notificaciones extends Component {
     showModal=  () => {
         this.setState({
             visibleModalAgregar: true,
+            picture : this.state.lastNotificacion.imagen
         })
     }
 

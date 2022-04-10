@@ -396,8 +396,12 @@ const handleSubmitted = () => {
                         >
                         <select initialvalues="" onChange={value => {onChangeProfesion(value)}}>
 
-                        <option value="">{param.pendienteActual?.profesion}</option> 
-
+                        {param.profesiones.includes(param.pendienteActual?.profesion) 
+                            ?
+                            <option value="">{param.pendienteActual?.profesion}</option>
+                            :
+                            <option value="">Seleccione Profesión</option>
+                        }
                         {param.profesiones.map((profesion)=>{
                             return <option key={profesion} value={profesion}> {profesion}</option> 
                         })}

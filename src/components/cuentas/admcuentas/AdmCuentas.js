@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Tabs, Switch, Input, Button } from 'antd';
+import { Tabs, Input } from 'antd';
 import Administradores from "./tabs/Administradores";
 import Proveedores from "./tabs/Proveedores";
 import Solicitantes from "./tabs/Solicitantes";
 import MetodosAxios from "../../../requirements/MetodosAxios";
-import Eliminar from "../../../img/icons/eliminar.png";
-import Icon from '@ant-design/icons';
 import "./AdmCuentas.css"
 const { TabPane } = Tabs;
 const { Search } = Input;

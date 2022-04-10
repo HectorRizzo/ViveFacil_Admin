@@ -6,7 +6,6 @@ import tomeLogoB from "../img/tome-logo-blanco.png";
 import logoVive from "../img/logo-inicio.png";
 import AdmCuentas from "../components/cuentas/admcuentas/AdmCuentas";
 import Administrador from "../components/cuentas/administrador/Administrador";
-import Proveedor from "../components/cuentas/proveedor/Proveedor";
 import Solicitante from "../components/cuentas/solicitante/Solicitante";
 import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
@@ -26,6 +25,9 @@ import Publicidades from "../components/publicidades/publicidades";
 import Notificaciones from "../components/notificaciones/Notificacion";
 import planesProveedor from "../components/planesProveedor/planesProveedor";
 import Roles from "../components/roles/roles";
+import Profesiones from "../components/profesiones/profesiones";
+import Solicitudes from "../components/solicitudesProfesiones/tabSolicitudes";
+
 
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -90,11 +92,17 @@ class LayoutPage extends Component {
                         </Col>
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
+
+                        <Menu.Item key="sub11" title="PROFESIONES"  id="menu-item-only">
+                            PROFESIONES
+                            <Link to={`${this.props.match.path}/PROFESIONES/`} />
+                        </Menu.Item>
+
                         <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
                             PLANES DE PROVEEDORES
                             <Link to={`${this.props.match.path}/planes-proveedor/`} />
                         </Menu.Item>
-                        <Menu.Item key="sub50" title="ROLES" id="menu-item-only">
+                        <Menu.Item key="sub51" title="ROLES" id="menu-item-only">
                             ROLES
                             <Link to={`${this.props.match.path}/roles/`} />
                         </Menu.Item>
@@ -174,10 +182,15 @@ class LayoutPage extends Component {
                             NOTIFICACIONES PUSH
                             <Link to={`${this.props.match.path}/notificaciones/`} />
                         </Menu.Item>
+                        <Menu.Item key="20" title="SOLICITUDES" id="menu-item-only">
+                                SOLICITUDES PROFESIONES
+                                <Link to={`${this.props.match.path}/solicitudes/`} />
+                            </Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout>
                     <Header className="site-layout-sub-header-background" style={{ padding: 0 }}>
+                        
                         <Row justify="space-between" align="middle" style={{ height: "100%", width: "100%", paddingLeft: "3%", paddingRight: "3%" }}>
                             <Col>
                                 <img height="80px" width="auto" src={logoVive} alt="Logo Vive Facil" />
@@ -193,8 +206,8 @@ class LayoutPage extends Component {
                         {/* <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}> */}
                         <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}>
                             <Switch>
+                                <Route path={`${this.props.match.path}/profesiones/`} component={Profesiones} exact />
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
-                                {/* <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact/> */}
                                 <Route path={`${this.props.match.path}/provider/`} component={Provider} exact/>
                                 <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
                                 <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
@@ -212,6 +225,8 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />
                                 <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />
                                 <Route path={`${this.props.match.path}/roles/`} component={Roles} exact />
+                                <Route path={`${this.props.match.path}/solicitudes/`} component={Solicitudes} exact />
+
                             </Switch>
                         </div>
                     </Content>

@@ -50,6 +50,7 @@ class PendienteTab extends Component {
         this.cargarPagina(1)
         this.cargarCiudades()
         this.cargarProfesiones()
+
         // MetodosAxios.eliminarDocPendiente(13).then(res => {
         // })
     }
@@ -71,14 +72,16 @@ class PendienteTab extends Component {
         MetodosAxios.obtener_todas_profesiones().then(res => {
             let profesionesDisponibles=[];
             for(let profesion of res.data){
-                profesionesDisponibles.push(profesion.nombre)
+                profesionesDisponibles.push(profesion.nombre.toLowerCase())
                 
             }
             this.setState({
                 profesiones: profesionesDisponibles
             })    
-            console.log(profesionesDisponibles)
+            console.log(this.state.profesiones)
+
         })
+       
         
     }
 
@@ -185,62 +188,71 @@ class PendienteTab extends Component {
     }
 
     crearProveedor= () => {
-            let datosProveedor = new FormData()
-            datosProveedor.append("id",this.state.pendienteActual?.id)
-            datosProveedor.append("nombres",this.state.pendienteActual?.nombres)
-            datosProveedor.append("apellidos",this.state.pendienteActual?.apellidos)
-            datosProveedor.append("ciudad",this.state.pendienteActual?.ciudad)
-            datosProveedor.append("direccion",this.state.pendienteActual?.direccion)
-            datosProveedor.append("telefono",this.state.pendienteActual?.telefono)
-            datosProveedor.append("cedula",this.state.pendienteActual?.cedula)
-            datosProveedor.append("genero",this.state.pendienteActual?.genero)
-            datosProveedor.append("email",this.state.pendienteActual?.email)
-            datosProveedor.append("licencia",this.state.pendienteActual?.licencia)
-            datosProveedor.append("profesion",this.state.pendienteActual?.profesion)
-            datosProveedor.append("descripcion",this.state.pendienteActual?.descripcion)
-            datosProveedor.append("tipo_cuenta",this.state.pendienteActual?.tipo_cuenta)
-            datosProveedor.append("anio_experiencia",this.state.pendienteActual?.ano_experiencia)
-            datosProveedor.append("banco",this.state.pendienteActual?.banco)
-            datosProveedor.append("numero_cuenta",this.state.pendienteActual?.numero_cuenta)
-            datosProveedor.append("descripcionDoc",`documento de ${this.state.pendienteActual?.nombres}`)
+            let profesion =this.state.pendienteActual?.profesion
+            if(this.state.profesiones.includes(profesion.toLowerCase())){
 
-            MetodosAxios.crear_proveedor(datosProveedor).then(res  => {
-                console.log(res)
-                if(res.data.error==="Correo ya empleado"){
-                    message.error("El correo ingresado ya esta siendo usado. Ingrese uno nuevo")
-                    this.setState({
-                        visibleModalAceptar:false,
-                    })
-                }
-                else{
-                    message.success("Proveedor Creado Exitosamente")
-                    this.cargarPagina(1)
-                    
-                   
-                    let datosProveedor = res.data
-                    console.log(datosProveedor)
-                    let creado = {
-                        password: datosProveedor.password,
-                        email: datosProveedor.email,
-                        tipo: "Proveedor"
+                let datosProveedor = new FormData()
+                datosProveedor.append("id",this.state.pendienteActual?.id)
+                datosProveedor.append("nombres",this.state.pendienteActual?.nombres)
+                datosProveedor.append("apellidos",this.state.pendienteActual?.apellidos)
+                datosProveedor.append("ciudad",this.state.pendienteActual?.ciudad)
+                datosProveedor.append("direccion",this.state.pendienteActual?.direccion)
+                datosProveedor.append("telefono",this.state.pendienteActual?.telefono)
+                datosProveedor.append("cedula",this.state.pendienteActual?.cedula)
+                datosProveedor.append("genero",this.state.pendienteActual?.genero)
+                datosProveedor.append("email",this.state.pendienteActual?.email)
+                datosProveedor.append("licencia",this.state.pendienteActual?.licencia)
+                let profesion = String(this.state.pendienteActual.profesion).charAt(0).toUpperCase()+String(this.state.pendienteActual.profesion).slice(1)
+                datosProveedor.append("profesion",profesion)
+                datosProveedor.append("descripcion",this.state.pendienteActual?.descripcion)
+                datosProveedor.append("tipo_cuenta",this.state.pendienteActual?.tipo_cuenta)
+                datosProveedor.append("anio_experiencia",this.state.pendienteActual?.ano_experiencia)
+                datosProveedor.append("banco",this.state.pendienteActual?.banco)
+                datosProveedor.append("numero_cuenta",this.state.pendienteActual?.numero_cuenta)
+                datosProveedor.append("descripcionDoc",`documento de ${this.state.pendienteActual?.nombres}`)
+
+                MetodosAxios.crear_proveedor(datosProveedor).then(res  => {
+                    console.log(res)
+                    if(res.data.error==="Correo ya empleado"){
+                        message.error("El correo ingresado ya esta siendo usado. Ingrese uno nuevo")
+                        this.setState({
+                            visibleModalAceptar:false,
+                        })
                     }
-                     console.log(creado)
-                    this.handleEnviarCorreo(creado)
+                    else{
+                        message.success("Proveedor Creado Exitosamente")
 
-
-                    MetodosAxios.eliminarPendiente(this.state.pendienteActual?.id).then(res => {
-                        console.log(res)
+                        let datosProveedor = res.data
+                        console.log(datosProveedor)
+                        let creado = {
+                            password: datosProveedor.password,
+                            email: datosProveedor.email,
+                            tipo: "Proveedor"
+                        }
+                        console.log(creado)
+                        this.handleEnviarCorreo(creado)
+                        MetodosAxios.eliminarPendiente(this.state.pendienteActual?.id).then(res => {
+                            console.log(res)
+                        })
                         this.setState({
                             visibleModalAceptar: false,
                             visibleModal:false,
                         })
-        
-        
-                    })
-                }
 
-                
-            })
+                        this.cargarPagina(1)
+                        
+                    
+                        
+
+
+                    }
+
+                    
+                })
+            }
+            else{
+                message.error("La profesión ingresada por el cliente no se encuentra registrada.Primero dirigase a la sección de profesiones y agregela")
+            }
 
 
             
@@ -252,12 +264,12 @@ class PendienteTab extends Component {
     handleEnviarCorreo  = (data) => {
         MetodosAxios.enviar_email(data).then( respuesta => {
             console.log(respuesta)
-            // if(respuesta.success){
-            //     message.success("Se ha enviado un email con las creedenciales")
-            // }
-            // else{
-            //     message.success("No se ha podido enviar email con las creedenciales")
-            // }
+            if(respuesta.success){
+                message.success("Se ha enviado un email con las creedenciales")
+            }
+            else{
+                message.success("No se ha podido enviar email con las creedenciales")
+            }
             
         })
 
@@ -300,6 +312,10 @@ class PendienteTab extends Component {
     handleValidarDatos  = () => { 
 
         console.log(this.state.pendienteActual.copiaCedula)
+        console.log(this.state.pendienteActual.profesion)
+        console.log(this.state.pendienteActual.profesion.trim())
+       
+
 
         if(this.state.pendienteActual.nombres==="" || this.state.pendienteActual.apellidos===""||
             this.state.pendienteActual.cedula===""||this.state.pendienteActual.telefono===""||
@@ -627,9 +643,23 @@ class PendienteTab extends Component {
                             <p><strong>Nº Cuenta:  </strong>{this.state.pendienteActual?.numero_cuenta}</p>
                             <p><strong>Banco:   </strong>{this.state.pendienteActual?.banco}</p>
                         <Divider orientation="center" className="divider-edit">Profesión</Divider>
-                            <p><strong>Años de Experiencia:  </strong>{this.state.pendienteActual?.ano_experiencia}</p>
+                        {this.state.profesiones.includes(this.state.pendienteActual?.profesion.toLowerCase()) 
+                            ? <>
+                                <p><strong>Profesión:  </strong>{this.state.pendienteActual?.profesion}</p>
+                                <p><strong>Años de Experiencia:  </strong>{this.state.pendienteActual?.ano_experiencia}</p>
+                            </>
+                            :<>
+                                <p><strong>¡La profesión que ingreso no se encuentra registrada!</strong></p>
+                                <p><strong>Profesión Ingresada:  </strong>{this.state.pendienteActual?.profesion}</p>
+                                <p><strong>Años de Experiencia:  </strong>{this.state.pendienteActual?.ano_experiencia}</p>
+
+                            </>
+
+                        }
+
+                            {/* <p><strong>Años de Experiencia:  </strong>{this.state.pendienteActual?.ano_experiencia}</p>
                             <p><strong>Profesión:  </strong>{this.state.pendienteActual?.profesion}</p>
-                            <p><strong>Documentación Adicional:   </strong>
+                            <p><strong>Documentación Adicional:   </strong> */}
                             <p>
                             {this.state.pendienteActual?.documentsPendientes.length>0 
 
@@ -643,7 +673,7 @@ class PendienteTab extends Component {
                                 : "No ha subido documentación"
                                     
                             }
-                            </p>
+                            {/* </p> */}
                             </p>
                             </Col>
                         </Row>

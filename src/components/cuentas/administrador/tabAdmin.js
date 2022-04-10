@@ -91,13 +91,13 @@ class AdminTab extends Component {
 
     handleValidacionUsuario = () => {
 
-        if(this.state.adminInfo.user_datos.genero=="" ||
-            this.state.adminInfo.user_datos.email=="" ||
-            this.state.adminInfo.user_datos.nombres==""||
-            this.state.adminInfo.user_datos.apellidos==""||
-            this.state.adminInfo.user_datos.ciudad==""||
-            this.state.adminInfo.user_datos.cedula==""||
-            this.state.adminInfo.user_datos.telefono==""){
+        if(this.state.adminInfo.user_datos.genero==="" ||
+            this.state.adminInfo.user_datos.email==="" ||
+            this.state.adminInfo.user_datos.nombres===""||
+            this.state.adminInfo.user_datos.apellidos===""||
+            this.state.adminInfo.user_datos.ciudad===""||
+            this.state.adminInfo.user_datos.cedula===""||
+            this.state.adminInfo.user_datos.telefono===""){
             message.warning("Ingrese todos los campos requeridos")
         }
         if(!validarCedula(this.state.adminInfo.user_datos.cedula)){
@@ -297,7 +297,7 @@ class AdminTab extends Component {
 
     buscarAdministrador = (search) => {
         this.userSearch= search
-        if(search!=""){
+        if(search!==""){
             this.search= true;
             this.setState({
                 loadingTable:true,

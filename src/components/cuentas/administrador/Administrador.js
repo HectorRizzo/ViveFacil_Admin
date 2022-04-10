@@ -1,14 +1,11 @@
 import React, { Component } from "react";
-import { Tabs, Input, Button , Modal, message, DatePicker} from 'antd';
+import { Button , Modal, message} from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import AdminTab from "./tabAdmin";
 import AgregarAdmin from "./FormAdmin";
 import iconimg from '../../../img/icons/imagen.png'
 import * as moment from 'moment';
 import { validarCedula } from "../../promocion/validators";
-const { TabPane } = Tabs;
-const { Search } = Input;
-const {RangePicker} = DatePicker
 
 class Administrador extends Component {
     fechaFin= null;
@@ -63,7 +60,7 @@ class Administrador extends Component {
     }
 
     buscarAdministrador = (search) => {
-        if(search!=""){
+        if(search!==""){
             MetodosAxios.buscar_admin(search).then(res => {
                 console.log(res)
                 let admin_filtros = []
