@@ -12,6 +12,13 @@ import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/AdmSubCategorias";
 import Promociones from "../components/promocion/Promocion";
 import Pagos from "../components/pagos/Pagos";
+
+import Efectivo from "../components/pagoss/efectivo/Efectivo";
+import Tarjeta from "../components/pagoss/tarjeta/Tarjeta";
+import Cargos from "../components/pagoss/cargos/Cargos";
+
+
+
 import MetodosAxios from "../requirements/MetodosAxios";
 import Insignias from "../components/insignias/Insignias";
 import Cupones from "../components/cupones/Cupones";
@@ -90,7 +97,7 @@ class LayoutPage extends Component {
                         </Col>
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
-                        <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
+                        <Menu.Item key="sub500" title="PLANES DE PROVEEDORES" id="menu-item-only">
                             PLANES DE PROVEEDORES
                             <Link to={`${this.props.match.path}/planes-proveedor/`} />
                         </Menu.Item>
@@ -130,10 +137,42 @@ class LayoutPage extends Component {
                                 <Link to={`${this.props.match.path}/sub-categorias/`} />
                             </Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
+                        {/*<Menu.Item key="sub3" title="PAGOS" id="menu-item-only">
                             PAGOS
                             <Link to={`${this.props.match.path}/pagos/`} />
-                        </Menu.Item>
+                        </Menu.Item>*/}
+
+
+                        <SubMenu key="sub100" title="PAGOS">
+                            {/* <Menu.Item key="1">
+                                Habilitar/inhabilitar cuentas
+                                <Link to={`${this.props.match.path}/administrar-cuentas/`} />
+                            </Menu.Item> */}
+                            {/* <Menu.Item key="2">
+                                Proveedor
+                                <Link to={`${this.props.match.path}/proveedor/`} />
+                            </Menu.Item> */}
+                            <Menu.Item key="101">
+                                Cargos
+                                <Link to={`${this.props.match.path}/cargos/`} />
+                            </Menu.Item>
+                            <Menu.Item key="102">
+                                Efectivo
+                                <Link to={`${this.props.match.path}/efectivo/`} />
+                            </Menu.Item>
+                            <Menu.Item key="103">
+                                Tarjeta
+                                <Link to={`${this.props.match.path}/tarjeta/`} />
+                            </Menu.Item>
+                            
+                        </SubMenu>
+
+
+
+
+
+
+
                         <Menu.Item key="sub4" title="PUBLICIDAD"  id="menu-item-only">
                             PUBLICIDAD
                             <Link to={`${this.props.match.path}/publicidad/`} />
@@ -202,7 +241,10 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />
                                 <Route path={`${this.props.match.path}/politicas/`} component={Politicas} exact />
                                 <Route path={`${this.props.match.path}/promociones/`} component={Promociones} exact />
-                                <Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />
+                                {/*<Route path={`${this.props.match.path}/pagos/`} component={Pagos} exact />*/}
+                                <Route path={`${this.props.match.path}/efectivo/`} component={Efectivo} exact/>
+                                <Route path={`${this.props.match.path}/tarjeta/`} component={Tarjeta} exact />
+                                <Route path={`${this.props.match.path}/cargos/`} component={Cargos} exact />
                                 <Route path={`${this.props.match.path}/sugerencias-leidas/`} component={Sugerencia} exact />
                                 <Route path={`${this.props.match.path}/sugerencias-noleidas/`} component={SugerenciaNoLeida} exact />
                                 <Route path={`${this.props.match.path}/planes-proveedor/`} component={planesProveedor} exact />
