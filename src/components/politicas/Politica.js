@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Tabs,Modal , Button,Mentions } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import Permisos from '../../requirements/Permisos'
 const { TabPane } = Tabs;
-
+let permisos = []
 
 
 export default class Politicas extends Component {
@@ -22,6 +23,10 @@ export default class Politicas extends Component {
 
 
     async componentDidMount() {
+      await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+        permisos = res
+        console.log(permisos)
+    })
       this.GetPoliticas()
         
     }
@@ -141,14 +146,14 @@ export default class Politicas extends Component {
             </div>
 
             <Tabs tabBarExtraContent={<div>
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can change politica')}).length >0) || permisos.includes('all')) && <Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<EditOutlined style={{fontSize:'x-large'}}/>}
                            onClick={() => { this.editPoliticas()}} 
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
                         <TabPane tab=" Términos y Condiciones" key="ter1">

@@ -17,6 +17,7 @@ class Administrador extends Component {
         super(props);
         this.state = {
             ciudades:[],
+            grupos: [],
             disabledButton: true,    
             selectedRowKeysAdministrador: [],
             base_administrador: [],
@@ -32,6 +33,7 @@ class Administrador extends Component {
             genero:'',
             password:'',
             confpassword:'',
+            rol: '',
             visibleModalAdmin: false,
             visibleModalFields: false,
             visibleModalError:false,
@@ -49,6 +51,7 @@ class Administrador extends Component {
     }
     componentDidMount() {
         this.cargarCiudades()
+        this.cargarRoles()
     }
     cargarCiudades(){
         MetodosAxios.getCiudades().then(res => {
@@ -58,6 +61,18 @@ class Administrador extends Component {
             }
             this.setState({
                 ciudades: ciudades
+            })    
+        })
+    }
+
+    cargarRoles(){
+        MetodosAxios.obtener_roles().then(res => {
+            let roles=[];
+            for(let rol of res.data){
+                roles.push(rol.name)
+            }
+            this.setState({
+                grupos: roles
             })    
         })
     }
@@ -120,6 +135,7 @@ class Administrador extends Component {
         this.setState({
             limpiar:true,
             genero:'',
+            rol: '',
             uploadValue:0,
             nompicture: "Ningun archivo seleccionado",
             visibleModalAdmin: true,
@@ -132,6 +148,7 @@ class Administrador extends Component {
         this.setState({
             visibleModalAdmin: false,
             genero:'',
+            rol: '',
             limpiar:true,
             picture: iconimg,
             uploadValue:0,
@@ -157,7 +174,7 @@ class Administrador extends Component {
 
         if(this.state.email==="" || this.state.nombres==="" || this.state.apellidos==="" || 
            this.state.ciudad==="" || this.state.genero===""|| 
-           this.state.telefono==="" || this.state.password==="" ){
+           this.state.telefono==="" || this.state.password==="" || this.state.roll === ""){
             message.warning("Debe ingresar todos los campos requeridos")
         }
         else if(!validarCedula(this.state.cedula)){
@@ -179,6 +196,7 @@ class Administrador extends Component {
             datos.append('cedula',this.state.cedula)
             datos.append('telefono',this.state.telefono)
             datos.append('genero',this.state.genero)
+            datos.append('rol', this.state.rol)
             if (this.state.fileimg!=null){
                 datos.append('foto',this.state.fileimg)
             }
@@ -223,6 +241,7 @@ class Administrador extends Component {
                             dataSearch={this.state.data_administrador}
                             search={this.state.search}
                             ciudades = {this.state.ciudades}
+                            grupos = {this.state.grupos}
                         />
                         {/* <Tabs tabBarExtraContent={
                             

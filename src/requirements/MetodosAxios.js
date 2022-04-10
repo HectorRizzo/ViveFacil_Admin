@@ -664,6 +664,29 @@ static update_pendiente_documento = ( data) => {
   static obtener_planes_estado = () => {
     return MetodosAxios.instanceAxios.get("/planesEstado/")
   };
+
+  static obtener_roles = () => {
+    return MetodosAxios.instanceAxios.get("/grupos/")
+  };
+
+  static crear_rol=(data)=>{
+    return MetodosAxios.instanceAxios.post('/roles-permisos/', data);
+  }
+
+  static actualizar_rol=(data)=>{
+    return MetodosAxios.instanceAxios.put('/roles-permisos/', data);
+  }
   
+  static borrar_rol=(id)=>{
+    return MetodosAxios.instanceAxios.delete(`/roles-permisos/${id}`);
+  }
+
+  static obtener_rol = (name) => {
+    return MetodosAxios.instanceAxios.get(`/roles-permisos/${name}`);
+  }
+
+  static obtener_permisos = () => {
+    return MetodosAxios.instanceAxios.get(`/permisos`);
+  }
 }
 
