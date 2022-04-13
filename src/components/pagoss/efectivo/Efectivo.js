@@ -8,11 +8,14 @@ const { RangePicker } = DatePicker
 const columns = [
 
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
+    { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes' },
+    { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes' },
     { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
     { title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
+    //{ title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', className: 'columns-pendientes', responsive: ['lg'] },
+    //{ title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
 
 
 ];
@@ -116,6 +119,8 @@ class Efectivo extends Component {
             }
 
             datos_Efectivo.push({
+                cliente: efectivo.user.first_name + " " + efectivo.user.last_name,
+                servicio: efectivo.promocion.tipo_categoria,
                 key: 'EFEC' + efectivo.id,
                 concepto: efectivo.concepto,
                 fecha_creacion: efectivo.fecha_creacion.split('T')[0],
@@ -238,13 +243,13 @@ class Efectivo extends Component {
                                         Filtrar
                                     </Button>
                                     <RangePicker size={'middle'} onChange={this.validarFechas} />
-                                    <Search
+                                    {/*<Search
                                         placeholder="Buscar"
                                         allowClear
                                         //onSearch={this.buscarAdministrador}
                                         style={{ width: 200, margin: '0 10px' }}
 
-        />
+        />*/}
                                 </Space>
                             </div>
 

@@ -128,7 +128,7 @@ class LayoutPage extends Component {
                             <Link to={`${this.props.match.path}/PROFESIONES/`} />
                         </Menu.Item>
 
-                        {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&  <Menu.Item key="sub50" title="PLANES DE PROVEEDORES" id="menu-item-only">
+                        {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&  <Menu.Item key="sub500" title="PLANES DE PROVEEDORES" id="menu-item-only">
                             PLANES DE PROVEEDORES
                             <Link to={`${this.props.match.path}/planes-proveedor/`} />
                         </Menu.Item>}

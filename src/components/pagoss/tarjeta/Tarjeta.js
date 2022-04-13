@@ -4,6 +4,10 @@ import MetodosAxios from "../../../requirements/MetodosAxios";
 //import File from '../servicios/File/FileUpload'
 //import iconimg from '../../img/icons/imagen.png'
 //import eliminarimg from '../../img/icons/eliminar.png'
+import Activado from "../../../img/icons/activado.png";
+import Desactivado from "../../../img/icons/desactivado.png";
+
+
 import moment from 'moment'
 const { Search } = Input;
 const { RangePicker } = DatePicker
@@ -11,9 +15,11 @@ const { RangePicker } = DatePicker
 const columns = [
 
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
-    { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes'},
+    //{ title: 'Cliente', dataIndex: 'clientee', className: 'columns-pendientes'},
+    { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes' },
+    { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes' },
     { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
-    { title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
+    //{ title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
     //{
@@ -26,7 +32,8 @@ const columns = [
     { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Sistema ($)', dataIndex: 'cargo_sistema', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', className: 'columns-pendientes', responsive: ['lg'] },
+    //{ title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', render: imagen => <img alt={imagen} src={imagen} style={{ width: 75 + 'px' }} />, className: 'columns-pendientes' },
     //{ title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
 
 
@@ -37,12 +44,14 @@ class Tarjeta extends Component {
     filter = false;
     fechaInicio = null;
     fechaFin = null;
+    tarjetaSelected = null;
 
     constructor(props, context) {
         super(props);
         this.state = {
             previous: {},
             loading_pagos_tarjeta: false,
+            loadingCheck: false,
 
             disabledButton: true,
 
@@ -63,10 +72,20 @@ class Tarjeta extends Component {
             total_tarjeta: 0,
             totalValor: 0,
 
+            valor_paymentez: 0.0,
+            valor_banco: 0.0,
+            valor_sistema: 0.0,
+
+
+            showSi: false,
+            showNo: false,
+
+
+
 
 
             total_descuentos: 0,
-            showCargos: false,
+            //showCargos: false,
             concialiacion: false,
             show: false,
             selected: null,
@@ -86,13 +105,47 @@ class Tarjeta extends Component {
     }
 
     async componentDidMount() {
-        await this.loadCategorias();
+        //await this.loadCategorias();
+        await this.loadCargos();
         //console.log(this.state.categorias)
         await this.loadpagos(1);
         await this.loadTotal();
     }
 
-    async loadCategorias() {
+    async loadCargos() {
+
+        try {
+            let response = await MetodosAxios.obtener_cargos();
+            let data = response.data;
+            let ctgs = [];
+            for (let cargo of data) {
+                //let value = {
+                //    id: categoria.id,
+                //    nombre: categoria.nombre
+                //}
+                //ctgs.push(value);
+                if (cargo.nombre === "Paymentez") {
+                    console.log(cargo.porcentaje)
+                    this.setState({ valor_paymentez: cargo.porcentaje });
+                }
+                if (cargo.nombre === "Banco") {
+                    console.log(cargo.porcentaje)
+                    this.setState({ valor_banco: cargo.porcentaje });
+                }
+                if (cargo.nombre === "Sistema") {
+                    console.log(cargo.porcentaje)
+                    this.setState({ valor_sistema: cargo.porcentaje });
+                }
+            }
+
+
+            //this.setState({ categorias: ctgs });
+        } catch (e) {
+
+        }
+    }
+
+    /*async loadCategorias() {
 
         try {
             let response = await MetodosAxios.obtener_categorias();
@@ -111,7 +164,7 @@ class Tarjeta extends Component {
         } catch (e) {
 
         }
-    }
+    }*/
 
 
 
@@ -121,22 +174,46 @@ class Tarjeta extends Component {
         let datos_Tarjeta = [];
         for (let tarjeta of res.data.results) {
 
-            let descuento
-            if (tarjeta.promocion == null) {
-                descuento = "No aplica";
-            } else {
-                descuento = "Aplica";
-            }
+            //let descuento
+            //if (tarjeta.promocion == null) {
+            //    descuento = "No aplica";
+            //} else {
+            //    descuento = "Aplica";
+            //}
 
-            let cargo_pay = (tarjeta.valor * 1.5) / 100
+            let cargo_pay = (tarjeta.valor * this.state.valor_paymentez) / 100
+            let cargo_banco = (tarjeta.valor * this.state.valor_banco) / 100
+            let cargo_sistema = (tarjeta.valor * this.state.valor_sistema) / 100
+
+            let valor_real = tarjeta.valor - cargo_pay - cargo_banco - cargo_sistema
+
+            let image
+            if (tarjeta.pago_proveedor) {
+                image = Activado
+            } else {
+                image = Desactivado
+            }
 
             datos_Tarjeta.push({
                 key: tarjeta.carrier_id,
-                concepto: tarjeta.concepto,
+                id: tarjeta.id,
+                //clientee: tarjeta.tarjeta.titular,
+                cliente: tarjeta.tarjeta.solicitante.user_datos.nombres + " " + tarjeta.tarjeta.solicitante.user_datos.apellidos,
+                servicio: tarjeta.promocion.tipo_categoria,
+                //concepto: tarjeta.concepto,
                 fecha_creacion: tarjeta.fecha_creacion.split('T')[0],
                 valor: '$' + tarjeta.valor,
-                tiene_descuento: descuento,
+
+                valor_real: valor_real,
+                //valorr: tarjeta.valor,
+                //tiene_descuento: descuento,
                 cargo_pay: cargo_pay,
+                cargo_banco: cargo_banco,
+                cargo_sistema: cargo_sistema,
+                pago_proveedor: tarjeta.pago_proveedor,
+                cancelar_proveedor: image,
+                pago_provee: tarjeta.pago_proveedor
+
 
             })
         }
@@ -177,7 +254,8 @@ class Tarjeta extends Component {
 
     handleCerrar = () => {
         this.setState({
-            showCargos: false,
+            showSi: false,
+            showNo: false,
         })
 
     };
@@ -251,6 +329,50 @@ class Tarjeta extends Component {
         })
     }
 
+    handleShow = (pago) => {
+
+        console.log(pago.pago_proveedor)
+        this.tarjetaSelected = pago
+        if (pago.pago_proveedor) {
+            this.setState({
+                showSi: true,
+
+                //promocionInfo: res.data,
+
+            });
+
+        } else {
+            this.setState({
+                showNo: true,
+                //tarjetaSelected: pago
+                //promocionInfo: res.data,
+
+            });
+        }
+
+    }
+
+    async onChangeCheckTarjeta(id, estado, checked) {
+        this.setState({
+            loadingCheck: true
+        })
+
+        console.log("id", id)
+        console.log("estados", estado)
+        console.log("check", checked)
+
+        await MetodosAxios.cambio_pago_proveedor_estado(id,{ 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado de la insignia exitosamente")
+        //    message.success("Se ha cambiado el estado de la promocion exitosamente")
+        })
+        this.loadpagos(1);
+        this.setState({
+            showNo: false,
+            loadingCheck: false
+        })
+
+    }
+
     render() {
         return (
             <div>
@@ -275,35 +397,35 @@ class Tarjeta extends Component {
 
 
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
-                                
+
                                 <Space>
                                     <Button type="primary" size="default" disabled={this.state.disabledButton}
                                         onClick={this.filtrarFechas}>
                                         Filtrar
                                     </Button>
                                     <RangePicker size={'middle'} onChange={this.validarFechas} />
-                                    <Search
+                                    {/*<Search
                                         placeholder="Buscar"
                                         allowClear
                                         //onSearch={this.buscarAdministrador}
                                         style={{ width: 200, margin: '0 10px' }}
 
-        />
+    />*/}
                                 </Space>
                             </div>
                             <br></br>
 
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', justifyContent: 'space-between' }}>
 
-                            <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Dinero: ${this.state.totalValor}</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: $0</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Cargo Banco: $0</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: $0</h2>
-                                
-                                
+
+
                             </div>
-                            
+
 
                         </div>
 
@@ -312,7 +434,7 @@ class Tarjeta extends Component {
                             onRow={(pago) => {
                                 return {
                                     onClick: () => {
-                                        //this.handleShow(pago)
+                                        this.handleShow(pago)
                                     }
                                 }
                             }}
@@ -357,6 +479,63 @@ class Tarjeta extends Component {
 
 
                         </Modal>*/}
+
+                        <Modal style={{ backgraoundColor: "white" }}
+                            title="Información del Pago"
+                            visible={this.state.showSi}
+                            closable={false}
+                            okText="Ok"
+                            cancelText="Cerrar"
+                            onCancel={() => this.handleCerrar()}
+                            onOk={() => this.handleCerrar()}
+
+
+                        >
+
+
+                            <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
+
+
+
+
+                        </Modal>
+
+                        <Modal style={{ backgraoundColor: "white" }}
+                            title="Información del Pago"
+                            visible={this.state.showNo}
+                            closable={false}
+                            okText="Ok"
+                            cancelText="Cerrar"
+                            onCancel={() => this.handleCerrar()}
+                            onOk={() => this.handleCerrar()}
+
+
+                        >
+
+                            <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
+                            <p><strong>Cliente:  </strong>{this.tarjetaSelected?.cliente}</p>
+                            <p><strong>Valor Real a pagar al Proveedor:  $</strong>{this.tarjetaSelected?.valor_real}</p>
+                            <br></br>
+                            <p><strong>Importante: </strong></p><p>Este pago no se le ha cancelado al proveedor{this.tarjetaSelected?.pago_provee}</p>
+
+
+                            <div style={{ display: 'flex' }} >
+                                {/* <Space> */}
+                                <p>Active la siguiente opción si ya se le hizo el pago al proveedor:  </p>
+                                <Switch
+                                    key={this.tarjetaSelected?.id}
+                                    loading={this.state.loadingCheck}
+                                    onChange={(switchValue) => this.onChangeCheckTarjeta(this.tarjetaSelected?.id, this.tarjetaSelected?.pago_provee, switchValue)}
+                                    defaultChecked={this.tarjetaSelected?.pago_provee}
+                                />
+                                {/* </Space> */}
+                            </div>
+
+
+
+
+
+                        </Modal>
 
 
 
