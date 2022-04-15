@@ -415,13 +415,15 @@ class Tarjeta extends Component {
                             </div>
                             <br></br>
 
-                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', justifyContent: 'space-between' }}>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start'
+                            //, justifyContent: 'space-between'
+                            }}>
 
                                 <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Dinero: ${this.state.totalValor}</h2>
-                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: $0</h2>
+                                {/*<h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: $0</h2>
                                 <h2 style={{ marginLeft: "1rem" }}>Total Cargo Banco: $0</h2>
-                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: $0</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: $0</h2>*/}
 
 
                             </div>
