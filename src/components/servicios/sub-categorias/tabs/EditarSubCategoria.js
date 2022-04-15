@@ -46,7 +46,7 @@ React.useEffect(() => {
             label="Nombre"
             className="form"
           >
-            <Input initialValues="" className="input"   defaultValue={param.nombre} onChange={value=>{handleChangenombre(value)}} />
+            <Input initialValues="" className="input"   defaultValue={param.nombre} disabled={param.disableCheck} onChange={value=>{handleChangenombre(value)}} />
             <div className="Registroerror-div">
               <label className="error" id="errornombre"></label>
             </div>

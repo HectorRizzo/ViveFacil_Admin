@@ -11,7 +11,7 @@ import Icon from '@ant-design/icons';
 import iconimg from '../../img/icons/imagen.png'
 import AgregarCupon from "./AgregarCupon";
 import EditarCupon from "./EditarCupon";
-
+import Permisos from '../../requirements/Permisos'
 import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid, validarRango }
     from '../promocion/validators';
 
@@ -23,6 +23,7 @@ const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker
+let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -49,7 +50,7 @@ class Cupones extends Component {
             loadingCheck: false,
             visibleModalCupon: false,
             modalAggVisible: false,
-
+            disableCheck: true,
             disabledButton: true,
 
             allcategorias: [],
@@ -95,7 +96,10 @@ class Cupones extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.MostraCupones();
         this.loadCategorias();
         this.loadSubCategorias();
@@ -104,45 +108,48 @@ class Cupones extends Component {
     }
 
     MostraCupones = () => {
-        this.setState({
-            loadingTable: true
-        })
-        MetodosAxios.obtener_cupones().then(res => {
-            let data_cupon = [];
-            for (let i = 0; i < res.data.length; i++) {
-                let insig = res.data[i]
-                let est
-                if (insig.estado == true) {
-                    est = "Activo"
-
-                } else {
-                    est = "Inactivo"
-                }
-                let fechaInicio
-                if (insig.fecha_iniciacion == null) {
-                    fechaInicio = insig.fecha_iniciacion
-                } else {
-                    fechaInicio = insig.fecha_iniciacion.split('T')[0]
-                }
-                //this.state.fileimgup = insig.imagen
-                data_cupon.push({
-                    key: insig.id,
-                    imagen: insig.foto,
-                    codigo: insig.codigo,
-                    titulo: insig.titulo,
-                    fecha_creacion: insig.fecha_creacion.split('T')[0],
-                    fecha_iniciacion: fechaInicio,
-                    fecha_expiracion: insig.fecha_expiracion.split('T')[0],
-                    estado: est,
-
-                });
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view cupon')}).length >0) || permisos.includes('all'))
+        if(perm){
             this.setState({
-                data_cupon: data_cupon,
-                base_cupon: data_cupon,
-                loadingTable: false
+                loadingTable: true
             })
-        })
+            MetodosAxios.obtener_cupones().then(res => {
+                let data_cupon = [];
+                for (let i = 0; i < res.data.length; i++) {
+                    let insig = res.data[i]
+                    let est
+                    if (insig.estado == true) {
+                        est = "Activo"
+
+                    } else {
+                        est = "Inactivo"
+                    }
+                    let fechaInicio
+                    if (insig.fecha_iniciacion == null) {
+                        fechaInicio = insig.fecha_iniciacion
+                    } else {
+                        fechaInicio = insig.fecha_iniciacion.split('T')[0]
+                    }
+                    //this.state.fileimgup = insig.imagen
+                    data_cupon.push({
+                        key: insig.id,
+                        imagen: insig.foto,
+                        codigo: insig.codigo,
+                        titulo: insig.titulo,
+                        fecha_creacion: insig.fecha_creacion.split('T')[0],
+                        fecha_iniciacion: fechaInicio,
+                        fecha_expiracion: insig.fecha_expiracion.split('T')[0],
+                        estado: est,
+
+                    });
+                }
+                this.setState({
+                    data_cupon: data_cupon,
+                    base_cupon: data_cupon,
+                    loadingTable: false
+                })
+            })
+        }
     }
 
     async loadCategorias() {
@@ -204,6 +211,9 @@ class Cupones extends Component {
     }
 
     showModal = (insignia) => {
+        if((permisos.filter(element => { return element.includes('Can change cupon')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_cupon(insignia.key).then(res => {
             this.cuponSelected = res.data;
             this.setState({
@@ -623,10 +633,10 @@ class Cupones extends Component {
                 <div className="card-container">
                 <h1 className="titulo" style={{marginLeft: "2rem"}}>Cupones</h1>
                 <div style={{ display: "flex", marginRight: "2rem" }}>
-                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                        {((permisos.filter(element => { return element.includes('Can add cupon')}).length >0) || permisos.includes('all')) && <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarCupon()}>
                             Agregar Cupón
-                        </Button>
+                        </Button>}
                     </div>
 
                     <Tabs tabBarExtraContent={<div>
@@ -654,13 +664,13 @@ class Cupones extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
 
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can delete cupon')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
 
@@ -706,12 +716,16 @@ class Cupones extends Component {
                     title="Información del Cupón"
                     visible={this.state.visibleModalCupon}
                     closable={false}
-                    okText="Editar"
-                    cancelText="Cerrar"
-                    onCancel={() => this.handleCerrar()}
-                    onOk={() => this.handleOk()}
-
-
+                    footer={[
+                        <div className="footer">
+                            <Button key="close" onClick={this.handleCerrar}>
+                                    Cerrar
+                            </Button>
+                            {((permisos.filter(element => { return element.includes('Can change cupon')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
+                                    Editar
+                            </Button>}
+                        </div>
+                    ]}
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.cuponSelected?.foto != null ?
@@ -733,6 +747,7 @@ class Cupones extends Component {
                             <Switch
                                 key={this.cuponSelected?.id}
                                 loading={this.state.loadingCheck}
+                                disabled={this.state.disableCheck}
                                 onChange={(switchValue) => this.onChangeCheckCupon(this.cuponSelected?.id,this.cuponSelected?.estado, switchValue)}
                                 defaultChecked={this.cuponSelected?.estado}
                             />

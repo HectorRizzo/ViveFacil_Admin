@@ -11,6 +11,7 @@ import Icon from '@ant-design/icons';
 import iconimg from '../../img/icons/imagen.png'
 import AgregarPromocion from "./AgregarPromo";
 import EditarPromocion from "./EditarPromo";
+import Permisos from '../../requirements/Permisos'
 
 import { validateParticipante, validateArray, validateNumber, validateDate, validateText, resetLabels, generateRandomString, makeid, validarRango }
     from './validators';
@@ -23,6 +24,7 @@ const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker
+let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -49,7 +51,7 @@ class Promociones extends Component {
             loadingCheck: false,
             visibleModalPromocion: false,
             modalAggVisible: false,
-
+            disableCheck: true,
             disabledButton: true,
 
             allcategorias: [],
@@ -95,7 +97,10 @@ class Promociones extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.MostrarPromociones();
         this.loadCategorias();
         this.loadSubCategorias();
@@ -104,45 +109,48 @@ class Promociones extends Component {
     }
 
     MostrarPromociones = () => {
-        this.setState({
-            loadingTable: true
-        })
-        MetodosAxios.obtener_promociones().then(res => {
-            let data_promocion = [];
-            for (let i = 0; i < res.data.length; i++) {
-                let insig = res.data[i]
-                let est
-                if (insig.estado == true) {
-                    est = "Activo"
-
-                } else {
-                    est = "Inactivo"
-                }
-                let fechaInicio
-                if (insig.fecha_iniciacion == null) {
-                    fechaInicio = insig.fecha_iniciacion
-                } else {
-                    fechaInicio = insig.fecha_iniciacion.split('T')[0]
-                }
-                //this.state.fileimgup = insig.imagen
-                data_promocion.push({
-                    key: insig.id,
-                    imagen: insig.foto,
-                    codigo: insig.codigo,
-                    titulo: insig.titulo,
-                    fecha_creacion: insig.fecha_creacion.split('T')[0],
-                    fecha_iniciacion: fechaInicio,
-                    fecha_expiracion: insig.fecha_expiracion.split('T')[0],
-                    estado: est,
-
-                });
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view promocion')}).length >0) || permisos.includes('all'))
+        if(perm){
             this.setState({
-                data_promocion: data_promocion,
-                base_promocion: data_promocion,
-                loadingTable: false
+                loadingTable: true
             })
-        })
+            MetodosAxios.obtener_promociones().then(res => {
+                let data_promocion = [];
+                for (let i = 0; i < res.data.length; i++) {
+                    let insig = res.data[i]
+                    let est
+                    if (insig.estado == true) {
+                        est = "Activo"
+
+                    } else {
+                        est = "Inactivo"
+                    }
+                    let fechaInicio
+                    if (insig.fecha_iniciacion == null) {
+                        fechaInicio = insig.fecha_iniciacion
+                    } else {
+                        fechaInicio = insig.fecha_iniciacion.split('T')[0]
+                    }
+                    //this.state.fileimgup = insig.imagen
+                    data_promocion.push({
+                        key: insig.id,
+                        imagen: insig.foto,
+                        codigo: insig.codigo,
+                        titulo: insig.titulo,
+                        fecha_creacion: insig.fecha_creacion.split('T')[0],
+                        fecha_iniciacion: fechaInicio,
+                        fecha_expiracion: insig.fecha_expiracion.split('T')[0],
+                        estado: est,
+
+                    });
+                }
+                this.setState({
+                    data_promocion: data_promocion,
+                    base_promocion: data_promocion,
+                    loadingTable: false
+                })
+            })
+        }
     }
 
     async loadCategorias() {
@@ -620,10 +628,10 @@ class Promociones extends Component {
                 <div className="card-container">
                 <h1 className="titulo" style={{marginLeft: "2rem"}}>Promociones</h1>
                     <div style={{ display: "flex", marginRight: "2rem" }}>
-                        <Button type="primary" style={{ marginLeft: "2rem" }}
+                        {((permisos.filter(element => { return element.includes('Can add promocion')}).length >0) || permisos.includes('all')) && <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarPromocion()}>
                             Agregar Promoción
-                        </Button>
+                        </Button>}
                     </div>
 
                     <Tabs tabBarExtraContent={<div>
@@ -651,13 +659,13 @@ class Promociones extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
 
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can delete promocion')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
 
@@ -703,10 +711,16 @@ class Promociones extends Component {
                     title="Información de la Promoción"
                     visible={this.state.visibleModalPromocion}
                     closable={false}
-                    okText="Editar"
-                    cancelText="Cerrar"
-                    onCancel={() => this.handleCerrar()}
-                    onOk={() => this.handleOk()}
+                    footer={[
+                        <div className="footer">
+                            <Button key="close" onClick={this.handleCerrar}>
+                                    Cerrar
+                            </Button>
+                            {((permisos.filter(element => { return element.includes('Can change promocion')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
+                                    Editar
+                            </Button>}
+                        </div>
+                    ]}
 
 
                 >
@@ -730,6 +744,7 @@ class Promociones extends Component {
                             <Switch
                                 key={this.promocionSelected?.id}
                                 loading={this.state.loadingCheck}
+                                disabled={this.state.disableCheck}
                                 onChange={(switchValue) => this.onChangeCheckPromocion(this.promocionSelected?.id,this.promocionSelected?.estado, switchValue)}
                                 defaultChecked={this.promocionSelected?.estado}
                             />

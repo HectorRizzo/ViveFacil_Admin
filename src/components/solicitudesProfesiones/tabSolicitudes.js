@@ -3,10 +3,11 @@ import * as moment from 'moment';
 import MetodosAxios from "../../requirements/MetodosAxios";
 import { API_URL } from "../../Constants";
 import docsImage from "../../img/docs.png"
+import Permisos from '../../requirements/Permisos'
 import {Modal, Table , Pagination, Button, DatePicker,Input, Space,message} from 'antd';
 const { Search } = Input;
 const {RangePicker} = DatePicker
-
+let permisos = [];
 
 class Solicitudes extends Component {
     //Filtros
@@ -33,7 +34,10 @@ class Solicitudes extends Component {
     }
 
     
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.loadSolicitudes(1)
         this.loadProfesiones()
 
@@ -51,47 +55,49 @@ class Solicitudes extends Component {
         })
     }
     loadSolicitudes = (page)=> {
-        this.setState({
-            loadingTable: true
-        })
-        if(!this.search && !this.filter){
-            MetodosAxios.obtener_solicitudes(page).then(res  => {
-                let datos = this.formatData(res)
-                this.setState({
-                    dataSolicitudes: datos,
-                    loadingTable: false,
-                    size: res.data.page_size,
-                    total: res.data.total_objects,
-                    defaultPage: res.data.current_page_number,
-                })
-             })
-        }else if (this.search){
-            MetodosAxios.solicitudesByUser(this.userSearch,page).then(res => {
-                let solicitudesByUser= this.formatData(res);
-                this.setState({
-                    dataSolicitudes: solicitudesByUser,
-                    loadingTable: false,
-                    size: res.data.page_size,
-                    total: res.data.total_objects,
-                    defaultPage: res.data.current_page_number,
-                })
+        let perm= ((permisos.filter(element => { return element.includes('Can view profesion')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({
+                loadingTable: true
             })
-        } else if (this.filter){
-            MetodosAxios.solicitudesByDate(this.fechaInicio,this.fechaFin,page).then(res=> {     
-                let solicitudesByDate= this.formatData(res);
-                this.setState({
-                     dataSolicitudes: solicitudesByDate,
-                     loadingTable: false,
-                     size: res.data.page_size,
-                     total: res.data.total_objects,
-                     defaultPage: res.data.current_page_number,
-     
-                 })
-                 
-            })
+            if(!this.search && !this.filter){
+                MetodosAxios.obtener_solicitudes(page).then(res  => {
+                    let datos = this.formatData(res)
+                    this.setState({
+                        dataSolicitudes: datos,
+                        loadingTable: false,
+                        size: res.data.page_size,
+                        total: res.data.total_objects,
+                        defaultPage: res.data.current_page_number,
+                    })
+                })
+            }else if (this.search){
+                MetodosAxios.solicitudesByUser(this.userSearch,page).then(res => {
+                    let solicitudesByUser= this.formatData(res);
+                    this.setState({
+                        dataSolicitudes: solicitudesByUser,
+                        loadingTable: false,
+                        size: res.data.page_size,
+                        total: res.data.total_objects,
+                        defaultPage: res.data.current_page_number,
+                    })
+                })
+            } else if (this.filter){
+                MetodosAxios.solicitudesByDate(this.fechaInicio,this.fechaFin,page).then(res=> {     
+                    let solicitudesByDate= this.formatData(res);
+                    this.setState({
+                        dataSolicitudes: solicitudesByDate,
+                        loadingTable: false,
+                        size: res.data.page_size,
+                        total: res.data.total_objects,
+                        defaultPage: res.data.current_page_number,
+        
+                    })
+                    
+                })
 
+            }
         }
-
     }
 
 
@@ -363,15 +369,17 @@ class Solicitudes extends Component {
                                 closable= {false}
                                 width={600}
                                 footer= {[
-                                    <Button key="back" onClick={() =>this.setState({visibleModal:false})}>
-                                        Atras
-                                    </Button>,
-                                    <Button key="Acept"  onClick={() =>this.setState({visibleModalAceptar:true})}>
-                                        Aceptar Solicitud
-                                    </Button>,
-                                    <Button key="Deny" onClick={() => this.setState({visibleModalDenegar:true})}>
-                                        Denegar Solicitud
-                                    </Button>,
+                                    <div className="footer">
+                                        <Button key="back" onClick={() =>this.setState({visibleModal:false})}>
+                                            Atras
+                                        </Button>
+                                        {((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')) && <Button key="Acept"  onClick={() =>this.setState({visibleModalAceptar:true})}>
+                                            Aceptar Solicitud
+                                        </Button>}
+                                        {((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')) && <Button key="Deny" onClick={() => this.setState({visibleModalDenegar:true})}>
+                                            Denegar Solicitud
+                                        </Button>}
+                                    </div>
                                 ]}              
                             >  
                                 <p><strong>Nombre Proveedor:  </strong>{this.state.informacion?.proveedor.user_datos.nombres  + " "+ this.state.informacion?.proveedor.user_datos.apellidos}</p>    
