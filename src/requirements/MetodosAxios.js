@@ -179,6 +179,10 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`, estado)
   };
 
+  static cambio_pago_proveedor_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/tarjeta_pago/?id=${id}`, estado)
+  };
+
   /*
     eliminar_proveedor
     autor: Axell

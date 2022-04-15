@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker, Tabs} from 'antd';
+import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker, Tabs } from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import Icon from '@ant-design/icons';
 import Eliminar from "../../../img/icons/eliminar.png";
@@ -20,7 +20,7 @@ const columns = [
     { title: 'Porcentaje (%)', dataIndex: 'porcentaje', className: 'columns-pendientes', responsive: ['lg'] },
 ];
 
-class Cargos extends Component{
+class Cargos extends Component {
     cargoSelected = null;
 
     constructor(props) {
@@ -267,7 +267,7 @@ class Cargos extends Component{
 
 
     async editarCargo() {
-        
+
         if (this.validarformEdit()) {
             //this.setState({
             //    limpiarEdit: true,
@@ -282,8 +282,8 @@ class Cargos extends Component{
             //data.append('tipo', this.state.tipo);
 
             data.append('nombre', this.state.cargoInfo.nombre);
-            data.append('descripcion', this.state.cargoInfo.porcentaje);
-            
+            data.append('porcentaje', this.state.cargoInfo.porcentaje);
+
 
             await MetodosAxios.cambio_cargo(data, this.state.cargoInfo.id).then(res => {
                 console.log(res)
@@ -313,18 +313,18 @@ class Cargos extends Component{
     render() {
         return (
             <>
-                
+
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
-                <h1 className="titulo" style={{marginLeft: "2rem"}}>Cargos por Pago con Tarjeta</h1>
-                <div style={{ display: "flex", marginRight: "2rem" }}>
+                    <h1 className="titulo" style={{ marginLeft: "2rem" }}>Cargos por Pago con Tarjeta</h1>
+                    {/*<div style={{ display: "flex", marginRight: "2rem" }}>
                         <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarCargo()}
-                            >
+                        >
                             Agregar Cargo
                         </Button>
-                    </div>
+        </div>*/}
 
                     <Tabs tabBarExtraContent={<div>
                         {/*<Button
@@ -335,7 +335,7 @@ class Cargos extends Component{
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarInsignia() }}
                     />*/}
-                        <Search
+                        {/*<Search
                             placeholder="Buscar"
                             allowClear
                             //onSearch={this.searchUser}
@@ -348,7 +348,7 @@ class Cargos extends Component{
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />*/}
                     </div>}
                         type="card" size="large" >
 
@@ -370,10 +370,10 @@ class Cargos extends Component{
 
                     <div>
                         <Table
-                            rowSelection={{
+                            /*rowSelection={{
                                 type: "checkbox",
                                 onChange: this.onSelectChangeCargo
-                            }}
+                            }}*/
                             //columns={columns}
                             columns={columns}
                             onRow={(cargo) => {
@@ -401,15 +401,15 @@ class Cargos extends Component{
 
 
                 >
-                    
+
 
                     <p><strong>Nombre del Cargo:  </strong>{this.cargoSelected?.nombre}</p>
                     <p><strong>Porcentaje a aplicar:  </strong>{this.cargoSelected?.porcentaje}%</p>
-                    
+
 
                 </Modal>
 
-                <Modal
+                {/*<Modal
                     className="modal"
                     title="Agregar Cargo"
                     centered
@@ -421,7 +421,7 @@ class Cargos extends Component{
                     onCancel={() => this.CerrarAgregar()}
                 >
                     <AgregarCargo param={this.state} />
-                </Modal>
+                        </Modal>*/}
 
                 <Modal
                     title="Editar Cargo"
@@ -439,7 +439,7 @@ class Cargos extends Component{
 
                 </Modal>
 
-                <Modal
+                {/*<Modal
                     className="modal"
                     title="Eliminar Cargo"
                     centered
@@ -450,7 +450,7 @@ class Cargos extends Component{
                     onOk={() => this.eliminar()}
                     onCancel={() => this.setModalAlertVisible(false)}
                 >
-                </Modal>
+                    </Modal>*/}
 
 
 
