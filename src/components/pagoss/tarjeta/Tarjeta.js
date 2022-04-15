@@ -6,11 +6,12 @@ import MetodosAxios from "../../../requirements/MetodosAxios";
 //import eliminarimg from '../../img/icons/eliminar.png'
 import Activado from "../../../img/icons/activado.png";
 import Desactivado from "../../../img/icons/desactivado.png";
-
+import Permisos from '../../../requirements/Permisos'
 
 import moment from 'moment'
 const { Search } = Input;
 const { RangePicker } = DatePicker
+let permisos = [];
 
 const columns = [
 
@@ -80,7 +81,7 @@ class Tarjeta extends Component {
             showSi: false,
             showNo: false,
 
-
+            disableCheck: true,
 
 
 
@@ -105,6 +106,9 @@ class Tarjeta extends Component {
     }
 
     async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         //await this.loadCategorias();
         await this.loadCargos();
         //console.log(this.state.categorias)
@@ -221,26 +225,26 @@ class Tarjeta extends Component {
     }
 
     loadpagos = (page) => {
-        this.setState({ loading_pagos_tarjeta: true });
-        //console.log(page)
-        MetodosAxios.obtener_pagos_tarjetaP(page).then(res => {
-            let value = res.data.results
-            let tarjetas = this.formatData(res)
-            console.log(value)
+        let perm= ((permisos.filter(element => { return element.includes('Can view pago')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({ loading_pagos_tarjeta: true });
+            //console.log(page)
+            MetodosAxios.obtener_pagos_tarjetaP(page).then(res => {
+                let value = res.data.results
+                let tarjetas = this.formatData(res)
+                console.log(value)
 
-            this.setState({
-                size: res.data.page_size,
-                total: res.data.total_objects,
-                page: res.data.current_page_number,
-                tarjetas: tarjetas,
-                alltarjeta: tarjetas,
-                loading_pagos_tarjeta: false,
+                this.setState({
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+                    tarjetas: tarjetas,
+                    alltarjeta: tarjetas,
+                    loading_pagos_tarjeta: false,
 
-            });
-        })
-
-
-
+                });
+            })
+        }
     }
 
 
@@ -330,7 +334,10 @@ class Tarjeta extends Component {
     }
 
     handleShow = (pago) => {
-
+        let perm= ((permisos.filter(element => { return element.includes('Can change pago')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({disableCheck: false})
+        }
         console.log(pago.pago_proveedor)
         this.tarjetaSelected = pago
         if (pago.pago_proveedor) {
@@ -529,6 +536,7 @@ class Tarjeta extends Component {
                                     loading={this.state.loadingCheck}
                                     onChange={(switchValue) => this.onChangeCheckTarjeta(this.tarjetaSelected?.id, this.tarjetaSelected?.pago_provee, switchValue)}
                                     defaultChecked={this.tarjetaSelected?.pago_provee}
+                                    disabled={this.state.disableCheck}
                                 />
                                 {/* </Space> */}
                             </div>

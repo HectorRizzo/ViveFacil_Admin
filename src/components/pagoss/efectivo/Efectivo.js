@@ -2,8 +2,10 @@ import React, { Component, } from "react";
 import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker } from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import moment from 'moment'
+import Permisos from '../../../requirements/Permisos'
 const { Search } = Input;
 const { RangePicker } = DatePicker
+let permisos = [];
 
 const columns = [
 
@@ -76,6 +78,9 @@ class Efectivo extends Component {
     }
 
     async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         await this.loadCategorias();
         //console.log(this.state.categorias)
         await this.loadpagos(1);
@@ -135,24 +140,26 @@ class Efectivo extends Component {
     }
 
     loadpagos = (page) => {
-        this.setState({ loading_pagos_efectivo: true });
-        //console.log(page)
-        MetodosAxios.obtener_pagos_efectivoP(page).then(res => {
-            let value = res.data.results
-            let efectivos = this.formatData(res)
-            console.log(value)
+        let perm= ((permisos.filter(element => { return element.includes('Can view pago')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({ loading_pagos_efectivo: true });
+            //console.log(page)
+            MetodosAxios.obtener_pagos_efectivoP(page).then(res => {
+                let value = res.data.results
+                let efectivos = this.formatData(res)
+                console.log(value)
 
-            this.setState({
-                size: res.data.page_size,
-                total: res.data.total_objects,
-                page: res.data.current_page_number,
-                efectivos: efectivos,
-                allefectivo: efectivos,
-                loading_pagos_efectivo: false,
+                this.setState({
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+                    efectivos: efectivos,
+                    allefectivo: efectivos,
+                    loading_pagos_efectivo: false,
 
-            });
-        })
-
+                });
+            })
+        }
 
 
     }
