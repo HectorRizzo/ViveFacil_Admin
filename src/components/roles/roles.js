@@ -120,15 +120,6 @@ class Roles extends Component {
             state: true,
         },
         {
-            nombre: 'Servicios',
-            permiso:  'servicio',
-            view: false,
-            create: false,
-            edit: false,
-            delete: false,
-            state: true,
-        },
-        {
             nombre: 'Categorias',
             permiso: 'categoria',
             view: false,
@@ -221,6 +212,15 @@ class Roles extends Component {
         {
             nombre: 'Notificaciones',
             permiso: 'notificacion',
+            view: false,
+            create: false,
+            edit: false,
+            delete: false,
+            state: true,
+        },
+        {
+            nombre: 'Profesiones',
+            permiso: 'profesion',
             view: false,
             create: false,
             edit: false,

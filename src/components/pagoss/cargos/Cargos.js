@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker, Tabs} from 'antd';
+import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker, Tabs } from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import Icon from '@ant-design/icons';
 import Eliminar from "../../../img/icons/eliminar.png";
@@ -20,7 +20,7 @@ const columns = [
     { title: 'Porcentaje (%)', dataIndex: 'porcentaje', className: 'columns-pendientes', responsive: ['lg'] },
 ];
 
-class Cargos extends Component{
+class Cargos extends Component {
     cargoSelected = null;
 
     constructor(props) {
@@ -80,22 +80,11 @@ class Cargos extends Component{
             let data_cargo = [];
             for (let i = 0; i < res.data.length; i++) {
                 let carg = res.data[i]
-                //let est
-                //if (insig.estado == true) {
-                //    est = "Activo"
 
-                //} else {
-                //    est = "Inactivo"
-                //}
-                //this.state.fileimgup = insig.imagen
                 data_cargo.push({
                     key: carg.id,
                     nombre: carg.nombre,
                     porcentaje: carg.porcentaje,
-                    //servicio: insig.servicio,
-                    //tipo: insig.tipo,
-                    //pedidos: insig.pedidos,
-                    //estado: est,
 
                 });
             }
@@ -108,10 +97,7 @@ class Cargos extends Component{
     }
 
     AgregarCargo() {
-        //this.limpiarforminsignia()
-        {/*console.log("nombre",this.state.nombre) 
-        console.log("descripcion",this.state.descripcion) 
-        console.log("img",this.state.imagen) */}
+
         this.setModalAggVisible(true)
     }
 
@@ -162,29 +148,17 @@ class Cargos extends Component{
 
     async guardarcargo() {
         if (this.validarform()) {
-            //console.log(this.state.fileimg)
+
             var data = new FormData();
-            //console.log('nombre: ', this.state.nombre0)
-            //console.log('descripcion: ', this.state.descripcion0)
-            //console.log('imagen: ', this.state.fileimg)
-            //console.log('servicio: ', this.state.servicio0)
-            //console.log('pedidos: ', this.state.pedidos0)
-            //console.log('tipo: ', this.state.tipo0)
+
             data.append('nombre', this.state.nombre0);
             data.append('porcentaje', this.state.porcentaje0);
 
-            //data.append('descripcion', this.state.descripcion0);
-            //data.append('imagen', this.state.fileimg);
 
-            //data.append('servicio', this.state.tipo0);
-            //data.append('pedidos', this.state.pedidos0);
-            //data.append('tipo', this.state.participantes);
-            //console.log(data)
             await MetodosAxios.crear_cargo(data).then(res => {
                 console.log(res)
             })
-            //this.MostrarInsignias();
-            //this.CerrarAgregar()
+
 
             for (let value of data.keys()) {
                 console.log(value);
@@ -192,12 +166,7 @@ class Cargos extends Component{
             for (let values of data.values()) {
                 console.log(values);
             }
-            //data.append('nombre', this.state.nombre0);
-            //data.append('descripcion', this.state.descripcion0);
-            //data.append('foto', this.state.fileimg);
-            //await MetodosAxios.crear_categoria(data).then(res => {
-            //    console.log(res)
-            //})
+
             this.MostrarCargos();
             this.CerrarAgregar()
         }
@@ -267,23 +236,15 @@ class Cargos extends Component{
 
 
     async editarCargo() {
-        
-        if (this.validarformEdit()) {
-            //this.setState({
-            //    limpiarEdit: true,
 
-            //})
+        if (this.validarformEdit()) {
+
             var data = new FormData();
-            //data.append('nombre', this.state.nombre);
-            //data.append('descripcion', this.state.descripcion);
-            //data.append('imagen', this.state.fileimg);
-            //data.append('servicio', this.state.servicio);
-            //data.append('pedidos', this.state.pedidos);
-            //data.append('tipo', this.state.tipo);
+
 
             data.append('nombre', this.state.cargoInfo.nombre);
-            data.append('descripcion', this.state.cargoInfo.porcentaje);
-            
+            data.append('porcentaje', this.state.cargoInfo.porcentaje);
+
 
             await MetodosAxios.cambio_cargo(data, this.state.cargoInfo.id).then(res => {
                 console.log(res)
@@ -313,18 +274,18 @@ class Cargos extends Component{
     render() {
         return (
             <>
-                
+
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
-                <h1 className="titulo" style={{marginLeft: "2rem"}}>Cargos por Pago con Tarjeta</h1>
-                <div style={{ display: "flex", marginRight: "2rem" }}>
+                    <h1 className="titulo" style={{ marginLeft: "2rem" }}>Cargos por Pago con Tarjeta</h1>
+                    {/*<div style={{ display: "flex", marginRight: "2rem" }}>
                         <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarCargo()}
-                            >
+                        >
                             Agregar Cargo
                         </Button>
-                    </div>
+        </div>*/}
 
                     <Tabs tabBarExtraContent={<div>
                         {/*<Button
@@ -335,7 +296,7 @@ class Cargos extends Component{
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarInsignia() }}
                     />*/}
-                        <Search
+                        {/*<Search
                             placeholder="Buscar"
                             allowClear
                             //onSearch={this.searchUser}
@@ -348,7 +309,7 @@ class Cargos extends Component{
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />*/}
                     </div>}
                         type="card" size="large" >
 
@@ -370,10 +331,10 @@ class Cargos extends Component{
 
                     <div>
                         <Table
-                            rowSelection={{
+                            /*rowSelection={{
                                 type: "checkbox",
                                 onChange: this.onSelectChangeCargo
-                            }}
+                            }}*/
                             //columns={columns}
                             columns={columns}
                             onRow={(cargo) => {
@@ -401,15 +362,15 @@ class Cargos extends Component{
 
 
                 >
-                    
+
 
                     <p><strong>Nombre del Cargo:  </strong>{this.cargoSelected?.nombre}</p>
                     <p><strong>Porcentaje a aplicar:  </strong>{this.cargoSelected?.porcentaje}%</p>
-                    
+
 
                 </Modal>
 
-                <Modal
+                {/*<Modal
                     className="modal"
                     title="Agregar Cargo"
                     centered
@@ -421,7 +382,7 @@ class Cargos extends Component{
                     onCancel={() => this.CerrarAgregar()}
                 >
                     <AgregarCargo param={this.state} />
-                </Modal>
+                        </Modal>*/}
 
                 <Modal
                     title="Editar Cargo"
@@ -439,7 +400,7 @@ class Cargos extends Component{
 
                 </Modal>
 
-                <Modal
+                {/*<Modal
                     className="modal"
                     title="Eliminar Cargo"
                     centered
@@ -450,7 +411,7 @@ class Cargos extends Component{
                     onOk={() => this.eliminar()}
                     onCancel={() => this.setModalAlertVisible(false)}
                 >
-                </Modal>
+                    </Modal>*/}
 
 
 

@@ -82,7 +82,6 @@ class Publicidades extends Component {
     async componentDidMount() {
         await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
             permisos = res
-            console.log(permisos)
         })
         await this.loadpublicidades(1);
     }

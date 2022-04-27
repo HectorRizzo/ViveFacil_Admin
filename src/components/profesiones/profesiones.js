@@ -4,7 +4,9 @@ import MetodosAxios from "../../requirements/MetodosAxios";
 import eliminarimg from '../../img/icons/eliminar.png'
 import iconimg from '../../img/icons/imagen.png'
 import AgregarProfesion from "./addProfesion";
+import Permisos from '../../requirements/Permisos'
 const { Search } = Input;
+let permisos = [];
 class Profesiones extends Component {
 
     profesionSelected=null;
@@ -32,7 +34,12 @@ class Profesiones extends Component {
     }
 
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
+
         this.loadProfesiones()
         this.loadServicios()
 
@@ -41,28 +48,30 @@ class Profesiones extends Component {
 
 
     loadProfesiones(){
-        this.setState({
-            loadingTable:true,
-        })
-        MetodosAxios.get_profesiones().then(res  => {
-            let profesiones = [];
-            for(let r of res.data){
-                profesiones.push({
-                    "id":r.id,
-                    "nombre": r.nombre,
-                    "descripcion": r.descripcion,
-                    "foto" : r.foto,
-                    "servicio": r.servicio[0].nombre,
-                    "estado": r.estado,
-                })
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view profesion')}).length >0) || permisos.includes('all'))
+        if(perm){
             this.setState({
-                dataProfesiones: profesiones,
-                baseProfesiones: profesiones,
-                loadingTable: false,
+                loadingTable:true,
             })
-        })
-
+            MetodosAxios.get_profesiones().then(res  => {
+                let profesiones = [];
+                for(let r of res.data){
+                    profesiones.push({
+                        "id":r.id,
+                        "nombre": r.nombre,
+                        "descripcion": r.descripcion,
+                        "foto" : r.foto,
+                        "servicio": r.servicio[0].nombre,
+                        "estado": r.estado,
+                    })
+                }
+                this.setState({
+                    dataProfesiones: profesiones,
+                    baseProfesiones: profesiones,
+                    loadingTable: false,
+                })
+            })
+        }
     }
 
     loadServicios(){
@@ -225,10 +234,10 @@ class Profesiones extends Component {
                                 style={{ width: 200, margin: '0 10px' }}
                         
                             />
-                            <Button type="primary" style={{marginRight: "2rem"}}
+                            {((permisos.filter(element => { return element.includes('Can add profesion')}).length >0) || permisos.includes('all')) &&  <Button type="primary" style={{marginRight: "2rem"}}
                             onClick={ () =>this.addProfesion()}>
                                 Agregar Profesión
-                            </Button>
+                            </Button>}
 
                         </div>
 
@@ -332,9 +341,9 @@ class Profesiones extends Component {
                                     <Button key="close" onClick={this.handleCerrar}>
                                             Cerrar
                                     </Button>
-                                    <Button key="add" onClick={this.handledelete}>
+                                    {((permisos.filter(element => { return element.includes('Can delete profesion')}).length >0) || permisos.includes('all')) && <Button key="add" onClick={this.handledelete}>
                                             Eliminar
-                                    </Button>
+                                    </Button>}
                                 </div>
                             ]}>
                                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>

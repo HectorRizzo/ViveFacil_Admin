@@ -4,11 +4,13 @@ import MetodosAxios from "../../../requirements/MetodosAxios";
 import avatar from "../../../img/avatar.png"
 import EditAdmin from "./EditAdmin";
 import iconimg from '../../../img/icons/imagen.png'
+import Permisos from '../../../requirements/Permisos'
 import * as moment from 'moment';
 import { validarCedula, validarGenero } from "../../promocion/validators";
 
 const { Search } = Input;
 const {RangePicker} = DatePicker
+let permisos = [];
 
 class AdminTab extends Component {
     AdminInfo = null;
@@ -42,10 +44,14 @@ class AdminTab extends Component {
             defaultPage:1,
             ciudades: [],
             grupos: [],
+            disableCheck: true,
         };
     }    
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.cargarCiudades()
         this.cargarRoles()
         this.fetchAdmin(1)
@@ -78,6 +84,9 @@ class AdminTab extends Component {
     
 
     showModal = (admin) => {
+        if((permisos.filter(element => { return element.includes('Can change administrador')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_administrador(admin.key).then(res => {
             this.AdminInfo = res.data;
             this.setState({
@@ -227,32 +236,35 @@ class AdminTab extends Component {
 
 
     fetchAdmin= (page) => {
-        this.setState({
-            loadingTable: true
-        })
-        if(!this.search && !this.filter){
-            MetodosAxios.getAdmin(page).then(res => {
-                let data_administrador = this.formatData(res);
-                this.setState({
-                    dataSource: data_administrador,
-                    loadingTable: false,
-                    size: res.data.page_size,
-                    total: res.data.total_objects,
-                    defaultPage: res.data.current_page_number,
-                })
-            })  
-        }
-        else if (this.search){
-            MetodosAxios.buscar_admin(this.userSearch,page).then(res => {
-                let admin_filtros = this.formatData(res);
-                this.setState({
-                    dataSource: admin_filtros,
-                    loadingTable: false,
-                    size: res.data.page_size,
-                    total: res.data.total_objects,
-                    defaultPage: res.data.current_page_number,
-                })
+        let perm= ((permisos.filter(element => { return element.includes('Can view administrador')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({
+                loadingTable: true
             })
+            if(!this.search && !this.filter){
+                MetodosAxios.getAdmin(page).then(res => {
+                    let data_administrador = this.formatData(res);
+                    this.setState({
+                        dataSource: data_administrador,
+                        loadingTable: false,
+                        size: res.data.page_size,
+                        total: res.data.total_objects,
+                        defaultPage: res.data.current_page_number,
+                    })
+                })  
+            }
+            else if (this.search){
+                MetodosAxios.buscar_admin(this.userSearch,page).then(res => {
+                    let admin_filtros = this.formatData(res);
+                    this.setState({
+                        dataSource: admin_filtros,
+                        loadingTable: false,
+                        size: res.data.page_size,
+                        total: res.data.total_objects,
+                        defaultPage: res.data.current_page_number,
+                    })
+                })
+            }
         }
         else if (this.filter){
             MetodosAxios.filtrar_admin(this.fechaInicio,this.fechaFin,page).then(res=> {     
@@ -449,11 +461,17 @@ class AdminTab extends Component {
                     title="Información Administrador"
                     visible={this.state.visibleModal}
                     closable= {false}
-                    okText="Editar"
-                    cancelText="Cerrar"
-                    onCancel={() => this.handleCancelar()}
-                    onOk={() => this.handleOk()}>   
-    
+                    footer={[
+                        <div className="footer">
+                            <Button key="close" onClick={this.handleCancelar}>
+                                    Cerrar
+                            </Button>
+                            {((permisos.filter(element => { return element.includes('Can change administrador')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
+                                    Editar
+                            </Button>}
+                        </div>
+                    ]}>   
+                    
                     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                         <Image  height={200} width={200}
                         src={ this.state.adminInfo?.user_datos.foto !=null ?  
@@ -476,6 +494,7 @@ class AdminTab extends Component {
                                 key={this.state.adminInfo?.id}
                                 loading={this.state.loadingCheck}
                                 onChange={(switchValue) => this.onChangeCheckAdministrador(this.state.adminInfo?.id,this.state.adminInfo?.estado, switchValue)}
+                                disabled={this.state.disableCheck}
                                 defaultChecked={this.state.adminInfo?.estado}
                             />
                         {/* </Space> */}

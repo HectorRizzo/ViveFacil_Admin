@@ -11,10 +11,12 @@ import iconimg from '../../img/icons/imagen.png'
 import AgregarInsignia from "./AgregarInsignia";
 //import Insig from "./Insig";
 import EditarInsignia from "./EditarInsignia";
+import Permisos from '../../requirements/Permisos'
 import { ValidarTexto, validateParticipante } from '../servicios/Validacion/validaciones'
 const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
+let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
@@ -42,6 +44,7 @@ class Insignias extends Component {
             loadingTable:false,
             visibleModalInsignia: false,
             modalAggVisible: false,
+            disableCheck: true,
 
             allcategorias: [],
             allscategorias: [],
@@ -83,7 +86,10 @@ class Insignias extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.MostrarInsignias();
         this.loadCategorias();
         this.loadSubCategorias();
@@ -91,39 +97,41 @@ class Insignias extends Component {
     }
 
     MostrarInsignias = () => {
-        this.setState({
-            loadingTable: true
-        })
-        MetodosAxios.obtener_insignias().then(res => {
-            let data_insignia = [];
-            for (let i = 0; i < res.data.length; i++) {
-                let insig = res.data[i]
-                let est
-                if (insig.estado == true) {
-                    est = "Activo"
-
-                } else {
-                    est = "Inactivo"
-                }
-                this.state.fileimgup = insig.imagen
-                data_insignia.push({
-                    key: insig.id,
-                    nombre: insig.nombre,
-                    imagen: insig.imagen,
-                    tipoUsuario :insig.tipo_usuario,
-                    //servicio: insig.servicio,
-                    tipo: insig.tipo,
-                    pedidos: insig.pedidos,
-                    estado: est,
-
-                });
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view insignia')}).length >0) || permisos.includes('all'))
+        if(perm){
             this.setState({
-                data_insignia: data_insignia,
-                base_insignia: data_insignia,
-                loadingTable: false
+                loadingTable: true
             })
-        })
+            MetodosAxios.obtener_insignias().then(res => {
+                let data_insignia = [];
+                for (let i = 0; i < res.data.length; i++) {
+                    let insig = res.data[i]
+                    let est
+                    if (insig.estado == true) {
+                        est = "Activo"
+
+                    } else {
+                        est = "Inactivo"
+                    }
+                    this.state.fileimgup = insig.imagen
+                    data_insignia.push({
+                        key: insig.id,
+                        nombre: insig.nombre,
+                        imagen: insig.imagen,
+                        //servicio: insig.servicio,
+                        tipo: insig.tipo,
+                        pedidos: insig.pedidos,
+                        estado: est,
+
+                    });
+                }
+                this.setState({
+                    data_insignia: data_insignia,
+                    base_insignia: data_insignia,
+                    loadingTable: false
+                })
+            })
+        }
     }
 
     async loadCategorias() {
@@ -171,6 +179,9 @@ class Insignias extends Component {
     }
 
     showModal = (insignia) => {
+        if((permisos.filter(element => { return element.includes('Can change insignia')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_insignia(insignia.key).then(res => {
             console.log(res)
             this.insigniaSelected = res.data;
@@ -513,12 +524,12 @@ class Insignias extends Component {
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
                 <h1 className="titulo" style={{marginLeft: "2rem"}}>Insignias</h1>
-                <div style={{ display: "flex", marginRight: "2rem" }}>
+                {((permisos.filter(element => { return element.includes('Can add insignia')}).length >0) || permisos.includes('all')) && <div style={{ display: "flex", marginRight: "2rem" }}>
                         <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarInsignia()}>
                             Agregar Insignia
                         </Button>
-                    </div>
+                </div>}
 
                     <Tabs tabBarExtraContent={<div>
                         {/*<Button
@@ -536,13 +547,13 @@ class Insignias extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
 
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can delete insignia')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
 
@@ -589,12 +600,16 @@ class Insignias extends Component {
                     title="Información de la Insignia"
                     visible={this.state.visibleModalInsignia}
                     closable={false}
-                    okText="Editar"
-                    cancelText="Cerrar"
-                    onCancel={() => this.handleCerrar()}
-                    onOk={() => this.handleOk()}
-
-
+                    footer={[
+                        <div className="footer">
+                            <Button key="close" onClick={this.handleCerrar}>
+                                    Cerrar
+                            </Button>
+                            {((permisos.filter(element => { return element.includes('Can change insignia')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
+                                    Editar
+                            </Button>}
+                        </div>
+                    ]}
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.insigniaSelected?.imagen != null ?
@@ -615,6 +630,7 @@ class Insignias extends Component {
                             <Switch
                                 key={this.insigniaSelected?.id}
                                 loading={this.state.loadingCheck}
+                                disabled={this.state.disableCheck}
                                 onChange={(switchValue) => this.onChangeCheckInsignia(this.insigniaSelected?.id,this.insigniaSelected?.estado, switchValue)}
                                 defaultChecked={this.insigniaSelected?.estado}
                             />

@@ -5,7 +5,10 @@ import AdminTab from "./tabAdmin";
 import AgregarAdmin from "./FormAdmin";
 import iconimg from '../../../img/icons/imagen.png'
 import * as moment from 'moment';
+import Permisos from '../../../requirements/Permisos'
 import { validarCedula } from "../../promocion/validators";
+
+let permisos = [];
 
 class Administrador extends Component {
     fechaFin= null;
@@ -46,7 +49,10 @@ class Administrador extends Component {
             picture: iconimg,
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.cargarCiudades()
         this.cargarRoles()
     }
@@ -229,10 +235,10 @@ class Administrador extends Component {
                     <div className="card-container">
                     <h1 className="titulo" style={{marginLeft: "2rem"}}>Administradores</h1>
                         <div style={{display:"flex",marginRight:"2rem"}}>
-                            <Button type="primary" style={{marginLeft: "2rem"}}
+                            {((permisos.filter(element => { return element.includes('Can add administrador')}).length >0) || permisos.includes('all')) && <Button type="primary" style={{marginLeft: "2rem"}}
                             onClick={ () => this.addAdministrador()}>
                                 Agregar Administrador
-                            </Button>
+                            </Button>}
                         </div>
                         <AdminTab 
                             dataSearch={this.state.data_administrador}

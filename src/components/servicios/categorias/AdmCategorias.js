@@ -9,9 +9,11 @@ import Icon from '@ant-design/icons';
 import iconimg from '../../../img/icons/imagen.png'
 import {ValidarTexto} from '../Validacion/validaciones'
 import EditarCategoria from './tabs/EditarCategoria'
+import Permisos from '../../../requirements/Permisos'
 import "./AdmCategorias.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
+let permisos = [];
 class AdmCategorias extends Component {
     constructor(props) {
         super(props);
@@ -36,40 +38,51 @@ class AdmCategorias extends Component {
             categoria:null,
             nombre0:'',
             descripcion0:'',
+            disableCheck: true,
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.llenarTablaCategoria();
     }
 
     llenarTablaCategoria = () => {
-        this.setState({
-            loadingTable: true
-        })
-        MetodosAxios.obtener_categorias().then(res => {
-            let data_categoria = [];
-            for (let i = 0; i < res.data.length; i++) {
-                let categoria = res.data[i]
-                data_categoria.push({
-                    key: categoria.id,
-                    nombre: categoria.nombre,
-                    descripcion: categoria.descripcion,
-                    foto:categoria.foto,
-                    check: <Switch
-                        key={categoria.id}
-                        loading={this.state.loadingCheck}
-                        onChange={(switchValue) => this.onChangeCheckCategoria(categoria.id, switchValue)}
-                        defaultChecked={categoria.estado}
-                    />,
-                    state:categoria
-                });
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view categoria')}).length >0) || permisos.includes('all'))
+        if((permisos.filter(element => { return element.includes('Can change categoria')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
+        if(perm){
             this.setState({
-                data_categoria: data_categoria,
-                base_categoria: data_categoria,
-                loadingTable: false
+                loadingTable: true
             })
-        })
+            MetodosAxios.obtener_categorias().then(res => {
+                let data_categoria = [];
+                for (let i = 0; i < res.data.length; i++) {
+                    let categoria = res.data[i]
+                    data_categoria.push({
+                        key: categoria.id,
+                        nombre: categoria.nombre,
+                        descripcion: categoria.descripcion,
+                        foto:categoria.foto,
+                        check: <Switch
+                            key={categoria.id}
+                            loading={this.state.loadingCheck}
+                            onChange={(switchValue) => this.onChangeCheckCategoria(categoria.id, switchValue)}
+                            defaultChecked={categoria.estado}
+                            disabled={this.state.disableCheck}
+                        />,
+                        state:categoria
+                    });
+                }
+                this.setState({
+                    data_categoria: data_categoria,
+                    base_categoria: data_categoria,
+                    loadingTable: false
+                })
+            })
+        }
     }
  
     async onChangeCheckCategoria(i, checked){
@@ -258,16 +271,19 @@ class AdmCategorias extends Component {
    }
 
    EditarCategoria = (categoria) => {
-    this.limpiarformcategoriaEdit()
-    console.log(this.state.categoria)
-    this.setState({
-        picture:'https://tomesoft1.pythonanywhere.com/'+categoria.foto,
-        categoria: categoria,
-        nombre:categoria.nombre,
-        descripcion:categoria.descripcion
-    })
-    console.log(categoria.nombre)
-    this.setModalVisibleEdit(true)
+    let perm= ((permisos.filter(element => { return element.includes('Can change categoria')}).length >0) || permisos.includes('all'))
+    if(perm){
+        this.limpiarformcategoriaEdit()
+        console.log(this.state.categoria)
+        this.setState({
+            picture:'https://tomesoft1.pythonanywhere.com/'+categoria.foto,
+            categoria: categoria,
+            nombre:categoria.nombre,
+            descripcion:categoria.descripcion
+        })
+        console.log(categoria.nombre)
+        this.setModalVisibleEdit(true)
+    }
 }
     render() {
 
@@ -276,14 +292,14 @@ class AdmCategorias extends Component {
                 <h1 className="titulo">Categorías</h1>
                 <div className="card-container">
                     <Tabs tabBarExtraContent={<div>
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can add categoria')}).length >0) || permisos.includes('all')) && <Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarCategoria()}}
-                        />
+                        />}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -291,13 +307,13 @@ class AdmCategorias extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
                         
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can delete categoria')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
                     

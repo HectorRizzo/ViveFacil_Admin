@@ -179,6 +179,10 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.put(`/cupon_estado/?id=${id}`, estado)
   };
 
+  static cambio_pago_proveedor_estado = (id, estado) => {
+    return MetodosAxios.instanceAxios.put(`/tarjeta_pago/?id=${id}`, estado)
+  };
+
   /*
     eliminar_proveedor
     autor: Axell
@@ -604,6 +608,18 @@ export default class MetodosAxios {
 
   static valor_total_tarjeta = () => {
     return MetodosAxios.instanceAxios.get(`/valor_total_tarjeta/`)
+  }
+
+  static valor_total_pay_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_pay_tarjeta/`)
+  }
+
+  static valor_total_banc_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_banc_tarjeta/`)
+  }
+
+  static valor_total_sis_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_sis_tarjeta/`)
   }
 
   static valor_total = () => {

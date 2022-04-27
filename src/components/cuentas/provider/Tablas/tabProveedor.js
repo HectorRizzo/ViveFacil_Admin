@@ -4,9 +4,10 @@ import MetodosAxios from "../../../../requirements/MetodosAxios";
 import * as moment from 'moment';
 import { API_URL } from "../../../../Constants";
 import docsImage from "../../../../img/docs.png"
+import Permisos from '../../../../requirements/Permisos'
 const { Search } = Input;
 const {RangePicker} = DatePicker
-
+let permisos = [];
 
 class ProveedorTab extends Component {
 
@@ -30,16 +31,22 @@ class ProveedorTab extends Component {
             page:1,
             search:false,
             disabledButton:true,
-            selectedPlan: null
+            selectedPlan: null,
+            disableCheck: true,
         };
     }    
 
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
 
-        this.cargarPagina(1)
-
-        this.loadPlanes()
+        let perm= ((permisos.filter(element => { return element.includes('Can view proveedor')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.cargarPagina(1)
+            this.loadPlanes()
+        }
     }
 
     cargarPagina = (page) => {
@@ -99,6 +106,9 @@ class ProveedorTab extends Component {
     }
 
     showModal = (prov) => {
+        if((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_proveedorInfo(prov.key).then(res => {
             console.log(res)
             console.log(res.data)
@@ -450,6 +460,7 @@ class ProveedorTab extends Component {
                                     <Switch
                                         key={this.proveedorActual?.id}
                                         loading={this.state.loadingCheck}
+                                        disabled={this.state.disableCheck}
                                         onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.id, switchValue)}
                                         defaultChecked={this.proveedorActual?.estado}
                                     />
@@ -478,6 +489,7 @@ class ProveedorTab extends Component {
                                 <p style={{paddingTop: 3 + 'px'}}><strong>Plan: </strong></p>
                                 <select className="select-prom"
                                     name="planes"
+                                    disabled={this.state.disableCheck}
                                     style={{width: 150 + 'px', height: 30 + 'px', marginLeft: 5 + 'px'
                                     }}
                                     onChange={this.changePlan}

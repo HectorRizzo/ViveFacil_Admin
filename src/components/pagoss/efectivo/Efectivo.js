@@ -2,17 +2,22 @@ import React, { Component, } from "react";
 import { Input, Table, Button, Modal, Upload, Form, Space, Switch, Pagination, DatePicker } from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import moment from 'moment'
+import Permisos from '../../../requirements/Permisos'
 const { Search } = Input;
 const { RangePicker } = DatePicker
+let permisos = [];
 
 const columns = [
 
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
+    { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes' },
+    { title: 'Proveedor', dataIndex: 'proveedor', className: 'columns-pendientes' },
+    { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes' },
     { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
     { title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
+
 
 
 ];
@@ -67,12 +72,14 @@ class Efectivo extends Component {
             page: 1,
         }
 
-        //this.handleInputChange = this.handleInputChange.bind(this);
-        //var array_conci=[];
+
 
     }
 
     async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         await this.loadCategorias();
         //console.log(this.state.categorias)
         await this.loadpagos(1);
@@ -116,10 +123,15 @@ class Efectivo extends Component {
             }
 
             datos_Efectivo.push({
+
+
+                cliente: efectivo.usuario,
+                servicio: efectivo.servicio,
+                proveedor: efectivo.proveedor,
                 key: 'EFEC' + efectivo.id,
                 concepto: efectivo.concepto,
                 fecha_creacion: efectivo.fecha_creacion.split('T')[0],
-                valor: '$' + efectivo.valor,
+                valor: '$' + efectivo.valor.toFixed(2),
                 tiene_descuento: descuento,
 
 
@@ -130,24 +142,26 @@ class Efectivo extends Component {
     }
 
     loadpagos = (page) => {
-        this.setState({ loading_pagos_efectivo: true });
-        //console.log(page)
-        MetodosAxios.obtener_pagos_efectivoP(page).then(res => {
-            let value = res.data.results
-            let efectivos = this.formatData(res)
-            console.log(value)
+        let perm = ((permisos.filter(element => { return element.includes('Can view pago') }).length > 0) || permisos.includes('all'))
+        if (perm) {
+            this.setState({ loading_pagos_efectivo: true });
+            //console.log(page)
+            MetodosAxios.obtener_pagos_efectivoP(page).then(res => {
+                let value = res.data.results
+                let efectivos = this.formatData(res)
+                console.log(value)
 
-            this.setState({
-                size: res.data.page_size,
-                total: res.data.total_objects,
-                page: res.data.current_page_number,
-                efectivos: efectivos,
-                allefectivo: efectivos,
-                loading_pagos_efectivo: false,
+                this.setState({
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+                    efectivos: efectivos,
+                    allefectivo: efectivos,
+                    loading_pagos_efectivo: false,
 
-            });
-        })
-
+                });
+            })
+        }
 
 
     }
@@ -155,21 +169,12 @@ class Efectivo extends Component {
     async loadTotal() {
         let total = await MetodosAxios.valor_total_efectivo();
         let totalV = await MetodosAxios.valor_total();
-        //console.log("valor total: " + totalV.data)
-        //this.state.total_efectivo = total,
-        //let tot = JSON.stringify(total)
-        //var data = JSON.parse(tot);
-        //console.log("total dinero: " + tot)
-        //console.log("total dinero s: " + data.data.valor__sum)
-        //console.log("total dinero s: " + total.data.valor__sum)
-        //this.state.total_efectivo = total.data.valor__sum
-        //console.log("total dinero efectivo: " + this.state.total_efectivo)
+
 
         this.setState({
             total_efectivo: total.data.valor__sum,
             totalValor: totalV.data
         })
-        //return true
 
     }
 
@@ -220,31 +225,33 @@ class Efectivo extends Component {
     render() {
         return (
             <div>
-                <h1 className="proveedor-title">Pagos en Efectivo</h1>
+                {/*<h1 className="proveedor-title">Pagos en Efectivo</h1>*/}
                 <div>
-                    <div style={{ marginBottom: 16 }}></div>
+                    {/*<div style={{ marginBottom: 16 }}></div>*/}
                     <div className="card-container">
+                        <h1 className="titulo" style={{ marginLeft: "2rem" }}>Pagos en Efectivo</h1>
+
 
                         <div style={{ display: 'flex', flexDirection: 'column', marginRight: "1rem" }}>
                             <br></br>
 
 
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', justifyContent: 'space-between' }}>
-                                <h2 style={{ marginLeft: "2rem" }}>Total Efectivo: ${this.state.total_efectivo}</h2>
-                                <h2 style={{ marginLeft: "2rem" }}>Total Dinero: ${this.state.totalValor}</h2>
+                                <h2 style={{ marginLeft: "2rem" }}>Total Efectivo: ${(this.state.total_efectivo).toFixed(2)}</h2>
+                                <h2 style={{ marginLeft: "2rem" }}>Total Dinero: ${(this.state.totalValor).toFixed(2)}</h2>
                                 <Space>
                                     <Button type="primary" size="default" disabled={this.state.disabledButton}
                                         onClick={this.filtrarFechas}>
                                         Filtrar
                                     </Button>
                                     <RangePicker size={'middle'} onChange={this.validarFechas} />
-                                    <Search
+                                    {/*<Search
                                         placeholder="Buscar"
                                         allowClear
                                         //onSearch={this.buscarAdministrador}
                                         style={{ width: 200, margin: '0 10px' }}
 
-        />
+        />*/}
                                 </Space>
                             </div>
 

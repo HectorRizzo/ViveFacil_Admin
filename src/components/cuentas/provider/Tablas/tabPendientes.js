@@ -7,10 +7,11 @@ import * as moment from 'moment';
 import { API_URL } from "../../../../Constants";
 import { validarCedula, validarGenero } from "../../../promocion/validators";
 import docsImage from "../../../../img/docs.png"
-
+import Permisos from '../../../../requirements/Permisos'
 
 const { Search } = Input;
 const {RangePicker} = DatePicker
+let permisos = [];
 
 class PendienteTab extends Component {
    
@@ -45,12 +46,16 @@ class PendienteTab extends Component {
     }    
 
 
-    componentDidMount() {
-
-        this.cargarPagina(1)
-        this.cargarCiudades()
-        this.cargarProfesiones()
-
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
+        let perm= ((permisos.filter(element => { return element.includes('Can view proveedor')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.cargarPagina(1)
+            this.cargarCiudades()
+            this.cargarProfesiones()
+        }
         // MetodosAxios.eliminarDocPendiente(13).then(res => {
         // })
     }
@@ -581,15 +586,17 @@ class PendienteTab extends Component {
                         // onOk={() => this.handleAceptar()}
                         width={800}
                         footer= {[
-                            <Button key="back" onClick={this.handleCerrarInfo}>
-                                Atras
-                            </Button>,
-                            <Button key="Acept" onClick={this.handleAceptar}>
-                                Aceptar
-                            </Button>,
-                            <Button key="Deny" onClick={this.handleDenegar}>
-                                Denegar
-                            </Button>,
+                            <div className="footer">
+                                <Button key="back" onClick={this.handleCerrarInfo}>
+                                    Atras
+                                </Button>
+                                {((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')) && <Button key="Acept" onClick={this.handleAceptar}>
+                                    Aceptar
+                                </Button>}
+                                {((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')) && <Button key="Deny" onClick={this.handleDenegar}>
+                                    Denegar
+                                </Button>}
+                            </div>
                         ]}
                     > 
 

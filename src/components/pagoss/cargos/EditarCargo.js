@@ -5,7 +5,7 @@ import { Form, Input, Divider, Select } from 'antd';
 //import '../../Validacion/validaciones.css';
 const EditarCargo = (props) => {
   const { Option } = Select;
-  const { param} = props
+  const { param } = props
   const [formEdit] = Form.useForm();
   const layout = {
     labelCol: {
@@ -18,14 +18,14 @@ const EditarCargo = (props) => {
 
   const handleChangenombre = (event) => {
     param.cargoInfo.nombre = event.target.value
-    console.log( param.cargoInfo.nombre)
+    console.log(param.cargoInfo.nombre)
     //param.nombre = event.target.value
     //var nombre = document.getElementById("errornombre");
     //if (nombre) nombre.textContent = ""
   }
   const handleChangeporcentaje = (event) => {
     param.cargoInfo.porcentaje = event.target.value
-    console.log( param.cargoInfo.porcentaje)
+    console.log(param.cargoInfo.porcentaje)
     //param.descripcion = event.target.value
     //var descripcion = document.getElementById("errordescripcion");
     //if (descripcion) descripcion.textContent = ""
@@ -61,26 +61,26 @@ const EditarCargo = (props) => {
 
           >
             <Input defaultValue={param.cargoInfo?.nombre} onChange={handleChangenombre}
-              className="edit-input"
+              className="edit-input" disabled
             />
           </Form.Item>
 
           <Form.Item name="porcentaje" label="Porcentaje" style={{ color: "red !important" }}
-                        rules={[
-                            {
-                                required: true,
-                                message: "Ingrese el porcentaje"
-                            },
-                        ]}
+            rules={[
+              {
+                required: true,
+                message: "Ingrese el porcentaje"
+              },
+            ]}
 
-                    >
-                        <Input min="1" max="100" defaultValue={param.cargoInfo?.porcentaje} onChange={value => { handleChangeporcentaje(value) }}
-                            className="edit-input"
-                            type="number" />
-                            {/*<div className="Registroerror-div">
+          >
+            <Input min="1" max="100" defaultValue={param.cargoInfo?.porcentaje} onChange={value => { handleChangeporcentaje(value) }}
+              className="edit-input"
+              type="number" />
+            {/*<div className="Registroerror-div">
                             <label className="error" id="errorporcentajeE"></label>
                         </div>*/}
-                    </Form.Item>
+          </Form.Item>
 
 
 

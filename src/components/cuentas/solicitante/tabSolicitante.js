@@ -3,11 +3,12 @@ import { Button, Modal, Table ,Image , Pagination, Space, Input, DatePicker , Sw
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import avatar from "../../../img/avatar.png"
 import * as moment from 'moment';
-
+import Permisos from '../../../requirements/Permisos'
 const dataSolicitante= [];
 const { Search } = Input;
 
 const { RangePicker } = DatePicker;
+let permisos = [];
 
 class SolicitantesTab extends Component {
 
@@ -33,15 +34,24 @@ class SolicitantesTab extends Component {
             disabledButton:true,
             numberPage:1,
             usuarioBusqueda: null,
+            disableCheck: true,
         };
     }    
 
-    componentDidMount = () => {
-
-        this.handleNextSolicitante(1)
+    async componentDidMount(){
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
+        let perm= ((permisos.filter(element => { return element.includes('Can view solicitante')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.handleNextSolicitante(1)
+        }
 
     }
     showModal = (solicitante) => {
+        if((permisos.filter(element => { return element.includes('Can change solicitante')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_solicitante(solicitante.correo).then(res => {
             console.log(res.data[0])
             this.solicianteInfo = res.data[0];
@@ -320,6 +330,7 @@ class SolicitantesTab extends Component {
                                 <Switch
                                     key={this.solicianteInfo?.id}
                                     loading={this.state.loadingCheck}
+                                    disabled={this.state.disableCheck}
                                     onChange={(switchValue) => this.onChangeCheckSolicitante(this.solicianteInfo?.id, switchValue)}
                                     defaultChecked={this.solicianteInfo?.estado}
                                 />

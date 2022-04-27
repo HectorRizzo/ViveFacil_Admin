@@ -13,10 +13,11 @@ import rechazar from '../../../img/rechazar.png'
 import SelectedContex from '../../../context/SelectedContext'
 import TableEditPendiente from "./Tables/TableEditPendiente";
 import TablePendiente from './Tables/TablePendiente';
+import Permisos from '../../../requirements/Permisos'
 
 const { TabPane } = Tabs;
 const { Search } = Input;
-
+let permisos = [];
 
 
 const columns = [
@@ -98,11 +99,15 @@ class Proveedor extends Component {
             searchText: '',
             searchedColumn: '',
             showCorreo: false,
-            showVerificar:false
+            showVerificar:false,
+            disableCheck: true,
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.load_proveedores();
         this.load_Pendientes();
     }
@@ -130,44 +135,48 @@ class Proveedor extends Component {
     }
 
     async load_Pendientes() {
-        this.setState({ loading_pendientes: true })
-        let pendientes = []
-        let value = await MetodosAxios.obtener_proveedores_pendientes();
-        let count = 1;
-        console.log(value.data)
-        for (let pendiente of value.data) {
+        let perm= ((permisos.filter(element => { return element.includes('Can view proveedor')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({ loading_pendientes: true })
+            let pendientes = []
+            let value = await MetodosAxios.obtener_proveedores_pendientes();
+            let count = 1;
+            console.log(value.data)
+            for (let pendiente of value.data) {
 
-            let _pendiente = await get_Pendientes(pendiente, count)
-            // this.profesiones_Pendientes(_pendiente)
-            pendientes.push(_pendiente);
-            count++;
+                let _pendiente = await get_Pendientes(pendiente, count)
+                // this.profesiones_Pendientes(_pendiente)
+                pendientes.push(_pendiente);
+                count++;
+            }
+            this.setState({
+                pendientes: pendientes,
+                all_pendientes: pendientes,
+                loading_pendientes: false,
+            })
+            return value.data;
         }
-        this.setState({
-            pendientes: pendientes,
-            all_pendientes: pendientes,
-            loading_pendientes: false,
-        })
-        return value.data;
     }
 
     async load_proveedores() {
-        this.setState({ loading_proveedores: true })
-        let proveedores = []
-        let value = await MetodosAxios.obtener_proveedores();
-        let data = value.data
-        let count = 1;
-        for (let proveedor of data) {
-            let element = await getProveedor(proveedor, count)
-            proveedores.push(element)
-            count++;
+        let perm= ((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all'))
+        if(perm){
+            this.setState({ loading_proveedores: true })
+            let proveedores = []
+            let value = await MetodosAxios.obtener_proveedores();
+            let data = value.data
+            let count = 1;
+            for (let proveedor of data) {
+                let element = await getProveedor(proveedor, count)
+                proveedores.push(element)
+                count++;
+            }
+            this.setState({
+                proveedores: proveedores,
+                all_proveedores: proveedores,
+                loading_proveedores: false
+            })
         }
-        this.setState({
-            proveedores: proveedores,
-            all_proveedores: proveedores,
-            loading_proveedores: false
-        })
-
-
     }
 
     getAllchangedValued(proveedor) {

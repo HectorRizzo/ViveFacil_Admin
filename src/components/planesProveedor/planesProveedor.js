@@ -80,7 +80,7 @@ class planesProveedor extends Component {
         }
 
         let arregloImg = document.getElementsByClassName('reload')
-        let perm= ((permisos.filter(element => { return element.includes('Can delete publicidad')}).length >0) || permisos.includes('all'))
+        let perm= ((permisos.filter(element => { return element.includes('Can delete proveedor')}).length >0) || permisos.includes('all'))
         for(let i = 0; i< arregloImg.length; i++){
             let img = arregloImg[i]
             if(perm){
@@ -109,28 +109,30 @@ class planesProveedor extends Component {
     }
 
     async loadproveedores(page) {
-        console.log(page)
-        this.setState({ loading_proveedores: true });
+        let perm= ((permisos.filter(element => { return element.includes('Can view proveedor')}).length >0) || permisos.includes('all'))
+        if(perm){
+            console.log(page)
+            this.setState({ loading_proveedores: true });
 
-        var firstDay = moment().startOf('month').format('YYYY-MM-DD');
-        var lastDay = moment().endOf('month').format('YYYY-MM-DD');
+            var firstDay = moment().startOf('month').format('YYYY-MM-DD');
+            var lastDay = moment().endOf('month').format('YYYY-MM-DD');
 
-        console.log(firstDay + lastDay)
+            console.log(firstDay + lastDay)
 
-        MetodosAxios.filtrar_planProvidersDate(firstDay, lastDay, page).then(res  => {
-            let datos = this.formatData(res)
-            this.setState({
-                proveedores: datos,
-                allproveedores: datos,
-                loading_proveedores: false,
-                size: res.data.page_size,
-                total: res.data.total_objects,
-                page: res.data.current_page_number,
-                inicio: firstDay,
-                fin: lastDay
-            })   
-        })
-        
+            MetodosAxios.filtrar_planProvidersDate(firstDay, lastDay, page).then(res  => {
+                let datos = this.formatData(res)
+                this.setState({
+                    proveedores: datos,
+                    allproveedores: datos,
+                    loading_proveedores: false,
+                    size: res.data.page_size,
+                    total: res.data.total_objects,
+                    page: res.data.current_page_number,
+                    inicio: firstDay,
+                    fin: lastDay
+                })   
+            })
+        }
     }
 
     formatData  = (res) => {
@@ -150,7 +152,7 @@ class planesProveedor extends Component {
     }
 
     showModal = (prov) => {
-        if((permisos.filter(element => { return element.includes('Can delete publicidad')}).length >0) || permisos.includes('all')){
+        if((permisos.filter(element => { return element.includes('Can change proveedor')}).length >0) || permisos.includes('all')){
             this.setState({disableCheck: false})
         }
         MetodosAxios.obtener_proveedorInfo(prov.key).then(res => {

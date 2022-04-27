@@ -7,10 +7,12 @@ import Agregar from '../../../img/icons/agregar.png';
 import Eliminar from "../../../img/icons/eliminar.png";
 import Icon from '@ant-design/icons';
 import {ValidarTexto} from '../Validacion/validaciones'
+import Permisos from '../../../requirements/Permisos'
 import "./AdmSubCategorias.css"
 import EditarSubCategoria from './tabs/EditarSubCategoria'
 const { TabPane } = Tabs;
 const { Search } = Input;
+let permisos = [];
 class AdmSubCategorias extends Component {
     constructor(props) {
         super(props);
@@ -35,9 +37,13 @@ class AdmSubCategorias extends Component {
             categoria:null,
             nombre0:'',
             descripcion0:'',
+            disableCheck: true,
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
+        await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
+            permisos = res
+        })
         this.llamaCategorias();
         this.llenarTablaSubCategoria();
     }
@@ -61,33 +67,40 @@ class AdmSubCategorias extends Component {
     }
 
     llenarTablaSubCategoria = () => {
-        this.setState({
-            loadingTable: true
-        })
-        MetodosAxios.obtener_subcategorias().then(res => {
-            let data_subcategoria = [];
-
-            for (let i = 0; i < res.data.length; i++) {
-                let subcategoria = res.data[i]
-                data_subcategoria.push({
-                    key: subcategoria.id,
-                    nombre: subcategoria.nombre,
-                    categoria:subcategoria.categoria,
-                    check: <Switch
-                        key={subcategoria.id}
-                        loading={this.state.loadingCheck}
-                        onChange={(switchValue) => this.onChangeCheckSubCategoria(subcategoria.id, switchValue)}
-                        defaultChecked={subcategoria.estado}
-                    />,
-                });
-                
-            }
+        let perm= ((permisos.filter(element => { return element.includes('Can view sub categoria')}).length >0) || permisos.includes('all'))
+        if((permisos.filter(element => { return element.includes('Can change sub categoria')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
+        if(perm){
             this.setState({
-                data_subcategoria: data_subcategoria,
-                base_subcategoria: data_subcategoria,
-                loadingTable: false,
+                loadingTable: true
             })
-        })
+            MetodosAxios.obtener_subcategorias().then(res => {
+                let data_subcategoria = [];
+
+                for (let i = 0; i < res.data.length; i++) {
+                    let subcategoria = res.data[i]
+                    data_subcategoria.push({
+                        key: subcategoria.id,
+                        nombre: subcategoria.nombre,
+                        categoria:subcategoria.categoria,
+                        check: <Switch
+                            key={subcategoria.id}
+                            loading={this.state.loadingCheck}
+                            onChange={(switchValue) => this.onChangeCheckSubCategoria(subcategoria.id, switchValue)}
+                            disabled={this.state.disableCheck}
+                            defaultChecked={subcategoria.estado}
+                        />,
+                    });
+                    
+                }
+                this.setState({
+                    data_subcategoria: data_subcategoria,
+                    base_subcategoria: data_subcategoria,
+                    loadingTable: false,
+                })
+            })
+        }
     }
 
 
@@ -238,20 +251,29 @@ class AdmSubCategorias extends Component {
         this.CerrarEdit()
         }
     }
-    CerrarEdit() {
+    limpiarformsubcategoriaEdit = ()=>{
+        this.setState({
+            nombre:'',
+            descripcion:'',
+            limpiarEdit:true,
+        })
+    }
+    CerrarEdit =() =>{
         this.limpiarformsubcategoriaEdit()
-         this.setModalVisibleEdit(false)
+        this.setModalVisibleEdit(false)
      }
      CerrarAgregar() {
           this.limpiarformsubcategoria()
             this.setModalVisible(false)
-        }
-        AgregarsubCategoria() {
-            this.limpiarformsubcategoria() 
-            console.log("nombre",this.state.nombre) 
-          //  console.log("descripcion",this.state.descripcion) 
-            this.setModalVisible(true)
-         }
+    }
+    AgregarsubCategoria() {
+        this.limpiarformsubcategoria() 
+        console.log("nombre",this.state.nombre) 
+        //  console.log("descripcion",this.state.descripcion) 
+        this.setModalVisible(true)
+    }
+
+    
     EditarSubCategoria = (categoria) => {
         this.limpiarformsubcategoriaEdit()
         console.log(this.state.categoria)
@@ -264,13 +286,7 @@ class AdmSubCategorias extends Component {
         this.setModalVisibleEdit(true)
     }
 
-    limpiarformsubcategoriaEdit(){
-        this.setState({
-            nombre:'',
-            descripcion:'',
-            limpiarEdit:true,
-        })
-    }
+    
     render() {
 
         return (
@@ -278,14 +294,14 @@ class AdmSubCategorias extends Component {
                 <h1 className="titulo">Sub-Categorías</h1>
                 <div className="card-container">
                     <Tabs onTabClick={(event) => this.handleSelect(event)} tabBarExtraContent={<div> 
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can add sub categoria')}).length >0) || permisos.includes('all')) && <Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
                             onClick={() => {   this.AgregarsubCategoria(true)}}
-                        />
+                        />}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -293,13 +309,13 @@ class AdmSubCategorias extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
                         
-                        <Button
+                        {((permisos.filter(element => { return element.includes('Can delete sub categoria')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.eliminar() }}
-                        />
+                        />}
                     </div>}
                         type="card" size="large" >
                         {this.loadServices()}
@@ -324,11 +340,16 @@ class AdmSubCategorias extends Component {
                     title="Editar Sub-Categoría"
                     centered
                     visible={this.state.modalVisibleEdit}
-                    okText="Guardar"
-                    cancelText="Cancelar"
-                    closable={false}
-                    onOk={() => this.guardarEditsubcategoria()}
-                    onCancel={() => this.CerrarEdit()}
+                    footer={[
+                        <div className="footer">
+                            <Button key="close" onClick={this.CerrarEdit}>
+                                    Cerrar
+                            </Button>
+                            {((permisos.filter(element => { return element.includes('Can change insignia')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.guardarEditsubcategoria}>
+                                    Guardar
+                            </Button>}
+                        </div>
+                    ]}
                 >
                     <EditarSubCategoria param={this.state} />
                 </Modal>
