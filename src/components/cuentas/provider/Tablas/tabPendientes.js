@@ -187,7 +187,7 @@ class PendienteTab extends Component {
 
     }
 
-    crearProveedor= () => {
+    crearProveedor(){
             let profesion =this.state.pendienteActual?.profesion
             if(this.state.profesiones.includes(profesion.toLowerCase())){
 
@@ -231,19 +231,16 @@ class PendienteTab extends Component {
                         }
                         console.log(creado)
                         this.handleEnviarCorreo(creado)
+
                         MetodosAxios.eliminarPendiente(this.state.pendienteActual?.id).then(res => {
                             console.log(res)
+                            this.cargarPagina(1)
                         })
                         this.setState({
                             visibleModalAceptar: false,
                             visibleModal:false,
                         })
-
                         this.cargarPagina(1)
-                        
-                    
-                        
-
 
                     }
 
@@ -264,7 +261,7 @@ class PendienteTab extends Component {
     handleEnviarCorreo  = (data) => {
         MetodosAxios.enviar_email(data).then( respuesta => {
             console.log(respuesta)
-            if(respuesta.success){
+            if(respuesta.data.success){
                 message.success("Se ha enviado un email con las creedenciales")
             }
             else{

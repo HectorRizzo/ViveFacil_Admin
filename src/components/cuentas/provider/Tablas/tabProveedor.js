@@ -441,7 +441,7 @@ class ProveedorTab extends Component {
                             }
                             </p>
                             <p><strong>Ciudad:   </strong>{this.proveedorActual?.user_datos.ciudad}</p>
-                            <p><strong>Dirección:   </strong>{this.proveedorActual?.ciudad}</p>
+                            <p><strong>Dirección:   </strong>{this.proveedorActual?.direccion}</p>
                             <p><strong>Teléfono:  </strong>{this.proveedorActual?.user_datos.telefono}</p>
                             <p><strong>Género:  </strong>{this.proveedorActual?.user_datos.genero}</p>
                             <p><strong>Correo:  </strong>{this.proveedorActual?.user_datos.user.email}</p>

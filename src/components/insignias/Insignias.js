@@ -20,9 +20,10 @@ const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     { title: 'Imagen', dataIndex: 'imagen', render: imagen=> <img alt={imagen} src={imagen} style={{width: 150 + 'px'}}/>,  className: 'columns-pendientes' },
     { title: 'Nombre', dataIndex: 'nombre', className: 'columns-pendientes' },
+    { title: 'Usuario ', dataIndex: 'tipoUsuario', className: 'columns-pendientes'},
     //{ title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Tipo', dataIndex: 'tipo', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Cantidad Minima de Pedidos', dataIndex: 'pedidos', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cantidad Minima de Pedidos', dataIndex: 'pedidos', className: 'columns-pendientes', responsive: ['lg'] ,align: "center"},
     { title: 'Estado', dataIndex: 'estado', className: 'columns-pendientes', responsive: ['lg'] },
 ];
 
@@ -38,6 +39,7 @@ class Insignias extends Component {
             data_insignia: [],
             base_insignia: [],
             loadingCheck: false,
+            loadingTable:false,
             visibleModalInsignia: false,
             modalAggVisible: false,
 
@@ -70,12 +72,14 @@ class Insignias extends Component {
             servicio0: '',
             pedidos0: '',
             tipo0: '',
+            tipoUsuario0:'',
 
             nombre: '',
             descripcion: '',
             servicio: '',
             pedidos: '',
             tipo: '',
+            tipoUsuario:'',
         };
     }
 
@@ -106,6 +110,7 @@ class Insignias extends Component {
                     key: insig.id,
                     nombre: insig.nombre,
                     imagen: insig.imagen,
+                    tipoUsuario :insig.tipo_usuario,
                     //servicio: insig.servicio,
                     tipo: insig.tipo,
                     pedidos: insig.pedidos,
@@ -167,6 +172,7 @@ class Insignias extends Component {
 
     showModal = (insignia) => {
         MetodosAxios.obtener_insignia(insignia.key).then(res => {
+            console.log(res)
             this.insigniaSelected = res.data;
             this.setState({
                 visibleModalInsignia: true,
@@ -276,8 +282,9 @@ class Insignias extends Component {
         console.log(this.state.selected_cgtg)
         if (this.state.nombre0 !== '' && this.state.descripcion0 !== '' &&
             this.state.fileimg !== null && this.state.participantes !== '' &&
-            this.state.pedidos0 !== ''
-            //&& this.state.tipo0 !== ''
+            this.state.pedidos0 !== '' && this.state.tipoUsuario0 !=='' && 
+            this.state.tipo0 !==''
+            
         ) {
 
             return true
@@ -297,9 +304,13 @@ class Insignias extends Component {
         if (this.state.pedidos0 === '') {
             ValidarTexto(false, 'errorpedidos0')
         }
-        //if (this.state.tipo0 === '') {
-        //    ValidarTexto(false, 'errortipo0')
-        //}
+        if (this.state.tipoUsuario0 === '') {
+            console.log("f")
+            ValidarTexto(false, 'errortipoUsuario0')
+        }
+        if (this.state.tipo0 === '') {
+           ValidarTexto(false, 'errortipo0')
+        }
         return false
     }
 
@@ -314,7 +325,8 @@ class Insignias extends Component {
         if (this.state.insigniaInfo.nombre !== '' && this.state.insigniaInfo.descripcion !== '' &&
             //this.state.fileimg !== null && 
             this.state.insigniaInfo.servicio !== '' &&
-            this.state.insigniaInfo.pedidos !== '' && this.state.insigniaInfo.tipo !== '') {
+            this.state.insigniaInfo.pedidos !== '' && this.state.insigniaInfo.tipo !== '' && 
+            this.state.insigniaInfo.tipo_usuario !== '') {
 
             return true
         }
@@ -336,6 +348,9 @@ class Insignias extends Component {
         if (this.state.insigniaInfo.tipo === '') {
             ValidarTexto(false, 'errortipo')
         }
+        if (this.state.insigniaInfo.tipo_usuario === '') {
+            ValidarTexto(false, 'errortipoUsuario')
+        }
         return false
     }
 
@@ -354,7 +369,7 @@ class Insignias extends Component {
             data.append('nombre', this.state.nombre0);
             data.append('descripcion', this.state.descripcion0);
             data.append('imagen', this.state.fileimg);
-
+            data.append('tipoUsuario',this.state.tipoUsuario0);
             data.append('servicio', this.state.tipo0);
             data.append('pedidos', this.state.pedidos0);
             data.append('tipo', this.state.participantes);
@@ -403,6 +418,7 @@ class Insignias extends Component {
             data.append('servicio', this.state.insigniaInfo.servicio);
             data.append('pedidos', this.state.insigniaInfo.pedidos);
             data.append('tipo', this.state.insigniaInfo.tipo);
+            data.append('tipo_usuario',this.state.insigniaInfo.tipo_usuario)
             if (this.state.fileimg != null) {
                 data.append('imagen', this.state.fileimg)
             } //else {
@@ -553,6 +569,7 @@ class Insignias extends Component {
                                 onChange: this.onSelectChangeInsignia
                             }}
                             //columns={columns}
+                            loading={this.state.loadingTable}
                             columns={columns}
                             onRow={(insignia) => {
                                 return {
@@ -587,6 +604,7 @@ class Insignias extends Component {
 
                     <p><strong>{this.insigniaSelected?.nombre}</strong></p>
                     <p><strong>Descripcion:  </strong>{this.insigniaSelected?.descripcion}</p>
+                    <p><strong>Tipo Usuario:  </strong>{this.insigniaSelected?.tipo_usuario}</p>
                     <p><strong>Fecha de creación:  </strong>{this.insigniaSelected?.fecha_creacion.split('T')[0]}</p>
                     <p><strong>Tipo:  </strong>{this.insigniaSelected?.tipo}</p>
                     <p><strong>Servicio:  </strong>{this.insigniaSelected?.servicio}</p>

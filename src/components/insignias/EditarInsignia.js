@@ -50,6 +50,13 @@ const EditarInsignia = (props) => {
     //var tipo = document.getElementById("errortipo");
     //if (tipo) tipo.textContent = ""
   }
+  const handleChangetipoUsuario = (event) => {
+    param.insigniaInfo.tipo_usuario = event.target.value
+    console.log(param.insigniaInfo.tipo_usuario)
+    //param.tipo = event.target.value
+    //var tipo = document.getElementById("errortipoUsuario");
+    //if (tipo) tipo.textContent = ""
+  }
 
 
   const handleSubmitted = () => {
@@ -94,6 +101,25 @@ const EditarInsignia = (props) => {
             ]}>
             <Input.TextArea rows="5" defaultValue={param.insigniaInfo?.descripcion} onChange={value => { handleChangedescripcion(value) }} className="edit-input"
             />
+          </Form.Item>
+
+
+          <Form.Item
+            name="tipoUsuario"
+            label="Tipo Usuario"
+          >
+            <select className="select-prom"
+              name="participantes" 
+              onChange={value => { handleChangetipoUsuario(value) }}
+              required>
+              <option selected="true" disabled="disabled">{param.insigniaInfo?.tipo_usuario}</option>
+              <option value={"Proveedor"}>Proveedor</option>
+              <option value={"Solicitante"}>Solicitante</option>
+
+            </select>
+            {/* <div className="Registroerror-div">
+                <label className="error" id="errortipoUsuario0"></label>
+            </div> */}
           </Form.Item>
 
           <Form.Item name="tipo" label="Tipo"

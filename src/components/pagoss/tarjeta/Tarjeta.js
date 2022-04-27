@@ -128,6 +128,8 @@ class Tarjeta extends Component {
                 descuento = "Aplica";
             }
 
+
+
             let cargo_pay = (tarjeta.valor * 1.5) / 100
 
             datos_Tarjeta.push({

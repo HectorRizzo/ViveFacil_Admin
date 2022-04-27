@@ -287,6 +287,7 @@ class LayoutPage extends Component {
                                 {((this.state.permisos.filter(element => { return element.includes('publicidad')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/publicidad/`} component={Publicidades} exact />}
                                 {((this.state.permisos.filter(element => { return element.includes('insignia')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/insignias/`} component={Insignias} exact />}
                                 {((this.state.permisos.filter(element => { return element.includes('cupon')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/cupones/`} component={Cupones} exact />}
+                                {((this.state.permisos.filter(element => { return element.includes('notificacion')}).length >0) || this.state.permisos.includes('all')) && <Route path={`${this.props.match.path}/notificaciones/`} component={Notificaciones} exact />}
                                 <Route path={`${this.props.match.path}/efectivo/`} component={Efectivo} exact/>
                                 <Route path={`${this.props.match.path}/tarjeta/`} component={Tarjeta} exact />
                                 <Route path={`${this.props.match.path}/cargos/`} component={Cargos} exact />

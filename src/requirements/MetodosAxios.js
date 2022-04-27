@@ -793,5 +793,7 @@ export default class MetodosAxios {
   static obtener_permisos = () => {
     return MetodosAxios.instanceAxios.get(`/permisos`);
   }
+
+  
 }
 

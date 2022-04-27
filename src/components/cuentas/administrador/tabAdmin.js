@@ -140,7 +140,7 @@ class AdminTab extends Component {
         let datos= new FormData()
             datos.append('id',this.state.adminInfo?.id)
             datos.append('username',this.state.adminInfo?.user_datos.user.email)
-            datos.append('email',this.state.adminInfo?.user_datos.user.email)
+            datos.append('email',this.state.adminInfo?.user_datos.user.email)        
             datos.append('password',this.state.adminInfo?.user_datos.user.password)
             datos.append('tipo',"Administrador")
             datos.append('nombres',this.state.adminInfo?.user_datos.nombres)

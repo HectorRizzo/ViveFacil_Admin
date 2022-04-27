@@ -48,6 +48,13 @@ const AgregarInsignia = (props) => {
     if (tipo) tipo.textContent = ""
   }
 
+  const handleChangetipoUsuario = (event) => {
+    param.tipoUsuario0 = event.target.value
+    console.log(param.tipoUsuario0)
+    var tipo = document.getElementById("errortipoUsuario0");
+    if (tipo) tipo.textContent = ""
+  }
+
   const handleSelectedCtg = (event) => {
     param.selected_cgtg = event.target.value
     let name = event.target.value;
@@ -154,6 +161,25 @@ const AgregarInsignia = (props) => {
 
 
 
+          <Form.Item
+            name="tipoUsuario"
+            label="Tipo Usuario"
+            className="form"
+          >
+            <select className="select-prom"
+              name="participantes" 
+              onChange={value => { handleChangetipoUsuario(value) }}
+              required>
+              <option selected="true" disabled="disabled">Seleccione el tipo de Usuario</option>
+              <option value={"Proveedor"}>Proveedor</option>
+              <option value={"Solicitante"}>Solicitante</option>
+
+
+            </select>
+            <div className="Registroerror-div">
+                <label className="error" id="errortipoUsuario0"></label>
+            </div>
+          </Form.Item>
 
 
 

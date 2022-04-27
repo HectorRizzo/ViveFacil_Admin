@@ -9,8 +9,7 @@ const { Meta } = Card;
 
 
 class Notificaciones extends Component {
-
-
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -57,7 +56,7 @@ class Notificaciones extends Component {
         if(this.state.fileimg!=null){
             dataNotificacion.append('imagen',this.state.fileimg)
         }
-        dataNotificacion.append('ruta','./notificaciones')
+        dataNotificacion.append('ruta','./Noticias')
 
 
         MetodosAxios.send_notificacion(dataNotificacion).then(res=> {
