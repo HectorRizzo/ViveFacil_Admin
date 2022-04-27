@@ -610,6 +610,18 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/valor_total_tarjeta/`)
   }
 
+  static valor_total_pay_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_pay_tarjeta/`)
+  }
+
+  static valor_total_banc_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_banc_tarjeta/`)
+  }
+
+  static valor_total_sis_tarjeta = () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_sis_tarjeta/`)
+  }
+
   static valor_total = () => {
     return MetodosAxios.instanceAxios.get(`/valor_total/`)
   }

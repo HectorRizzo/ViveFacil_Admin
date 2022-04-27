@@ -80,22 +80,11 @@ class Cargos extends Component {
             let data_cargo = [];
             for (let i = 0; i < res.data.length; i++) {
                 let carg = res.data[i]
-                //let est
-                //if (insig.estado == true) {
-                //    est = "Activo"
 
-                //} else {
-                //    est = "Inactivo"
-                //}
-                //this.state.fileimgup = insig.imagen
                 data_cargo.push({
                     key: carg.id,
                     nombre: carg.nombre,
                     porcentaje: carg.porcentaje,
-                    //servicio: insig.servicio,
-                    //tipo: insig.tipo,
-                    //pedidos: insig.pedidos,
-                    //estado: est,
 
                 });
             }
@@ -108,10 +97,7 @@ class Cargos extends Component {
     }
 
     AgregarCargo() {
-        //this.limpiarforminsignia()
-        {/*console.log("nombre",this.state.nombre) 
-        console.log("descripcion",this.state.descripcion) 
-        console.log("img",this.state.imagen) */}
+
         this.setModalAggVisible(true)
     }
 
@@ -162,29 +148,17 @@ class Cargos extends Component {
 
     async guardarcargo() {
         if (this.validarform()) {
-            //console.log(this.state.fileimg)
+
             var data = new FormData();
-            //console.log('nombre: ', this.state.nombre0)
-            //console.log('descripcion: ', this.state.descripcion0)
-            //console.log('imagen: ', this.state.fileimg)
-            //console.log('servicio: ', this.state.servicio0)
-            //console.log('pedidos: ', this.state.pedidos0)
-            //console.log('tipo: ', this.state.tipo0)
+
             data.append('nombre', this.state.nombre0);
             data.append('porcentaje', this.state.porcentaje0);
 
-            //data.append('descripcion', this.state.descripcion0);
-            //data.append('imagen', this.state.fileimg);
 
-            //data.append('servicio', this.state.tipo0);
-            //data.append('pedidos', this.state.pedidos0);
-            //data.append('tipo', this.state.participantes);
-            //console.log(data)
             await MetodosAxios.crear_cargo(data).then(res => {
                 console.log(res)
             })
-            //this.MostrarInsignias();
-            //this.CerrarAgregar()
+
 
             for (let value of data.keys()) {
                 console.log(value);
@@ -192,12 +166,7 @@ class Cargos extends Component {
             for (let values of data.values()) {
                 console.log(values);
             }
-            //data.append('nombre', this.state.nombre0);
-            //data.append('descripcion', this.state.descripcion0);
-            //data.append('foto', this.state.fileimg);
-            //await MetodosAxios.crear_categoria(data).then(res => {
-            //    console.log(res)
-            //})
+
             this.MostrarCargos();
             this.CerrarAgregar()
         }
@@ -269,17 +238,9 @@ class Cargos extends Component {
     async editarCargo() {
 
         if (this.validarformEdit()) {
-            //this.setState({
-            //    limpiarEdit: true,
 
-            //})
             var data = new FormData();
-            //data.append('nombre', this.state.nombre);
-            //data.append('descripcion', this.state.descripcion);
-            //data.append('imagen', this.state.fileimg);
-            //data.append('servicio', this.state.servicio);
-            //data.append('pedidos', this.state.pedidos);
-            //data.append('tipo', this.state.tipo);
+
 
             data.append('nombre', this.state.cargoInfo.nombre);
             data.append('porcentaje', this.state.cargoInfo.porcentaje);

@@ -13,29 +13,22 @@ const { Search } = Input;
 const { RangePicker } = DatePicker
 let permisos = [];
 
+
 const columns = [
 
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
-    //{ title: 'Cliente', dataIndex: 'clientee', className: 'columns-pendientes'},
     { title: 'Cliente', dataIndex: 'cliente', className: 'columns-pendientes' },
-    { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes' },
-    { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
-    //{ title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
+    { title: 'Proveedor', dataIndex: 'proveedor', className: 'columns-pendientes' },
+    { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes', responsive: ['lg'] },
+
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
-    //{
-    //    Headers: 'Cargo',
-    //    columns: [
-    //        { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
-    //        { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
-    //    ]
-    //},
+
     { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Sistema ($)', dataIndex: 'cargo_sistema', className: 'columns-pendientes', responsive: ['lg'] },
-    //{ title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', render: imagen => <img alt={imagen} src={imagen} style={{ width: 75 + 'px' }} />, className: 'columns-pendientes' },
-    //{ title: 'Descuento', dataIndex: 'tiene_descuento', className: 'columns-pendientes', responsive: ['lg'] },
+
 
 
 ];
@@ -46,6 +39,7 @@ class Tarjeta extends Component {
     fechaInicio = null;
     fechaFin = null;
     tarjetaSelected = null;
+
 
     constructor(props, context) {
         super(props);
@@ -70,12 +64,21 @@ class Tarjeta extends Component {
             //total_pagos: 0,
 
 
+            tarjs: [],
+            datos_Tarjetas: [],
+
+
             total_tarjeta: 0,
             totalValor: 0,
+            total_cargo_paymentez: 0.0,
+            total_cargo_banco: 0.0,
+            total_cargo_sistema: 0.0,
 
             valor_paymentez: 0.0,
             valor_banco: 0.0,
             valor_sistema: 0.0,
+
+
 
 
             showSi: false,
@@ -100,8 +103,7 @@ class Tarjeta extends Component {
             page: 1,
         }
 
-        //this.handleInputChange = this.handleInputChange.bind(this);
-        //var array_conci=[];
+
 
     }
 
@@ -109,9 +111,7 @@ class Tarjeta extends Component {
         await Permisos.obtener_permisos((localStorage.getItem('super') === 'true'), permisos).then(res => {
             permisos = res
         })
-        //await this.loadCategorias();
         await this.loadCargos();
-        //console.log(this.state.categorias)
         await this.loadpagos(1);
         await this.loadTotal();
     }
@@ -123,11 +123,7 @@ class Tarjeta extends Component {
             let data = response.data;
             let ctgs = [];
             for (let cargo of data) {
-                //let value = {
-                //    id: categoria.id,
-                //    nombre: categoria.nombre
-                //}
-                //ctgs.push(value);
+
                 if (cargo.nombre === "Paymentez") {
                     console.log(cargo.porcentaje)
                     this.setState({ valor_paymentez: cargo.porcentaje });
@@ -143,53 +139,17 @@ class Tarjeta extends Component {
             }
 
 
-            //this.setState({ categorias: ctgs });
         } catch (e) {
 
         }
     }
-
-    /*async loadCategorias() {
-
-        try {
-            let response = await MetodosAxios.obtener_categorias();
-            let data = response.data;
-            let ctgs = [];
-            for (let categoria of data) {
-                let value = {
-                    id: categoria.id,
-                    nombre: categoria.nombre
-                }
-                ctgs.push(value);
-            }
-
-
-            this.setState({ categorias: ctgs });
-        } catch (e) {
-
-        }
-    }*/
-
-
 
 
 
     formatData = (res) => {
         let datos_Tarjeta = [];
         for (let tarjeta of res.data.results) {
-
-            //let descuento
-            //if (tarjeta.promocion == null) {
-            //    descuento = "No aplica";
-            //} else {
-            //    descuento = "Aplica";
-            //}
-
-            let cargo_pay = (tarjeta.valor * this.state.valor_paymentez) / 100
-            let cargo_banco = (tarjeta.valor * this.state.valor_banco) / 100
-            let cargo_sistema = (tarjeta.valor * this.state.valor_sistema) / 100
-
-            let valor_real = tarjeta.valor - cargo_pay - cargo_banco - cargo_sistema
+            let valor_real = tarjeta.valor - tarjeta.cargo_paymentez - tarjeta.cargo_banco - tarjeta.cargo_sistema
 
             let image
             if (tarjeta.pago_proveedor) {
@@ -198,24 +158,32 @@ class Tarjeta extends Component {
                 image = Desactivado
             }
 
+
             datos_Tarjeta.push({
                 key: tarjeta.carrier_id,
                 id: tarjeta.id,
-                //clientee: tarjeta.tarjeta.titular,
-                cliente: tarjeta.tarjeta.solicitante.user_datos.nombres + " " + tarjeta.tarjeta.solicitante.user_datos.apellidos,
-                servicio: tarjeta.promocion.tipo_categoria,
-                //concepto: tarjeta.concepto,
-                fecha_creacion: tarjeta.fecha_creacion.split('T')[0],
-                valor: '$' + tarjeta.valor,
 
-                valor_real: valor_real,
-                //valorr: tarjeta.valor,
-                //tiene_descuento: descuento,
-                cargo_pay: cargo_pay,
-                cargo_banco: cargo_banco,
-                cargo_sistema: cargo_sistema,
+                fecha_creacion: tarjeta.fecha_creacion.split('T')[0],
+                valor: '$' + tarjeta.valor.toFixed(2),
+
+                valor_real: valor_real.toFixed(2),
+
+
+                cargo_pay: tarjeta.cargo_paymentez.toFixed(2),
+                cargo_banco: tarjeta.cargo_banco.toFixed(2),
+                cargo_sistema: tarjeta.cargo_sistema.toFixed(2),
+
+                cliente: tarjeta.usuario,
+                servicio: tarjeta.servicio,
+                proveedor: tarjeta.proveedor,
+
+
+
+
                 pago_proveedor: tarjeta.pago_proveedor,
                 cancelar_proveedor: image,
+
+
                 pago_provee: tarjeta.pago_proveedor
 
 
@@ -225,14 +193,13 @@ class Tarjeta extends Component {
     }
 
     loadpagos = (page) => {
-        let perm= ((permisos.filter(element => { return element.includes('Can view pago')}).length >0) || permisos.includes('all'))
-        if(perm){
+        let perm = ((permisos.filter(element => { return element.includes('Can view pago') }).length > 0) || permisos.includes('all'))
+        if (perm) {
             this.setState({ loading_pagos_tarjeta: true });
             //console.log(page)
             MetodosAxios.obtener_pagos_tarjetaP(page).then(res => {
                 let value = res.data.results
                 let tarjetas = this.formatData(res)
-                console.log(value)
 
                 this.setState({
                     size: res.data.page_size,
@@ -249,13 +216,6 @@ class Tarjeta extends Component {
 
 
 
-    /*MostrarCargos() {
-        this.setState({
-            showCargos: true,
-        })
-
-    }*/
-
     handleCerrar = () => {
         this.setState({
             showSi: false,
@@ -269,19 +229,18 @@ class Tarjeta extends Component {
     async loadTotal() {
         let total = await MetodosAxios.valor_total_tarjeta();
         let totalV = await MetodosAxios.valor_total();
-        //this.state.total_efectivo = total,
-        //let tot = JSON.stringify(total)
-        //var data = JSON.parse(tot);
-        //console.log("total dinero: " + tot)
-        //console.log("total dinero s: " + data.data.valor__sum)
-        //console.log("total dinero s: " + total.data.valor__sum)
-        //this.state.total_tarjeta = total.data.valor__sum
-        //console.log("total dinero tarjeta: " + this.state.total_tarjeta)
-        //return true
+        let totalPay = await MetodosAxios.valor_total_pay_tarjeta();
+        let totalBanc = await MetodosAxios.valor_total_banc_tarjeta();
+        let totalSis = await MetodosAxios.valor_total_sis_tarjeta();
+
 
         this.setState({
             total_tarjeta: total.data.valor__sum,
-            totalValor: totalV.data
+            totalValor: totalV.data,
+            total_cargo_paymentez: totalPay.data.cargo_paymentez__sum,
+            total_cargo_banco: totalBanc.data.cargo_banco__sum,
+            total_cargo_sistema: totalSis.data.cargo_sistema__sum,
+
         })
 
     }
@@ -334,9 +293,9 @@ class Tarjeta extends Component {
     }
 
     handleShow = (pago) => {
-        let perm= ((permisos.filter(element => { return element.includes('Can change pago')}).length >0) || permisos.includes('all'))
-        if(perm){
-            this.setState({disableCheck: false})
+        let perm = ((permisos.filter(element => { return element.includes('Can change pago') }).length > 0) || permisos.includes('all'))
+        if (perm) {
+            this.setState({ disableCheck: false })
         }
         console.log(pago.pago_proveedor)
         this.tarjetaSelected = pago
@@ -344,15 +303,12 @@ class Tarjeta extends Component {
             this.setState({
                 showSi: true,
 
-                //promocionInfo: res.data,
 
             });
 
         } else {
             this.setState({
                 showNo: true,
-                //tarjetaSelected: pago
-                //promocionInfo: res.data,
 
             });
         }
@@ -368,9 +324,8 @@ class Tarjeta extends Component {
         console.log("estados", estado)
         console.log("check", checked)
 
-        await MetodosAxios.cambio_pago_proveedor_estado(id,{ 'estado': checked }).then(res => {
-            console.log("Se ha cambiado el estado de la insignia exitosamente")
-        //    message.success("Se ha cambiado el estado de la promocion exitosamente")
+        await MetodosAxios.cambio_pago_proveedor_estado(id, { 'estado': checked }).then(res => {
+            console.log("Se ha cambiado el estado del pago exitosamente")
         })
         this.loadpagos(1);
         this.setState({
@@ -383,18 +338,12 @@ class Tarjeta extends Component {
     render() {
         return (
             <div>
-                <h1 className="proveedor-title">Pagos con Tarjeta</h1>
+                {/*<h1 className="proveedor-title">Pagos con Tarjeta</h1>*/}
                 <div>
-                    <div style={{ marginBottom: 16 }}></div>
+                    {/*<div style={{ marginBottom: 16 }}></div>*/}
                     <div className="card-container">
+                        <h1 className="titulo" style={{ marginLeft: "2rem" }}>Pagos con Tarjeta</h1>
 
-                        {/*<div style={{ display: "flex", marginRight: "2rem" }}>
-                            <Button type="primary" style={{ marginLeft: "2rem" }}
-                                onClick={() => this.MostrarCargos()}
-                            >
-                                Cargos
-                            </Button>
-        </div>*/}
 
                         <div style={{ display: 'flex', flexDirection: 'column', marginRight: "1rem" }}>
                             <br></br>
@@ -422,15 +371,16 @@ class Tarjeta extends Component {
                             </div>
                             <br></br>
 
-                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start'
-                            //, justifyContent: 'space-between'
+                            <div style={{
+                                display: 'flex', flexDirection: 'row', justifyContent: 'start'
+                                , justifyContent: 'space-between'
                             }}>
 
-                                <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${this.state.total_tarjeta}</h2>
-                                <h2 style={{ marginLeft: "1rem" }}>Total Dinero: ${this.state.totalValor}</h2>
-                                {/*<h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: $0</h2>
-                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Banco: $0</h2>
-                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: $0</h2>*/}
+                                <h2 style={{ marginLeft: "1rem" }}>Total Tarjeta: ${(this.state.total_tarjeta).toFixed(2)}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Dinero: ${(this.state.totalValor).toFixed(2)}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Paymentez: ${(this.state.total_cargo_paymentez).toFixed(2)}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Banco: ${(this.state.total_cargo_banco).toFixed(2)}</h2>
+                                <h2 style={{ marginLeft: "1rem" }}>Total Cargo Sistema: ${(this.state.total_cargo_sistema).toFixed(2)}</h2>
 
 
                             </div>
@@ -466,28 +416,7 @@ class Tarjeta extends Component {
                             />
                         </div>
 
-                        {/*<Modal style={{ backgraoundColor: "white" }}
-                            title="Información de los Cargos"
-                            visible={this.state.showCargos}
-                            closable={false}
-                            okText="Ok"
-                            cancelText="Cerrar"
-                            onCancel={() => this.handleCerrar()}
-                            onOk={() => this.handleCerrar()}
 
-
-                        >
-
-
-
-                            <p><strong>Cargo Paymentez:  %</strong></p>
-                            <p><strong>Cargo Sistema Vive Fácil:  %</strong></p>
-                            <p><strong>Cargo Banco:  %</strong></p>
-
-
-
-
-                        </Modal>*/}
 
                         <Modal style={{ backgraoundColor: "white" }}
                             title="Información del Pago"
@@ -503,6 +432,9 @@ class Tarjeta extends Component {
 
 
                             <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
+                            <p><strong>Cliente:  </strong>{this.tarjetaSelected?.cliente}</p>
+                            <p><strong>Valor Real pagado al Proveedor:  $</strong>{this.tarjetaSelected?.valor_real}</p>
+                            <p><strong>Importante: </strong></p><p>Este pago ya se le ha cancelado al proveedor {this.tarjetaSelected?.proveedor}</p>
 
 
 
@@ -525,7 +457,7 @@ class Tarjeta extends Component {
                             <p><strong>Cliente:  </strong>{this.tarjetaSelected?.cliente}</p>
                             <p><strong>Valor Real a pagar al Proveedor:  $</strong>{this.tarjetaSelected?.valor_real}</p>
                             <br></br>
-                            <p><strong>Importante: </strong></p><p>Este pago no se le ha cancelado al proveedor{this.tarjetaSelected?.pago_provee}</p>
+                            <p><strong>Importante: </strong></p><p>Este pago no se le ha cancelado al proveedor {this.tarjetaSelected?.proveedor}</p>
 
 
                             <div style={{ display: 'flex' }} >
