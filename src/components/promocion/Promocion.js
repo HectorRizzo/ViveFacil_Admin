@@ -134,7 +134,7 @@ class Promociones extends Component {
                     //this.state.fileimgup = insig.imagen
                     data_promocion.push({
                         key: insig.id,
-                        imagen: insig.foto,
+                        imagen: 'https://tomesoft1.pythonanywhere.com/'+insig.foto,
                         codigo: insig.codigo,
                         titulo: insig.titulo,
                         fecha_creacion: insig.fecha_creacion.split('T')[0],
@@ -726,7 +726,7 @@ class Promociones extends Component {
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.promocionSelected?.foto != null ?
-                            this.promocionSelected?.foto : sinImagen}
+                            'https://tomesoft1.pythonanywhere.com/'+this.promocionSelected?.foto : sinImagen}
                             alt="foto-perfil" height="150" width="200"></img>
                     </div>
 
