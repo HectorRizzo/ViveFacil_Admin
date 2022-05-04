@@ -111,6 +111,15 @@ const AgregarPromocion = (props) => {
         var porcentaje = document.getElementById("errorporcentaje0");
         if (porcentaje) porcentaje.textContent = ""
     }
+
+    const handleChangecantidad = (event) => {
+        param.cantidad0 = event.target.value
+        //console.log(param.porcentaje0)
+        var cantidad = document.getElementById("errorcantidad0");
+        if (cantidad) cantidad.textContent = ""
+    }
+
+
     const handleChangeinicio = (event) => {
 
         let inicio = event.target.value
@@ -262,6 +271,23 @@ const AgregarPromocion = (props) => {
 
 
 
+                    <Form.Item
+                        name="cantidad"
+                        label="Cantidad"
+                        className="form"
+                    >
+
+                        <Input min="1" max="100" required key="input-desc" type="number" initialValues="" className="input" onChange={value => { handleChangecantidad(value) }} />
+
+
+
+                        <div className="Registroerror-div">
+                            <label className="error" id="errorcantidad0"></label>
+                        </div>
+                    </Form.Item>
+
+
+
 
                     <Form.Item
                         name="fecha_iniciacion"
@@ -333,6 +359,8 @@ const AgregarPromocion = (props) => {
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
+
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
 
                         </select>
                         <div className="Registroerror-div">

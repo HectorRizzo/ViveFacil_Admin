@@ -46,6 +46,12 @@ const EditarCupon = (props) => {
         //var pedidos = document.getElementById("errorpedidos");
         //if (pedidos) pedidos.textContent = ""
     }
+    const handleChangecantidad = (event) => {
+        param.cuponInfo.cantidad = event.target.value
+        //param.pedidos = event.target.value
+        //var pedidos = document.getElementById("errorpedidos");
+        //if (pedidos) pedidos.textContent = ""
+    }
 
     const handleChangeinicio = (event) => {
         //param.cuponInfo.fecha_iniciacion = event.target.value
@@ -193,6 +199,24 @@ const EditarCupon = (props) => {
                     </Form.Item>
 
 
+                    <Form.Item name="cantidad" label="Cantidad" style={{ color: "red !important" }}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingrese la cantidad"
+                            },
+                        ]}
+
+                    >
+                        <Input min="1" max="100" defaultValue={param.cuponInfo?.cantidad} onChange={value => { handleChangecantidad(value) }}
+                            className="edit-input"
+                            type="number" />
+                        {/*<div className="Registroerror-div">
+                            <label className="error" id="errorporcentajeE"></label>
+                        </div>*/}
+                    </Form.Item>
+
+
 
                     <Form.Item name="fecha_iniciacion" label="Fecha de Inicio" style={{ color: "red !important" }}
                         rules={[
@@ -282,6 +306,8 @@ const EditarCupon = (props) => {
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
+
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
 
                         </select>
 

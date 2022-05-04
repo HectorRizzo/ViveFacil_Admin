@@ -301,9 +301,9 @@ class Cargos extends Component {
                             allowClear
                             //onSearch={this.searchUser}
                             style={{ width: 200, margin: '0 10px' }}
-                        />
+                        />*/}
 
-                        <Button
+                        {/*<Button
                             type="text"
                             shape="circle"
                             size="small"

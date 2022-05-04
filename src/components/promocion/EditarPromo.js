@@ -47,6 +47,13 @@ const EditarPromocion = (props) => {
         //if (pedidos) pedidos.textContent = ""
     }
 
+    const handleChangecantidad = (event) => {
+        param.promocionInfo.cantidad = event.target.value
+        //param.pedidos = event.target.value
+        //var pedidos = document.getElementById("errorpedidos");
+        //if (pedidos) pedidos.textContent = ""
+    }
+
     const handleChangeinicio = (event) => {
         //param.promocionInfo.fecha_iniciacion = event.target.value
         //param.tipo = event.target.value
@@ -141,7 +148,7 @@ const EditarPromocion = (props) => {
                         />
                         <div className="Registroerror-div">
                             <label className="error" id="errorcodeE"></label>
-                    </div>
+                        </div>
                     </Form.Item>
 
                     <Form.Item name="titulo" label="Título" style={{ color: "red !important" }}
@@ -187,7 +194,25 @@ const EditarPromocion = (props) => {
                         <Input min="1" max="100" defaultValue={param.promocionInfo?.porcentaje} onChange={value => { handleChangeporcentaje(value) }}
                             className="edit-input"
                             type="number" />
-                            {/*<div className="Registroerror-div">
+                        {/*<div className="Registroerror-div">
+                            <label className="error" id="errorporcentajeE"></label>
+                        </div>*/}
+                    </Form.Item>
+
+
+                    <Form.Item name="cantidad" label="Cantidad" style={{ color: "red !important" }}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingrese la cantidad"
+                            },
+                        ]}
+
+                    >
+                        <Input min="1" max="100" defaultValue={param.promocionInfo?.cantidad} onChange={value => { handleChangecantidad(value) }}
+                            className="edit-input"
+                            type="number" />
+                        {/*<div className="Registroerror-div">
                             <label className="error" id="errorporcentajeE"></label>
                         </div>*/}
                     </Form.Item>
@@ -290,6 +315,8 @@ const EditarPromocion = (props) => {
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
+
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
 
                         </select>
 

@@ -14,7 +14,7 @@ const columns = [
     { title: 'Proveedor', dataIndex: 'proveedor', className: 'columns-pendientes' },
     { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes' },
     { title: 'Transacción', dataIndex: 'key', className: 'columns-pendientes' },
-    { title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
+    //{ title: 'Concepto', dataIndex: 'concepto', className: 'columns-pendientes' },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
 
@@ -28,6 +28,7 @@ class Efectivo extends Component {
     filter = false;
     fechaInicio = null;
     fechaFin = null;
+    tarjetaSelected = null;
 
     constructor(props, context) {
 
@@ -55,6 +56,8 @@ class Efectivo extends Component {
 
             total_efectivo: 0,
             totalValor: 0,
+
+            showSi: false,
 
 
 
@@ -115,24 +118,28 @@ class Efectivo extends Component {
         for (let efectivo of res.data.results) {
 
 
-            let descuento
-            if (efectivo.promocion == null) {
-                descuento = "No aplica";
-            } else {
-                descuento = "Aplica";
-            }
+            
 
             datos_Efectivo.push({
 
 
-                cliente: efectivo.usuario,
+                
                 servicio: efectivo.servicio,
-                proveedor: efectivo.proveedor,
+                
                 key: 'EFEC' + efectivo.id,
                 concepto: efectivo.concepto,
                 fecha_creacion: efectivo.fecha_creacion.split('T')[0],
                 valor: '$' + efectivo.valor.toFixed(2),
-                tiene_descuento: descuento,
+
+                //Datos del Cliente
+                cliente: efectivo.usuario,
+                client_phone: efectivo.user_telefono,
+                client_email: efectivo.user.username,
+
+                //Datos del Proveedor
+                proveedor: efectivo.proveedor,
+                prov_phone: efectivo.prov_telefono,
+                prov_email: efectivo.prov_correo,
 
 
 
@@ -222,6 +229,30 @@ class Efectivo extends Component {
         })
     }
 
+    handleCerrar = () => {
+        this.setState({
+            showSi: false,
+        })
+
+    };
+
+    handleShow = (pago) => {
+        let perm = ((permisos.filter(element => { return element.includes('Can change pago') }).length > 0) || permisos.includes('all'))
+        if (perm) {
+            this.setState({ disableCheck: false })
+        }
+        //console.log(pago.pago_proveedor)
+        this.tarjetaSelected = pago
+
+        this.setState({
+            showSi: true,
+
+
+        });
+        
+
+    }
+
     render() {
         return (
             <div>
@@ -262,7 +293,7 @@ class Efectivo extends Component {
                             onRow={(pago) => {
                                 return {
                                     onClick: () => {
-                                        //this.handleShow(pago)
+                                        this.handleShow(pago)
                                     }
                                 }
                             }}
@@ -284,6 +315,34 @@ class Efectivo extends Component {
                                 showSizeChanger={false}
                             />
                         </div>
+
+                        <Modal style={{ backgraoundColor: "white" }}
+                            title="Información del Pago"
+                            visible={this.state.showSi}
+                            closable={false}
+                            okText="Ok"
+                            cancelText="Cerrar"
+                            onCancel={() => this.handleCerrar()}
+                            onOk={() => this.handleCerrar()}
+
+
+                        >
+
+
+                            <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
+                            <strong>Datos del Cliente  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.cliente}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.client_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.client_email}</p>
+                            <strong>Datos del Proveedor  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.proveedor}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.prov_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.prov_email}</p>
+
+
+
+
+                        </Modal>
 
 
                     </div>

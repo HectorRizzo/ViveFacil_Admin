@@ -22,11 +22,12 @@ const columns = [
     { title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes', responsive: ['lg'] },
 
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
-    { title: 'Valor ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Valor Neto ($)', dataIndex: 'valor', className: 'columns-pendientes', responsive: ['lg'] },
 
     { title: 'Cargo Paymentez ($)', dataIndex: 'cargo_pay', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Banco ($)', dataIndex: 'cargo_banco', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cargo Sistema ($)', dataIndex: 'cargo_sistema', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Valor a Pagar ($)', dataIndex: 'valor_real', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cancelado Proveedor', dataIndex: 'cancelar_proveedor', render: imagen => <img alt={imagen} src={imagen} style={{ width: 75 + 'px' }} />, className: 'columns-pendientes' },
 
 
@@ -173,13 +174,22 @@ class Tarjeta extends Component {
                 cargo_banco: tarjeta.cargo_banco.toFixed(2),
                 cargo_sistema: tarjeta.cargo_sistema.toFixed(2),
 
-                cliente: tarjeta.usuario,
+                
                 servicio: tarjeta.servicio,
+                
+
+                //Datos del Proveedor
                 proveedor: tarjeta.proveedor,
+                prov_phone: tarjeta.prov_telefono,
+                prov_email: tarjeta.prov_correo,
+
+                //Datos del Cliente
+                cliente: tarjeta.usuario,
+                client_phone: tarjeta.tarjeta.solicitante.user_datos.telefono,
+                client_email: tarjeta.tarjeta.solicitante.user_datos.user.username,
 
 
-
-
+type: tarjeta.tarjeta.tipo,
                 pago_proveedor: tarjeta.pago_proveedor,
                 cancelar_proveedor: image,
 
@@ -432,9 +442,17 @@ class Tarjeta extends Component {
 
 
                             <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
-                            <p><strong>Cliente:  </strong>{this.tarjetaSelected?.cliente}</p>
+                            <strong>Datos del Cliente  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.cliente}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.client_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.client_email}</p>
+                            <strong>Datos del Proveedor  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.proveedor}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.prov_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.prov_email}</p>
                             <p><strong>Valor Real pagado al Proveedor:  $</strong>{this.tarjetaSelected?.valor_real}</p>
-                            <p><strong>Importante: </strong></p><p>Este pago ya se le ha cancelado al proveedor {this.tarjetaSelected?.proveedor}</p>
+                            <p><strong>Tipo de Tarjeta:  </strong>{this.tarjetaSelected?.type}</p>
+                            <p><strong>Importante: </strong></p><p>Este pago ya se le ha cancelado al proveedor.</p>
 
 
 
@@ -454,8 +472,20 @@ class Tarjeta extends Component {
                         >
 
                             <p><strong>Transacción:  </strong>{this.tarjetaSelected?.key}</p>
-                            <p><strong>Cliente:  </strong>{this.tarjetaSelected?.cliente}</p>
+                            <strong>Datos del Cliente  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.cliente}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.client_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.client_email}</p>
+                            <strong>Datos del Proveedor  </strong><br></br>
+                            <strong>Nombre:  </strong>{this.tarjetaSelected?.proveedor}<br></br>
+                            <strong>Teléfono:  </strong>{this.tarjetaSelected?.prov_phone}<br></br>
+                            <p><strong>Correo:  </strong>{this.tarjetaSelected?.prov_email}</p>
                             <p><strong>Valor Real a pagar al Proveedor:  $</strong>{this.tarjetaSelected?.valor_real}</p>
+                            <p><strong>Tipo de Tarjeta:  </strong>{this.tarjetaSelected?.type}</p>
+
+
+
+
                             <br></br>
                             <p><strong>Importante: </strong></p><p>Este pago no se le ha cancelado al proveedor {this.tarjetaSelected?.proveedor}</p>
 
