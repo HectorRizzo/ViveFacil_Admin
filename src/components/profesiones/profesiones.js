@@ -1,10 +1,13 @@
 import React, { Component, } from "react";
-import { Table, Input, Button , Modal, message,Image} from 'antd';
+import { Table, Input, Button , Modal, message,Image,Typography} from 'antd';
 import MetodosAxios from "../../requirements/MetodosAxios";
+import { EditTwoTone } from '@ant-design/icons';
 import eliminarimg from '../../img/icons/eliminar.png'
 import iconimg from '../../img/icons/imagen.png'
 import AgregarProfesion from "./addProfesion";
 import Permisos from '../../requirements/Permisos'
+import EditProfesion from "./EditProfesion";
+const { Text } = Typography;
 const { Search } = Input;
 let permisos = [];
 class Profesiones extends Component {
@@ -13,12 +16,15 @@ class Profesiones extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            profesionSelected:null,
             loadingTable: false,
             selectedRowKeysPofesiones: [],
             dataProfesiones: [],
             baseProfesiones: [],
             visibleModalAdd: false,
             visibleModal: false,
+            visibleModalEdit: false,
+            visibleModalDelete:false,
             limpiar: false,
             fileimg: null,
             fileimgup: null,
@@ -29,6 +35,7 @@ class Profesiones extends Component {
             descripcion:'',
             servicioSeleccionado: '',
             servicios: [],
+            limpiarEdit: false,
 
         };
     }
@@ -97,6 +104,8 @@ class Profesiones extends Component {
             limpiar:true,
         })
     }
+
+
     handleCrear  = () => {
 
         if(this.state.nombre==="" ||this.state.descripcion==="" || 
@@ -135,8 +144,13 @@ class Profesiones extends Component {
 
 
 
-    showModal= (profesion) => {
-        this.profesionSelected= profesion
+    showModal = (profesion) =>  {
+        console.log(profesion.id)
+
+        this.setState({
+            profesionSelected : profesion
+        })
+        this.profesionSelected = profesion
         console.log(this.profesionSelected)
         this.setState({
             visibleModal: true,
@@ -176,10 +190,9 @@ class Profesiones extends Component {
             visibleModal:false,
         })
 
-
-
     }
  
+
 
 
 
@@ -219,6 +232,50 @@ class Profesiones extends Component {
         });
     }
 
+    handleEditProfesion= () =>{
+        
+        this.setState({
+            visibleModal:false,
+            visibleModalEdit:true,
+             limpiarEdit: true,
+            picture :this.profesionSelected.foto,
+        })
+
+    }
+
+    handleCerrarModalEdit= () => {
+        this.setState({
+            visibleModalEdit: false,
+            limpiarEdit:true,
+        })
+
+    }
+
+    handleValidarDatos= () => { 
+        if(this.state.profesionSelected.nombre==="" || this.state.profesionSelected.descripcion === "" ||
+        this.state.profesionSelected.servicio === ""){
+            message.error("Ingrese todos los campos requeridos")
+        }
+        else{
+            this.editProfesion()
+        }
+        
+    }
+
+    editProfesion= () =>  {
+        let data = new FormData()
+        data.append("nombre",this.state.profesionSelected.nombre)
+        data.append("descripcion",this.state.profesionSelected.descripcion)
+        data.append("")
+        if (this.state.fileimg!=null){
+            data.append('foto',this.state.fileimg)
+        }
+
+        
+
+    }
+
+
     render (){
         return(
 
@@ -253,25 +310,25 @@ class Profesiones extends Component {
                             columns={[
                                 
                                 {
-                                    title: 'Foto',
+                                    title: <Text strong>Foto</Text>,
                                     dataIndex: 'foto',
                                     align: 'center',
                                     render: imagen=> <img alt={imagen} src={'https://tomesoft1.pythonanywhere.com/'+imagen} style={{width: 125 + 'px'}}/>
                     
                                 },
                                 {
-                                    title: 'Profesión',
+                                    title: <Text strong>Nombre</Text>,
                                     dataIndex: 'nombre',
                                     align: 'center',
                                 },
                                 {
-                                    title: 'Servicio',
+                                    title: <Text strong>Servicio</Text>,
                                     dataIndex: 'servicio',
                                     align: 'center'
                                     
                                 },
                                 {
-                                    title: 'Estado',
+                                    title: <Text strong>Estado</Text>,
                                     dataIndex: 'estado',
                                     align: 'center',
                                     render: (estado) => {
@@ -292,8 +349,12 @@ class Profesiones extends Component {
                             />
 
 
+
                             <Modal
-                            
+                                 title= {<p style={{textAlign:"center"}}>
+                                 Agregar Profesión 
+
+                                </p>}
                                 visible={this.state.visibleModalAdd}
                                 width={520}
                                 closable= {false}
@@ -332,7 +393,12 @@ class Profesiones extends Component {
                         </Modal>
                         
                             <Modal
-                            
+                             title= {<p style={{textAlign:"center"}}>
+                             Información Profesión 
+                             <Button style={{marginLeft: "2.5rem"}}icon={<EditTwoTone  />} shape="circle"
+                                     className="edit" onClick={this.handleEditProfesion}>
+                             </Button>
+                            </p>}
                             visible={this.state.visibleModal}
                             width={520}
                             closable= {false}
@@ -356,6 +422,24 @@ class Profesiones extends Component {
                                 <p><strong>Categoría Asignada:   </strong>{this.profesionSelected?.servicio}</p>
 
                         </Modal>
+
+                        <Modal
+                            title={<p style={{textAlign:"center"}}>
+                                    
+                                Editar Información Profesión
+
+                            </p>}
+                            visible={this.state.visibleModalEdit}
+                            closable= {false}
+                            okText="Guardar Cambios"
+                            cancelText="Cancelar"
+                            onOk = {() =>this.handleValidarDatos()}
+                            onCancel = {() => this.handleCerrarModalEdit()}     
+                            style={{ top: 25 }}           
+                            >  
+                                <EditProfesion param={this.state}  handleChangeimg={this.handleChangeimg}/>
+                    </Modal>
+
                 </div>
             </>
         )

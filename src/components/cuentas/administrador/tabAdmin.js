@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space,message, Switch} from 'antd';
+import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space,message, Switch,Typography} from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import avatar from "../../../img/avatar.png"
 import EditAdmin from "./EditAdmin";
@@ -7,7 +7,7 @@ import iconimg from '../../../img/icons/imagen.png'
 import Permisos from '../../../requirements/Permisos'
 import * as moment from 'moment';
 import { validarCedula, validarGenero } from "../../promocion/validators";
-
+const {Text} = Typography;
 const { Search } = Input;
 const {RangePicker} = DatePicker
 let permisos = [];
@@ -361,6 +361,7 @@ class AdminTab extends Component {
                 correo: admin.user_datos.user.email,
                 telefono: admin.user_datos.telefono,
                 fecha_creacion: admin.user_datos.fecha_creacion.split('T')[0],
+                estado: admin.user_datos.estado,
             })
         }
         return administrador;
@@ -385,7 +386,7 @@ class AdminTab extends Component {
             < >
             <div>   
                 <div style={{display: 'flex' , flexDirection:'column' , marginRight:"1rem"}}>
-                
+                <h3 style={{marginLeft: "1.9rem"}}><strong>Total Administradores:   </strong>{this.state.total}</h3>
                     <div style={{display: 'flex' , flexDirection:'row', justifyContent:'end'}}> 
                     <Space>
                         <Button type="primary" size="default" disabled={this.state.disabledButton} 
@@ -415,30 +416,40 @@ class AdminTab extends Component {
                 }}
                 columns={[
                     {
-                        title: 'Nombres',
+                        title:<Text strong>Nombres</Text>,
                         dataIndex: 'nombres',
                     },
                     {
-                        title: 'Cédula',
+                        title: <Text strong>Cédula</Text>,
                         dataIndex: 'cedula',
                         responsive: ['lg'],
                         align: 'center'
                     },
                     {
-                        title: 'Correo electrónico',
+                        title:<Text strong>Correo Electrónico</Text>,
                         dataIndex: 'correo',
                         responsive: ['lg'],
         
                     },
                     {
-                        title: 'Teléfono',
+                        title: <Text strong>Teléfono</Text>,
                         dataIndex: 'telefono',
                         align: 'center'
                     },
                     {
-                        title: 'Fecha Creación',
+                        title: <Text strong>Fecha Creación</Text>,
                         dataIndex: 'fecha_creacion',
                         align: 'center'   
+                    },
+                    {
+                        title: <Text strong>Estado</Text>,
+                        dataIndex: 'estado',
+                        align: 'center',
+                        render: (estado) => {
+                            return (
+                                estado ? <h3>Habilitado</h3> : <h3>Deshabilitado</h3>
+                            );
+                            },
                     }
                     
                     

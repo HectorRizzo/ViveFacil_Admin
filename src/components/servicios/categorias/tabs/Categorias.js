@@ -22,10 +22,10 @@ class Categorias extends Component {
                     <Table
                       
                         loading={this.props.loadingTable}
-                        rowSelection={{
+                        /*rowSelection={{
                             type: "checkbox",
                             onChange: this.props.onSelectChange,
-                        }}
+                        }}*/
                         columns={[
                             {
                                 title: 'Nombre',

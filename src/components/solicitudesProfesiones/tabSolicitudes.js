@@ -4,8 +4,9 @@ import MetodosAxios from "../../requirements/MetodosAxios";
 import { API_URL } from "../../Constants";
 import docsImage from "../../img/docs.png"
 import Permisos from '../../requirements/Permisos'
-import {Modal, Table , Pagination, Button, DatePicker,Input, Space,message} from 'antd';
+import {Modal, Table , Pagination, Button, DatePicker,Input, Space,message,Typography} from 'antd';
 const { Search } = Input;
+const { Text } = Typography;
 const {RangePicker} = DatePicker
 let permisos = [];
 
@@ -199,20 +200,23 @@ class Solicitudes extends Component {
         let profesion = this.state.informacion?.profesion
         let año = this.state.informacion?.anio_experiencia
         if(this.state.profesionesDisponibles.includes(profesion.toLowerCase())){
-            let profesionesProveedor = this.state.informacion?.proveedor.profesion.split(",")
+            let profesionesProveedor = []
+            await MetodosAxios.getProfesionProveedor(this.state.informacion?.proveedor.id).then(res => {
+                profesionesProveedor = res.data
+            })
             if(profesionesProveedor.includes(profesion)){
                 message.error("El proveedor ya cuenta con esa profesión")
             }else{
                 console.log(profesion)
                 let data = new FormData()
-                data.append("profesion",this.state.informacion.proveedor.profesion += `,${profesion}`)
-                data.append("ano_profesion",this.state.informacion.proveedor.ano_profesion += `,${año}`)
+                data.append("profesion",profesion)
+                data.append("ano_experiencia",año)
                 data.append("documento",this.state.informacion?.documento)
-                data.append("profesionNueva",profesion)
-                data.append("experiencia",año)
+                // data.append("profesionNueva",profesion)
+                // data.append("experiencia",año)
                 data.append("idSolicitud",this.state.informacion?.id)
-            
-                await MetodosAxios.editarProveedor(this.state.informacion?.proveedor.id, data).then(res => {
+
+                await MetodosAxios.editarProfesionProveedor(this.state.informacion?.proveedor.id, data).then(res => {
 
                     message.success("Profesión agregada al proveedor")
 
@@ -315,24 +319,24 @@ class Solicitudes extends Component {
                             loading={this.state.loadingTable}
                             columns={[
                                 {
-                                    title: 'Nombre Proveedor',
+                                    title: <Text strong>Nombre Proveedor</Text>,
                                     dataIndex: 'nombre',
                                     align: 'center',
                                 },
                                 {
-                                    title: 'Profesión Solicitada',
+                                    title: <Text strong>Profesión Solicitada</Text>,
                                     dataIndex: 'profesion',
                                     align: 'center'
                                     
                                 },
                                 {
-                                    title: 'Fecha Solicitación',
+                                    title: <Text strong>Fecha Solicitud</Text>,
                                     dataIndex: 'fecha_solicitud',
                                     align: 'center'
                                     
                                 },
                                 {
-                                    title: 'Estado',
+                                    title: <Text strong>Estado</Text>,
                                     dataIndex: 'estado',
                                     align: 'center',
                                     render: (estado) => {

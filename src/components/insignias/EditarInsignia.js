@@ -76,7 +76,7 @@ const EditarInsignia = (props) => {
         <Form {...layout} form={formEdit}
           onSubmit={handleSubmitted()} >
 
-          <Divider orientation="center" className="divider-edit">Informacion de la Insignia</Divider>
+          <Divider orientation="center" className="divider-edit">Información de la Insignia</Divider>
 
           <Form.Item name="nombres" label="Nombre" style={{ color: "red !important" }}
             rules={[

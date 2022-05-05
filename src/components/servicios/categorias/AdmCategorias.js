@@ -292,14 +292,15 @@ class AdmCategorias extends Component {
                 <h1 className="titulo">Categorías</h1>
                 <div className="card-container">
                     <Tabs tabBarExtraContent={<div>
-                        {((permisos.filter(element => { return element.includes('Can add categoria')}).length >0) || permisos.includes('all')) && <Button
+                        {/*{((permisos.filter(element => { return element.includes('Can add categoria')}).length >0) || permisos.includes('all')) && 
+                        <Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarCategoria()}}
-                        />}
+                    />}*/}
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -307,13 +308,13 @@ class AdmCategorias extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
                         
-                        {((permisos.filter(element => { return element.includes('Can delete categoria')}).length >0) || permisos.includes('all')) && <Button
+                        {/*{((permisos.filter(element => { return element.includes('Can delete categoria')}).length >0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
                             onClick={() => { this.setModalAlertVisible(true) }}
-                        />}
+                        />}*/}
                     </div>}
                         type="card" size="large" >
                     

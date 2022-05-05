@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Button, Modal, Table , Image, Pagination} from 'antd';
+import { Button, Modal, Table , Image, Pagination,Typography} from 'antd';
 import MetodosAxios from "./../../../requirements/MetodosAxios";
 import sinImagen from "./../../../img/no-image.jpg"
 import * as moment from 'moment';
+const { Text } = Typography;
 
 class SugerenciasLeidas extends Component {
     sugerenciaSelected = null;
@@ -35,6 +36,7 @@ class SugerenciasLeidas extends Component {
         for(let sug of res.data.results){
             data_sugerencia.push({
                 key: sug.id,
+                usuario: sug.usuario,
                 descripcion: String(sug.descripcion),
                 fecha_creacion: String(sug.fecha_creacion).split('T')[0],
                 hora_creacion: moment(sug.fecha_creacion).format("hh:mm a")
@@ -86,7 +88,9 @@ class SugerenciasLeidas extends Component {
         return (
             < >
                 <div>
+                <h3 style={{marginLeft: "1.9rem"}}><strong>Total Sugerencias Leídas:   </strong>{this.state.total}</h3>
                     <Table
+                        
                         loading={this.state.loadingTable}
                         onRow={(sugerencia) => {
                             return {
@@ -97,22 +101,21 @@ class SugerenciasLeidas extends Component {
                         }}
                         columns={[
                             {
-                                title: 'Id',
-                                dataIndex: 'key',
-                                align: "center"
+                                title: <Text strong>Usuario</Text>,
+                                dataIndex: 'usuario',
                             },
                             {
-                                title: 'Descripción',
+                                title: <Text strong>Descripción</Text>,
                                 dataIndex: 'descripcion',
-                                responsive: ['lg']
+                            
                             },
                             {
-                                title: 'Fecha Creación',
+                                title: <Text strong>Fecha Creación</Text>,
                                 dataIndex:'fecha_creacion',
                                 align: "center"
                             },
                             {
-                                title: 'Hora Creación',
+                                title: <Text strong>Hora Creación</Text>,
                                 dataIndex:'hora_creacion',
                                 align: "center"
                             },
@@ -149,8 +152,9 @@ class SugerenciasLeidas extends Component {
                                 this.sugerenciaSelected?.foto: sinImagen } 
                                 alt="foto-perfil" height={200} width={200}/>
                         </div>
-                        
-                        <p ><strong>Descripción:  </strong>{this.sugerenciaSelected?.descripcion}</p>
+                        <p ><strong>Usuario:  </strong>{this.sugerenciaSelected?.usuario}</p>
+                        <p ><strong>Correo electrónico:  </strong>{this.sugerenciaSelected?.correo}</p>
+                        <p style={{textAlign: "justify"}}><strong>Descripción:  </strong>{this.sugerenciaSelected?.descripcion}</p>
                         <p><strong>Fecha:  </strong>{String(this.sugerenciaSelected?.fecha_creacion).split('T')[0]}</p>
                         <p><strong>Hora:  </strong>{moment(this.sugerenciaSelected?.fecha_creacion).format("hh:mm a")}</p>
 

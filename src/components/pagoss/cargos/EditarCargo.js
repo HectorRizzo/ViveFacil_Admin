@@ -23,6 +23,13 @@ const EditarCargo = (props) => {
     //var nombre = document.getElementById("errornombre");
     //if (nombre) nombre.textContent = ""
   }
+  const handleChangetitulo = (event) => {
+    param.cargoInfo.titulo = event.target.value
+    console.log(param.cargoInfo.titulo)
+    //param.nombre = event.target.value
+    //var nombre = document.getElementById("errornombre");
+    //if (nombre) nombre.textContent = ""
+  }
   const handleChangeporcentaje = (event) => {
     param.cargoInfo.porcentaje = event.target.value
     console.log(param.cargoInfo.porcentaje)
@@ -49,9 +56,9 @@ const EditarCargo = (props) => {
         <Form {...layout} form={formEdit}
           onSubmit={handleSubmitted()} >
 
-          <Divider orientation="center" className="divider-edit">Informacion del Cargo</Divider>
+          <Divider orientation="center" className="divider-edit">Información del Cargo</Divider>
 
-          <Form.Item name="nombres" label="Nombre" style={{ color: "red !important" }}
+          {/*<Form.Item name="nombres" label="Nombre" style={{ color: "red !important" }}
             rules={[
               {
                 required: true,
@@ -61,6 +68,20 @@ const EditarCargo = (props) => {
 
           >
             <Input defaultValue={param.cargoInfo?.nombre} onChange={handleChangenombre}
+              className="edit-input" disabled
+            />
+          </Form.Item>*/}
+
+          <Form.Item name="titulo" label="Titulo" style={{ color: "red !important" }}
+            rules={[
+              {
+                required: true,
+                message: "Ingrese el titulo"
+              },
+            ]}
+
+          >
+            <Input defaultValue={param.cargoInfo?.titulo} onChange={handleChangetitulo}
               className="edit-input" disabled
             />
           </Form.Item>
