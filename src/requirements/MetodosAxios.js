@@ -252,15 +252,28 @@ export default class MetodosAxios {
 
   }
 
+  static editar_proveedor = (data) => {
+    return MetodosAxios.instanceAxios.put(`/edicion_proveedor/`, data)
+
+  }
+  
+
   static eliminarDocPendiente = (id) => {
     return MetodosAxios.instanceAxios.delete(`/documentos_pendientes/?id=${id}`)
 
   }
 
+  static eliminarDocProveedor = (id) => {
+    return MetodosAxios.instanceAxios.delete(`/documentos_proveedores/?id=${id}`)
+
+  }
+
+
   static eliminarPendiente = (id) => {
     return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${id}`)
 
   }
+
 
 
   /*
@@ -510,6 +523,11 @@ export default class MetodosAxios {
   static crear_profesiones_proveedor(user, data) {
     return MetodosAxios.instanceAxios.post(`/proveedor_profesiones/${user}`, data)
   };
+
+  // static crear_profesion_proveedor(user, data) {
+  //   return MetodosAxios.instanceAxios.post(`/proveedor_profesiones/${user}`, data)
+  // };
+
   /*
       eliminar proveedor pendiente
       autor: lilibeth
@@ -790,7 +808,7 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.delete(`/change-solicitud/${id}`)
   };
 
-  static editarProveedor = (id,data) => {
+  static editarProfesionProveedor = (id,data) => {
     return MetodosAxios.instanceAxios.put(`/proveedor/${id}`,data)
   };
 
@@ -810,6 +828,30 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get(`/permisos`);
   }
 
-  
+  static valor_total_proveedor= () => {
+    return MetodosAxios.instanceAxios.get(`/valor_total_provider/`)
+  }
+
+  static getProfesionProveedor= (id) => {
+    return MetodosAxios.instanceAxios.get(`/profesion_proveedor/${id}`)
+
+  }
+
+  static actualizar_profesion= (data) => {
+    return MetodosAxios.instanceAxios.put('/profesiones/', data);
+  }
+
+  static profesionDetails = (id) => {
+    return MetodosAxios.instanceAxios.get(`/profesion/${id}`);
+  }
+
+  static actualizar_profesion_proveedor= (id,data) => {
+    return MetodosAxios.instanceAxios.put(`/profesion_prov/${id}`, data);
+  }
+
+  static delete_profesion_proveedor= (id) => {
+    return MetodosAxios.instanceAxios.delete(`/profesion_prov/${id}`);
+  }
+
 }
 

@@ -1,13 +1,18 @@
 import React from "react";
-import { Form, Input ,Divider,Row,Col,Button} from 'antd';
+import { Form, Input ,Divider,Row,Col,Button, message,Popconfirm} from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import docsImage from "../../../img/docs.png"
 import { API_URL } from "../../../Constants";
 import MetodosAxios from "../../../requirements/MetodosAxios";
-const EditPendiente =(props) => {
+import { render } from "@testing-library/react";
+
+
+const EditProveedor =(props) => {
     const generos =["Hombre","Mujer","Otro"]
     const {param,handleChangeimg} = props
     const [formulario] = Form.useForm();
+    
+
     const layout ={
             labelCol: {
             span: 10,
@@ -21,71 +26,76 @@ const EditPendiente =(props) => {
     
 
     const onChangeNombre = (event) => {
-        param.pendienteActual.nombres = event.target.value;
+        param.providerActual.user_datos.nombres = event.target.value;
+        console.log(param.providerActual.user_datos.nombres)
     }
 
     const onChangeApellido = (event) => {
-        param.pendienteActual.apellidos= event.target.value;
+        param.providerActual.user_datos.apellidos= event.target.value;
 
     }
 
   const onChangeCedula = (event) => {
-      param.pendienteActual.cedula= event.target.value;
+      param.providerActual.user_datos.cedula= event.target.value;
 
 
   }
   const onChangeCiudad = (event) => {
-      param.pendienteActual.ciudad= event.target.value;
-      console.log(param.pendienteActual)
+      param.providerActual.user_datos.ciudad= event.target.value;
+      console.log(param.providerActual)
 
   }
   const onChangeDireccion = (event) => {
-    param.pendienteActual.direccion= event.target.value;
+    param.providerActual.direccion= event.target.value;
     
 }
 
   const onChangeTelefono = (event) => {
-      param.pendienteActual.telefono = event.target.value;
+      param.providerActual.user_datos.telefono = event.target.value;
 
   }
   const onChangeGenero = (event) => {
-    param.pendienteActual.genero = event.target.value;
+    param.providerActual.user_datos.genero = event.target.value;
 
 }
   const onChangeCorreoNuevo = (event) => {
-      param.pendienteActual.email = event.target.value;
+      param.nuevoCorreo = event.target.value;
 
   }
 
   const onChangeLicencia = (event) => {
-    param.pendienteActual.licencia = event.target.value;
+    param.providerActual.licencia = event.target.value;
 
 }
 
 const onChangeCuenta = (event) => {
-    param.pendienteActual.tipo_cuenta = event.target.value;
+    param.providerActual.tipo_cuenta = event.target.value;
 
 }
 
 const onChangeNumeroCuenta = (event) => {
-    param.pendienteActual.numero_cuenta = event.target.value;
+    param.providerActual.numero_cuenta = event.target.value;
 
 }
 
 const onChangeNombreBanco = (event) => {
-    param.pendienteActual.banco = event.target.value;
+    param.providerActual.banco = event.target.value;
 
 }
 
 const onChangeExperiencia = (event) => {
-    param.pendienteActual.ano_experiencia = event.target.value;
+    // param.providerActual.ano_experiencia = event.target.value;
+    let indice = event.target.id
+    param.providerProfesiones[indice].ano_experiencia = parseInt(event.target.value)
+
+    console.log(param.providerProfesiones)
 
 }
 
 const onChangeCopiaCedula = (event) => {
     param.fileCedula = event.target.files[0];
-    // param.pendienteActual.copiaCedula = event.target.files[0];
-    // console.log(param.pendienteActual.copiaCedula)
+    // param.providerActual.copiaCedula = event.target.files[0];
+    // console.log(param.providerActual.copiaCedula)
 }
 
 const onChangeCopiaLicencia = (event) => {
@@ -93,31 +103,40 @@ const onChangeCopiaLicencia = (event) => {
     
 }
 
-const onChangeProfesion = (event) => {
-    param.pendienteActual.profesion = event.target.value;
-    console.log(param.pendienteActual.profesion)
-   
-
-}
-
-
 const onChangeDocumentacion = (event) => {
     param.filesDocumentacion = event.target.files;
     console.log(param.filesDocumentacion)
     
 }
 
+
+
 const handleEliminarDocument = (idDoc) => {
+
+    
     console.log(idDoc)
     document.getElementById(idDoc).remove()
-    MetodosAxios.eliminarDocPendiente(idDoc).then(res => {
+    
+    MetodosAxios.eliminarDocProveedor(idDoc).then(res => {
         console.log(res)
+        message.success("Documento Eliminado")
     })
+
 }
 
+// const handleEliminarProfesion = (idProf) => {
+    // document.getElementById(idProf).remove()
+    // MetodosAxios.delete_profesion_proveedor(idProf).then(res => {
+    //     param.providerProfesiones = param.providerProfesiones.filter(profesion => profesion.id ===idProf);
+    //     message.success("Profesión Eliminado")
+
+    // })
+
+// }
+
 const onChangeDescripcion = (event) => {
-    param.pendienteActual.descripcion = event.target.value;
-    console.log(param.pendienteActual.descripcion)
+    param.providerActual.descripcion = event.target.value;
+    console.log(param.providerActual.descripcion)
 }
 
 const handleSubmitted = () => {
@@ -127,8 +146,7 @@ const handleSubmitted = () => {
     param.limpiarEdit=false}
 }
 
-
- return (
+return (
     <>
       <div className="div_form" >
         <Form {...layout} form={formulario}  
@@ -146,7 +164,7 @@ const handleSubmitted = () => {
                             ]}
                     
                     >
-                        <Input placeholder={param.pendienteActual.nombres} onChange={onChangeNombre} 
+                        <Input placeholder={param.providerActual?.user_datos.nombres} onChange={onChangeNombre} 
                         className="edit-input" 
                             />
                 </Form.Item>
@@ -159,7 +177,7 @@ const handleSubmitted = () => {
                             ]}
                     
                     >
-                        <Input placeholder={param.pendienteActual.apellidos} onChange={onChangeApellido} 
+                        <Input placeholder={param.providerActual?.user_datos.apellidos} onChange={onChangeApellido} 
                         className="edit-input" 
                             />
                     </Form.Item>
@@ -175,7 +193,7 @@ const handleSubmitted = () => {
                         >
                         <select initialvalues="" onChange={value => {onChangeGenero(value)}}>
 
-                        <option value="">{param.pendienteActual?.genero}</option> 
+                        <option value="">{param.providerActual?.user_datos.genero}</option> 
 
                         {generos.map((genero)=>{
                             return <option key={genero} value={genero}> {genero}</option> 
@@ -195,7 +213,7 @@ const handleSubmitted = () => {
                         ]} 
                     
                     >
-                        <Input placeholder={param.pendienteActual.cedula} onChange={onChangeCedula} 
+                        <Input placeholder={param.providerActual?.user_datos.cedula} onChange={onChangeCedula} 
                         className="edit-input"  
                         type="number"/>
                     </Form.Item>
@@ -226,7 +244,7 @@ const handleSubmitted = () => {
                         ]} 
                     
                     >
-                        <Input placeholder={param.pendienteActual.telefono} onChange={onChangeTelefono} 
+                        <Input placeholder={param.providerActual?.user_datos.telefono} onChange={onChangeTelefono} 
                         className="edit-input"  
                         type="number"/>
                     </Form.Item>
@@ -242,7 +260,7 @@ const handleSubmitted = () => {
                         >
                         <select initialvalues="" onChange={value => {onChangeCiudad(value)}}>
 
-                        <option value="">{param.pendienteActual?.ciudad}</option> 
+                        <option value="">{param.providerActual?.user_datos.ciudad}</option> 
 
                         {param.ciudades.map((ciudad)=>{
                             return <option key={ciudad} value={ciudad}> {ciudad}</option> 
@@ -260,13 +278,22 @@ const handleSubmitted = () => {
                             ]}
                     
                     >
-                        <Input placeholder={param.pendienteActual.direccion} onChange={onChangeDireccion} 
+                        <Input placeholder={param.providerActual?.direccion} onChange={onChangeDireccion} 
                         className="edit-input" 
                             />
                     </Form.Item>
-
-                    <Form.Item name="descripcion" label="Descripción" labelAlign="left"> 
-                     <Input.TextArea  placeholder={param.pendienteActual.descripcion} onChange={onChangeDescripcion}/>
+                            
+                    <Form.Item name="descripcion" label="Descripción" labelAlign="left"
+                    rules={[
+                            {
+                                required: true,
+                                message: "Ingrese Descripción"
+                            },
+                            ]} 
+                        
+                        >
+                    
+                     <Input.TextArea  placeholder={param.providerActual?.descripcion} onChange={onChangeDescripcion}/>
                     </Form.Item>
                     <Form.Item name="correo" label="Correo" style={{ color: "red !important" }} labelAlign="left"
                     rules={[
@@ -278,7 +305,7 @@ const handleSubmitted = () => {
                         ]} 
                     
                     >
-                        <Input placeholder={param.pendienteActual.email} onChange={onChangeCorreoNuevo} 
+                        <Input placeholder={param.providerActual?.user_datos.user.email} onChange={onChangeCorreoNuevo} 
                         className="edit-input" />
                     </Form.Item>
 
@@ -293,7 +320,7 @@ const handleSubmitted = () => {
                         >
                         <select initialvalues="" onChange={value => {onChangeLicencia(value)}}>
 
-                        <option value="">{param.pendienteActual?.licencia}</option> 
+                        <option value="">{param.providerActual?.licencia}</option> 
                         <option value="Si">Si</option> 
                         <option value="No">No</option> 
 
@@ -330,7 +357,7 @@ const handleSubmitted = () => {
                     >
                      <select initialvalues="" onChange={value => {onChangeCuenta(value)}}>
 
-                    <option value="">{param.pendienteActual?.tipo_cuenta}</option> 
+                    <option value="">{param.providerActual?.tipo_cuenta}</option> 
                     <option value="Ahorro">Ahorro</option> 
                     <option value="Debito">Corriente</option> 
 
@@ -349,7 +376,7 @@ const handleSubmitted = () => {
                     ]} 
                 
                 >
-                    <Input placeholder={param.pendienteActual.numero_cuenta} onChange={onChangeNumeroCuenta} 
+                    <Input placeholder={param.providerActual?.numero_cuenta} onChange={onChangeNumeroCuenta} 
                     className="edit-input"  
                     type="number"/>
                 </Form.Item>
@@ -363,52 +390,57 @@ const handleSubmitted = () => {
                         ]}
                 
                 >
-                    <Input placeholder={param.pendienteActual.banco} onChange={onChangeNombreBanco} 
+                    <Input placeholder={param.providerActual.banco} onChange={onChangeNombreBanco} 
                     className="edit-input" 
                          />
                 </Form.Item>
 
                 <Divider orientation="center" className="divider-edit">Profesión</Divider>
+                {
+                    param.providerProfesiones?.map((profesionProveedor,i)=>{
+                        return  <> 
+                            <div id={profesionProveedor.id}>
+                               
+                                <div style={{display: "flex", justifyContent: "space-between"}}>
+                                    <p><strong>Profesión:  </strong>{profesionProveedor.profesion.nombre}</p>
+                                    {/* <Popconfirm title={
+                                        <><strong>¿Está Seguro que desea eliminar la profesión?</strong>
+                                            <br></br>
+                                            <strong>Al seleccionar la opción "si" la profesión será eliminada permanentemente</strong>
+                                        </>
+                                        
+                                    }
+                                    okText="Si" cancelText="No" onConfirm={()=> handleEliminarProfesion(profesionProveedor.id)}>
+                                        <Button icon={<DeleteTwoTone />} shape="circle"
+                                            className="eliminar" >
+                                        </Button>
+                                    </Popconfirm> */}
+                                    
+                                </div>
+                                
+                                <Form.Item name={i} label="Años Experiencia" style={{ color: "red !important" }} labelAlign="left"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Ingrese los años de Experiencia"
+                                        },
+                                        ]} 
+                                    
+                                    >
+                                        <Input placeholder={profesionProveedor?.ano_experiencia} onChange={onChangeExperiencia} 
+                                        className="edit-input"  
+                                        type="number"/>
+                                </Form.Item> 
+                               
+                                
 
-                <Form.Item name="anosExperiencia" label="Años Experiencia" style={{ color: "red !important" }} labelAlign="left"
-                rules={[
-                    {
-                        required: true,
-                        message: "Ingrese los años de Experiencia"
-                    },
-                    ]} 
-                
-                >
-                    <Input placeholder={param.pendienteActual.ano_experiencia} onChange={onChangeExperiencia} 
-                    className="edit-input"  
-                    type="number"/>
-                </Form.Item>
-
-                <Form.Item name="profesion" label="Profesión"  labelAlign="left"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Seleccione Profesion"
-                            },
-                            ]} 
+                            </div>
                         
-                        >
-                        <select initialvalues="" onChange={value => {onChangeProfesion(value)}}>
+                        </>
 
-                        {param.profesiones.includes(param.pendienteActual?.profesion) 
-                            ?
-                            <option value="">{param.pendienteActual?.profesion}</option>
-                            :
-                            <option value="">Seleccione Profesión</option>
-                        }
-                        {param.profesiones.map((profesion)=>{
-                            return <option key={profesion} value={profesion}> {profesion}</option> 
-                        })}
-
-
-                        </select>
-                    </Form.Item>
-
+                    })
+                }
+                     <Divider orientation="center" className="divider-edit">Documentos:</Divider>
                     <Form.Item name="documentacion" label="Documentación" style={{ color: "red !important" }} labelAlign="left"
                     >
                         <Input  onChange={onChangeDocumentacion} 
@@ -417,31 +449,46 @@ const handleSubmitted = () => {
                         multiple="multiple"
                         
                         />
-                        {param.pendienteActual?.documentsPendientes.map((documento) => {
-        
+                        {param.providerActual?.document.map((documento) => {
+                            let nombre = documento.documento.split("/")
                                     return  <> 
                                                 <br></br>
                                                 <div id={documento.id} style={{display: "flex", justifyContent: "space-between"}}>
-                                                <a href={API_URL + documento.document} target="_blank" download>
+                                                <a href={API_URL + documento.documento} target="_blank" download>
                                                     <img src={docsImage} width={30}/>
                                                 </a>
-                                                <Button icon={<DeleteTwoTone />} shape="circle"
-                                                    className="eliminar" onClick={()=>handleEliminarDocument(documento.id)}>
-                                                </Button>
+                                                
+                                                
+                                                <Popconfirm title={
+                                                    <><strong>¿Está Seguro que desea eliminar el documento?</strong>
+                                                        <br></br>
+                                                        <strong>Al seleccionar la opción "si" dicho documento será eliminado permanentemente</strong>
+                                                    </>
+                                                    
+                                                }
+                                                okText="Si" cancelText="No" onConfirm={()=> handleEliminarDocument(documento.id)}>
+                                                    <Button icon={<DeleteTwoTone />} shape="circle"
+                                                        className="eliminar" >
+                                                    </Button>
+                                                </Popconfirm>
                                                 
                                                 </div></>
                         })}
 
+    
                     </Form.Item>
             </Col>
 
 
             </Row>
       </Form>
+
+
+
       </div>
     </>
   );
 }
 
 
-export default EditPendiente;
+export default EditProveedor;

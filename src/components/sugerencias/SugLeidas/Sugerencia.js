@@ -44,17 +44,15 @@ class SugerenciaLeida extends Component {
     render() {
         return (
             < >
-                <h1 className="titulo">Sugerencias Leidas</h1>
+                <h1 style={{marginLeft: "1.9rem"}} className="titulo">Sugerencias Leídas</h1>
                 <div className="card-container">
-                    <Tabs 
-                    type="card" size="large" >
-                        <TabPane tab="SUGERENCIAS LEIDAS">
-                            <SugerenciasLeidas
-                                data_sugerencia={this.state.data_sugerencia}
-                                loadingTable={this.state.loadingTable}
-                            />
-                        </TabPane>
-                    </Tabs>
+                   
+                
+                        <SugerenciasLeidas
+                            data_sugerencia={this.state.data_sugerencia}
+                            loadingTable={this.state.loadingTable}
+                        />
+
                 </div>
             </>
         );

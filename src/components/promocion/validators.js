@@ -123,6 +123,7 @@ export function validarCedula(cedula){
 
 }
 
+
 export function validarGenero(genero){
     if(genero!="Hombre" && genero!="Mujer"&& genero!="Otro"){
         return false;

@@ -71,14 +71,14 @@ const AgregarProfesion =(props) => {
                 
                    
     
-                    <Form.Item name="servicio" label="Categoría" 
+                    <Form.Item name="servicio" label="Servicio" 
                         rules={[
                             {required: true,
-                            message: "Seleccione Categoría"},
+                            message: "Seleccione Servicio"},
                         ]} >
                         <select initialvalues="" onChange={value => {onChangeServicio(value)}}>
     
-                            <option value=""> Seleccione Categoría</option> 
+                            <option value=""> Seleccione Servicio</option> 
                             
                             {param.servicios.map((servicio,index)=>{
     

@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Button, Modal, Table ,Image , Pagination, Space, Input, DatePicker , Switch, Divider, message} from 'antd';
+import { Button, Modal, Table ,Image , Pagination, Space, Input, DatePicker , Switch, Divider, message,Typography} from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import avatar from "../../../img/avatar.png"
 import * as moment from 'moment';
 import Permisos from '../../../requirements/Permisos'
 const dataSolicitante= [];
 const { Search } = Input;
+const { Text } = Typography;
 
 const { RangePicker } = DatePicker;
 let permisos = [];
@@ -199,6 +200,7 @@ class SolicitantesTab extends Component {
                 telefono: solicitante.user_datos.telefono,
                 fecha_creacion: solicitante.user_datos.fecha_creacion.split('T')[0],
                 genero: solicitante.user_datos.genero,
+                estado: solicitante.user_datos.estado,
             });
         }
         return data_solicitante;
@@ -226,6 +228,7 @@ class SolicitantesTab extends Component {
             <div>
                 <div style={{display: 'flex' , flexDirection:'column' ,marginRight:"1.9rem"}}>
                     <Space direction="vertical">
+                    <h3 style={{marginLeft: "1.9rem"}}><strong>Total Solicitantes:   </strong>{this.state.total}</h3>
                     <div style={{display: 'flex' , flexDirection:'row', justifyContent:'end'}}> 
                         <Space>
                             <Button type="primary" size="default" disabled={this.state.disabledButton} 
@@ -233,16 +236,13 @@ class SolicitantesTab extends Component {
                                 Filtrar
                             </Button>
                             <RangePicker size={'middle'} onChange= {this.validarfechas} />
-                        </Space>
-                    </div>
-
-                    <div  style={{display: 'flex' , flexDirection:'row', justifyContent:'end'}}>
-                        <Search
+                            <Search
                             placeholder="Buscar"
                             allowClear
                             onSearch={this.buscarUsuario}
                             style={{ width: 200 }}
                         />
+                        </Space>
                     </div>
                     </Space>
                 </div>
@@ -257,31 +257,41 @@ class SolicitantesTab extends Component {
                         }}
                         columns={[
                             {
-                                title: 'Nombres',
+                                title: <Text strong>Nombres</Text>,
                                 dataIndex: 'nombres',
                             },
                             {
-                                title: 'Cédula',
+                                title: <Text strong>Cédula</Text>,
                                 dataIndex: 'cedula',
                                 responsive: ['lg'],
                                 align: 'center'
                             },
                             {
-                                title: 'Correo electrónico',
+                                title: <Text strong>Correo electrónico</Text>,
                                 dataIndex: 'correo',
                                 responsive: ['lg'],
                 
                             },
                             {
-                                title: 'Teléfono',
+                                title: <Text strong>Teléfono</Text>,
                                 dataIndex: 'telefono',
                                 align: 'center'
                             },
                             {
-                                title: 'Fecha Creación',
+                                title: <Text strong>Fecha Creación</Text>,
                                 dataIndex: 'fecha_creacion',
                                 align: 'center'   
-                            },  
+                            },
+                            {
+                                title: <Text strong>Estado</Text>,
+                                dataIndex: 'estado',
+                                align: 'center',
+                                render: (estado) => {
+                                    return (
+                                        estado ? <h3>Habilitado</h3> : <h3>Deshabilitado</h3>
+                                    );
+                                    },
+                            } 
                         ]}
                         dataSource={this.state.data_solicitante} 
                         pagination={false}/>

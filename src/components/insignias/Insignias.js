@@ -22,7 +22,7 @@ const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     { title: 'Imagen', dataIndex: 'imagen', render: imagen=> <img alt={imagen} src={imagen} style={{width: 150 + 'px'}}/>,  className: 'columns-pendientes' },
     { title: 'Nombre', dataIndex: 'nombre', className: 'columns-pendientes' },
-    { title: 'Usuario ', dataIndex: 'tipoUsuario', className: 'columns-pendientes'},
+    { title: 'Usuario ', dataIndex: 'tipo_usuario', className: 'columns-pendientes'},
     //{ title: 'Servicio', dataIndex: 'servicio', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Tipo', dataIndex: 'tipo', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Cantidad Minima de Pedidos', dataIndex: 'pedidos', className: 'columns-pendientes', responsive: ['lg'] ,align: "center"},
@@ -121,6 +121,7 @@ class Insignias extends Component {
                         //servicio: insig.servicio,
                         tipo: insig.tipo,
                         pedidos: insig.pedidos,
+                        tipo_usuario : insig.tipo_usuario,
                         estado: est,
 
                     });
@@ -387,6 +388,7 @@ class Insignias extends Component {
             //console.log(data)
             await MetodosAxios.crear_insignia(data).then(res => {
                 console.log(res)
+                message.success("Insignia creada exitosamente")
             })
             //this.MostrarInsignias();
             //this.CerrarAgregar()
@@ -438,6 +440,7 @@ class Insignias extends Component {
 
             await MetodosAxios.cambio_insignia(data, this.state.insigniaInfo.id).then(res => {
                 console.log(res)
+                message.success("Insignia editada exitosamente")
             })
 
             //for (let value of data.keys()) {

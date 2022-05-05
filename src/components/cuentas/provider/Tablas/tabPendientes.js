@@ -1,5 +1,5 @@
 import React, { Component, Profiler } from "react";
-import { Image, Modal, Table , Pagination,Button, DatePicker,Input, Space,Divider, message, Row, Col} from 'antd';
+import { Image, Modal, Table , Pagination,Button, DatePicker,Input, Space,Divider, message, Row, Col,Typography} from 'antd';
 import MetodosAxios from "../../../../requirements/MetodosAxios";
 import { EditTwoTone } from '@ant-design/icons';
 import EditPendiente from "../EditPendiente";
@@ -8,7 +8,7 @@ import { API_URL } from "../../../../Constants";
 import { validarCedula, validarGenero } from "../../../promocion/validators";
 import docsImage from "../../../../img/docs.png"
 import Permisos from '../../../../requirements/Permisos'
-
+const {Text} = Typography;
 const { Search } = Input;
 const {RangePicker} = DatePicker
 let permisos = [];
@@ -490,9 +490,9 @@ class PendienteTab extends Component {
         return (
             < >
             <div>
-                
                 <div style={{display: 'flex' , flexDirection:'column', marginTop:"0.9rem", marginRight:"1rem"}}>
-                    
+                <h1 className="titulo" style={{marginLeft: "2rem"}}>Pendientes</h1>
+                    <h3 style={{marginLeft: "1.9rem"}}><strong>Total Pendientes:   </strong>{this.state.total}</h3>
                     <div style={{display: 'flex' , flexDirection:'row', justifyContent:'end'}}> 
                     <Space>
                         <Button type="primary" size="default" 
@@ -527,28 +527,28 @@ class PendienteTab extends Component {
                         }}
                         columns={[
                             {
-                                title: 'Nombres',
+                                title: <Text strong>Nombres</Text>,
                                 dataIndex: 'nombres',
                             },
                             {
-                                title: 'Cédula',
+                                title: <Text strong>Cédula</Text>,
                                 dataIndex: 'cedula',
                                 responsive: ['lg'],
                                 align: 'center'
                             },
                             {
-                                title: 'Correo electrónico',
+                                title: <Text strong>Correo Electrónico</Text>,
                                 dataIndex: 'correo',
                                 responsive: ['lg'],
                 
                             },
                             {
-                                title: 'Teléfono',
+                                title: <Text strong>Teléfono</Text>,
                                 dataIndex: 'telefono',
                                 align: 'center'
                             },
                             {
-                                title: 'Fecha Registro',
+                                title: <Text strong>Fecha Registro</Text>,
                                 dataIndex: 'fecha_registro',
                                 align: 'center'
                             },

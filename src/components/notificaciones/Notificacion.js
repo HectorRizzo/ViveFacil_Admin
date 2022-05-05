@@ -56,7 +56,7 @@ class Notificaciones extends Component {
         if(this.state.fileimg!=null){
             dataNotificacion.append('imagen',this.state.fileimg)
         }
-        dataNotificacion.append('ruta','./Noticias')
+        dataNotificacion.append('ruta','Notificaciones')
 
 
         MetodosAxios.send_notificacion(dataNotificacion).then(res=> {

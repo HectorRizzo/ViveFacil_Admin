@@ -44,17 +44,14 @@ class SugerenciaNoLeida extends Component {
     render() {
         return (
             < >
-                <h1 className="titulo">Sugerencias Sin Leer</h1>
+                <h1 style={{marginLeft: "1.9rem"}} className="titulo">Sugerencias Sin Leer</h1>
                 <div className="card-container">
-                    <Tabs 
-                    type="card" size="large" >
-                        <TabPane tab="SUGERENCIAS NO LEIDAS">
-                            <SugerenciasNoLeidas
-                                data_sugerencia={this.state.data_sugerencia}
-                                loadingTable={this.state.loadingTable}
-                            />
-                        </TabPane>
-                    </Tabs>
+                
+                        <SugerenciasNoLeidas
+                            data_sugerencia={this.state.data_sugerencia}
+                            loadingTable={this.state.loadingTable}
+                        />
+                       
                 </div>
             </>
         );
