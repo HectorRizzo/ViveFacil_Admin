@@ -311,7 +311,7 @@ class SolicitantesTab extends Component {
                     <Divider orientation="center" className="divider-edit">Foto Perfil</Divider>
                         <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                             <Image src={ this.solicianteInfo?.user_datos.foto !=null ?  
-                                this.solicianteInfo?.user_datos.foto: avatar } 
+                                'https://tomesoft1.pythonanywhere.com/'+this.solicianteInfo?.user_datos.foto: avatar } 
                                 alt="foto-perfil" height={200} width={200}/>
                         </div>
 

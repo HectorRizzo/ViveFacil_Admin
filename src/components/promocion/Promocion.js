@@ -212,6 +212,9 @@ class Promociones extends Component {
     }
 
     showModal = (insignia) => {
+        if((permisos.filter(element => { return element.includes('Can change promocion')}).length >0) || permisos.includes('all')){
+            this.setState({disableCheck: false})
+        }
         MetodosAxios.obtener_promocion(insignia.key).then(res => {
             this.promocionSelected = res.data;
             this.setState({

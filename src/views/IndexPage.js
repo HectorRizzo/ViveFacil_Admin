@@ -5,6 +5,7 @@ import logoVive from "../img/logo-inicio.png";
 import MetodosAxios from "../requirements/MetodosAxios";
 import eye_password from "../img/icons/eye_password.png"
 import hidden_password from "../img/icons/hidden_password.png"
+import {message} from 'antd';
 import './indexPage.css'
 class IndexPage extends Component {
     constructor(props) {
@@ -44,6 +45,14 @@ class IndexPage extends Component {
                 this.props.history.push({pathname: 'inicio', state: {detail: res.data}})
             }
             console.log(res)
+        }).catch(error => {
+            if(error.response.data['active'] == false){
+                message.error("El usuario se encuentra desactivado");
+            }
+
+            else if(error.response.data['error']){
+                message.error("Nombre de Usuario o Contraseña incorrecta");
+            }
         })
 
     }

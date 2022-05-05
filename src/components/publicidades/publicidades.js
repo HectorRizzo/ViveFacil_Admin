@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal , Upload,  Form, Space, Switch, Pagination} from 'antd';
+import { Input, Table, Button, Modal , Upload,  Form, Space, Switch, Pagination, Typography} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import File from '../servicios/File/FileUpload'
 import iconimg from '../../img/icons/imagen.png'
@@ -11,6 +11,7 @@ import { resetLabels, validarFechaInicio, validarFecha}
     from '../promocion/validators';
 const { Search } = Input;
 let permisos = [];
+const {Text} = Typography
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },

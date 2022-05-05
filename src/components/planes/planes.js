@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal , Upload,  Form, Space, Switch} from 'antd';
+import { Input, Table, Button, Modal , Upload,  Form, Space, Switch, Typography} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import File from '../servicios/File/FileUpload'
 import iconimg from '../../img/icons/imagen.png'
@@ -9,12 +9,14 @@ import './planes.css'
 import { resetLabels }
     from '../promocion/validators';
 const { Search } = Input;
+const {Text} = Typography
+
 let permisos = [];
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     {
-        title: 'Imagen',
+        title:'Imagen',
         dataIndex: 'imagen',
         render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px'}}/>,
         className: 'columns-pendientes'
@@ -58,7 +60,7 @@ class Planes extends Component {
             descripcion: "",
             duracion: 1,
             precio: 0,
-            estado: false,
+            estado: true,
             sent: false,
             edit: false,
             success: false,
@@ -322,6 +324,7 @@ class Planes extends Component {
             descripcion: "",
             duracion: 1,
             precio: 0,
+            estado: true,
             success: false,
             failed: false,
             msg: "",
@@ -482,7 +485,7 @@ class Planes extends Component {
                                                 <h6 id="error-prom-name" className="error-add-prom"></h6>
                                             </div>
                                             <div className="item" key="text-pro">
-                                                <h4 className="item-label-prom">Descripcion</h4>
+                                                <h4 className="item-label-prom">Descripción</h4>
                                                 <textarea name="descripcion" key="input-text"
                                                     value={this.state.descripcion}
                                                     onChange={this.handleChange} type="text"

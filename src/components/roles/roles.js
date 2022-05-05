@@ -1,8 +1,10 @@
 import React, { Component, } from "react";
-import { Input, Table, Button, Modal, Checkbox, Select} from 'antd';
+import { Input, Table, Button, Modal, Checkbox, Select, message, Typography} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import './roles.css'
 import ButtonGroup from "antd/lib/button/button-group";
+
+const {Text} = Typography
 
 const columns = [
     { title: '', dataIndex: 'nombre', width: "20%", align: 'left'},
@@ -251,6 +253,7 @@ class Roles extends Component {
         let value = await MetodosAxios.obtener_grupos();
         let data = value.data
         for(let rol of data){
+            if(rol.name != "Administrador" && rol.name != "Solicitante" && rol.name != "Proveedor")
             roles.push(rol)
         }
         this.setState({
@@ -335,6 +338,7 @@ class Roles extends Component {
             console.log(value);
 
             if (value['id'] >=0){
+                message.success("El rol fue creado exitosamente");
                 this.setState({
                     mostrarNombre: 'none',
                     displayGuardar: 'none',
@@ -347,6 +351,7 @@ class Roles extends Component {
                 });
 
             } else {
+                message.error("Error al crear el rol");
                 this.setState({
                     mostrarNombre: 'none',
                     displayGuardar: 'none',
@@ -360,7 +365,7 @@ class Roles extends Component {
             }
 
         } catch (e) {
-            console.log(e);
+            message.error("Error al crear el rol, el rol ya existe");
             this.setState({
                 mostrarNombre: 'none',
                 displayGuardar: 'none',

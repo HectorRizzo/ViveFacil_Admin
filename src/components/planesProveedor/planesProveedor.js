@@ -1,5 +1,5 @@
 import React, { Component, } from "react";
-import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message} from 'antd';
+import { Image, Modal, Table , Pagination, Button, DatePicker,Input, Space, Divider, Switch, message, Typography} from 'antd';
 import MetodosAxios from '../../requirements/MetodosAxios';
 import './planesProveedor.css'
 import Permisos from '../../requirements/Permisos'
@@ -8,6 +8,8 @@ import reload from '../../img/icons/reload.png'
 const { Search } = Input;
 const {RangePicker} = DatePicker
 let permisos = [];
+const {Text} = Typography
+
 const columns = [
     { title: 'Nombre', dataIndex: 'nombres', className: 'columns-pendientes' },
     { title: 'Plan', dataIndex: 'plan', className: 'columns-pendientes', responsive: ['lg'] },
@@ -188,7 +190,8 @@ class planesProveedor extends Component {
         let fechaExpCom = moment(fechaExp, "YYYY-MM-DDTHH:mm:SS").add(this.proveedorActual?.plan_proveedor[0]?.plan.duracion, 'M').format("YYYY-MM-DDTHH:mm:SS")
         let data = {
             id: this.proveedorActual.plan_proveedor[0].id,
-            fecha_expiracion: fechaExpCom
+            fecha_expiracion: fechaExpCom,
+            estado: true
         }
 
         MetodosAxios.actualizar_plan_proveedor(data).then(res => {
@@ -353,6 +356,7 @@ class planesProveedor extends Component {
                                 <p><strong>Nombres:  </strong>{this.proveedorActual?.user_datos.nombres}</p>
                                 <p><strong>Apellidos:  </strong>{this.proveedorActual?.user_datos.apellidos}</p>
                                 <p><strong>Cédula:   </strong>{this.proveedorActual?.user_datos.cedula}</p>
+                                <p><strong>Profesión:   </strong>{this.proveedorActual?.profesion}</p>
                                 <p><strong>Ciudad:   </strong>{this.proveedorActual?.user_datos.ciudad}</p>
                                 <p><strong>Teléfono:  </strong>{this.proveedorActual?.user_datos.telefono}</p>
                                 <p><strong>Correo:  </strong>{this.proveedorActual?.user_datos.user.email}</p>
@@ -370,7 +374,7 @@ class planesProveedor extends Component {
                                         loading={this.state.loadingCheck}
                                         disabled={this.state.disableCheck}
                                         onChange={(switchValue) => this.onChangeCheckProveedor(this.proveedorActual?.plan_proveedor[0]?.id, switchValue)}
-                                        defaultChecked={this.proveedorActual?.estado}
+                                        defaultChecked={this.proveedorActual?.plan_proveedor[0]?.estado}
                                     />
                                 </div>
                         </div>
