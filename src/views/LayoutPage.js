@@ -124,10 +124,10 @@ class LayoutPage extends Component {
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
 
-                        <Menu.Item key="sub11" title="PROFESIONES"  id="menu-item-only">
+                        {((this.state.permisos.filter(element => { return element.includes('profesion')}).length >0) || this.state.permisos.includes('all')) && <Menu.Item key="sub11" title="PROFESIONES"  id="menu-item-only">
                             PROFESIONES
-                            <Link to={`${this.props.match.path}/PROFESIONES/`} />
-                        </Menu.Item>
+                            <Link to={`${this.props.match.path}/profesiones/`} />
+                        </Menu.Item>}
 
                         {((this.state.permisos.filter(element => { return element.includes('proveedor')}).length >0) || this.state.permisos.includes('all')) &&  <Menu.Item key="sub500" title="PLANES DE PROVEEDORES" id="menu-item-only">
                             PLANES DE PROVEEDORES

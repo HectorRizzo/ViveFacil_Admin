@@ -46,6 +46,12 @@ const EditarCupon = (props) => {
         //var pedidos = document.getElementById("errorpedidos");
         //if (pedidos) pedidos.textContent = ""
     }
+    const handleChangecantidad = (event) => {
+        param.cuponInfo.cantidad = event.target.value
+        //param.pedidos = event.target.value
+        //var pedidos = document.getElementById("errorpedidos");
+        //if (pedidos) pedidos.textContent = ""
+    }
 
     const handleChangeinicio = (event) => {
         //param.cuponInfo.fecha_iniciacion = event.target.value
@@ -125,7 +131,7 @@ const EditarCupon = (props) => {
                 <Form {...layout} form={formEdit}
                     onSubmit={handleSubmitted()} >
 
-                    <Divider orientation="center" className="divider-edit">Informacion de la Promoción</Divider>
+                    <Divider orientation="center" className="divider-edit">Información de la Promoción</Divider>
 
                     <Form.Item name="codigo" label="Código" style={{ color: "red !important" }}
                         rules={[
@@ -185,6 +191,24 @@ const EditarCupon = (props) => {
 
                     >
                         <Input min="1" max="100" defaultValue={param.cuponInfo?.porcentaje} onChange={value => { handleChangeporcentaje(value) }}
+                            className="edit-input"
+                            type="number" />
+                        {/*<div className="Registroerror-div">
+                            <label className="error" id="errorporcentajeE"></label>
+                        </div>*/}
+                    </Form.Item>
+
+
+                    <Form.Item name="cantidad" label="Cantidad" style={{ color: "red !important" }}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingrese la cantidad"
+                            },
+                        ]}
+
+                    >
+                        <Input min="1" max="100" defaultValue={param.cuponInfo?.cantidad} onChange={value => { handleChangecantidad(value) }}
                             className="edit-input"
                             type="number" />
                         {/*<div className="Registroerror-div">
@@ -282,6 +306,8 @@ const EditarCupon = (props) => {
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
+
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
 
                         </select>
 

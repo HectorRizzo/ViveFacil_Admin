@@ -31,6 +31,7 @@ const columns = [
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cantidad', dataIndex: 'cantidad', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
@@ -60,6 +61,8 @@ class Promociones extends Component {
             mapallsctgs: new Map(),
             participantes: "",
 
+            catgs: '',
+
             modalEditVisible: false,
             limpiarEdit: false,
 
@@ -83,6 +86,7 @@ class Promociones extends Component {
             titulo0: '',
             descripcion0: '',
             porcentaje0: '',
+            cantidad0: '',
             fecha_iniciacion0: '',
             fecha_expiracion0: '',
             participantes0: '',
@@ -134,13 +138,14 @@ class Promociones extends Component {
                     //this.state.fileimgup = insig.imagen
                     data_promocion.push({
                         key: insig.id,
-                        imagen: insig.foto,
+                        imagen: 'https://tomesoft1.pythonanywhere.com/'+insig.foto,
                         codigo: insig.codigo,
                         titulo: insig.titulo,
                         fecha_creacion: insig.fecha_creacion.split('T')[0],
                         fecha_iniciacion: fechaInicio,
                         fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                         estado: est,
+                        cantidad: insig.cantidad,
 
                     });
                 }
@@ -158,17 +163,25 @@ class Promociones extends Component {
         let map = new Map();
         let data = response.data;
         let ctgorias = [];
+        let cts = ''
         for (let ctgr of data) {
-            ctgorias.push(ctgr.nombre)
+            if (ctgr.nombre != "Promociones") {
+                ctgorias.push(ctgr.nombre)
             map.set(ctgr.nombre, ctgr.id);
+            cts = cts + ctgr.nombre+','
             //console.log(ctgr.nombre)
+
+            }
+            
         }
         for (let clavevalor of map.entries()) {
             //console.log(clavevalor);
         }
 
+        let str2 = cts.substring(0, cts.length - 1);
+
         //console.log(map.get('Hogar'))
-        this.setState({ allcategorias: ctgorias, mapallctgs: map });
+        this.setState({ allcategorias: ctgorias, mapallctgs: map, catgs:str2 });
     }
 
     async loadGrupos() {
@@ -299,6 +312,7 @@ class Promociones extends Component {
             picture: iconimg,
             descripcion0: '',
             porcentaje0: '',
+            cantidad0: '',
             fecha_iniciacion0: '',
             fecha_expiracion0: '',
             participantes0: '',
@@ -328,7 +342,7 @@ class Promociones extends Component {
             this.state.fileimg !== null && this.state.descripcion0 !== '' &&
             this.state.porcentaje0 !== '' && this.state.fecha_iniciacion0 !== '' &&
             this.state.fecha_expiracion0 !== '' && this.state.participantes0 !== '' &&
-            this.state.tipo_categoria0 !== '') {
+            this.state.tipo_categoria0 !== '' && this.state.cantidad0 !== '') {
 
             return true
         }
@@ -343,6 +357,9 @@ class Promociones extends Component {
         }
         if (this.state.porcentaje0 === '') {
             ValidarTexto(false, 'errorporcentaje0');
+        }
+        if (this.state.cantidad0 === '') {
+            ValidarTexto(false, 'errorcantidad0');
         }
         if (this.state.fecha_iniciacion0 === '') {
             ValidarTexto(false, 'errorfecha_iniciacion0')
@@ -376,7 +393,7 @@ class Promociones extends Component {
             this.state.promocionInfo.descripcion !== '' &&
             this.state.promocionInfo.porcentaje !== '' && this.state.promocionInfo.fecha_iniciacion !== '' &&
             this.state.promocionInfo.fecha_expiracion !== '' && this.state.promocionInfo.participantes !== '' &&
-            this.state.promocionInfo.tipo_categoria !== '') {
+            this.state.promocionInfo.tipo_categoria !== ''  && this.state.promocionInfo.cantidad !== '') {
 
             return true
         }
@@ -391,6 +408,9 @@ class Promociones extends Component {
         //}
         if (this.state.promocionInfo.porcentaje === '') {
             ValidarTexto(false, 'errorporcentajeE');
+        }
+        if (this.state.promocionInfo.cantidad === '') {
+            ValidarTexto(false, 'errorcantidadEE');
         }
         if (this.state.promocionInfo.fecha_iniciacion === '') {
             ValidarTexto(false, 'errorfecha_iniciacionE')
@@ -429,14 +449,21 @@ class Promociones extends Component {
             data.append('foto', this.state.fileimg);
             data.append('descripcion', this.state.descripcion0);
             data.append('porcentaje', this.state.porcentaje0);
+            data.append('cantidad', this.state.cantidad0);
             data.append('fecha_iniciacion', this.state.fecha_iniciacion0);
             data.append('fecha_expiracion', this.state.fecha_expiracion0);
             data.append('participantes', this.state.participantes0);
             data.append('tipo_categoria', this.state.tipo_categoria0);
             //console.log(data)
+
+
+
             await MetodosAxios.crear_promocion(data).then(res => {
                 console.log(res)
             })
+
+
+
             //this.MostrarPromociones();
             //this.CerrarAgregar()
 
@@ -476,6 +503,7 @@ class Promociones extends Component {
             data.append('titulo', this.state.promocionInfo.titulo);
             data.append('descripcion', this.state.promocionInfo.descripcion);
             data.append('porcentaje', this.state.promocionInfo.porcentaje);
+            data.append('cantidad', this.state.promocionInfo.cantidad);
             data.append('fecha_iniciacion', this.state.promocionInfo.fecha_iniciacion);
             data.append('fecha_expiracion', this.state.promocionInfo.fecha_expiracion);
             data.append('participantes', this.state.promocionInfo.participantes);
@@ -726,7 +754,7 @@ class Promociones extends Component {
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.promocionSelected?.foto != null ?
-                            this.promocionSelected?.foto : sinImagen}
+                            'https://tomesoft1.pythonanywhere.com/'+this.promocionSelected?.foto : sinImagen}
                             alt="foto-perfil" height="150" width="200"></img>
                     </div>
 
@@ -735,6 +763,7 @@ class Promociones extends Component {
                     <p><strong>Categoría:  </strong>{this.promocionSelected?.tipo_categoria}</p>
                     <p><strong>Descripcion:  </strong>{this.promocionSelected?.descripcion}</p>
                     <p><strong>Descuento:  </strong>{this.promocionSelected?.porcentaje}%</p>
+                    <p><strong>Cantidad:  </strong>{this.promocionSelected?.cantidad}</p>
                     <p><strong>Fecha de Inicio:  </strong>{this.promocionSelected?.fecha_iniciacion.split('T')[0]}</p>
                     <p><strong>Fecha de Expiración:  </strong>{this.promocionSelected?.fecha_expiracion.split('T')[0]}</p>
                     <p><strong>Estado:  </strong>{this.promocionSelected?.estado ? 'Activo' : 'Inactivo'}</p>

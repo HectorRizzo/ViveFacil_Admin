@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Tabs, Switch, Input, Button,Modal } from 'antd';
+import { Tabs, Switch, Input, Button, Modal } from 'antd';
 import SubCategorias from "./tabs/SubCategoria";
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import AgregarSubCategoria from "./tabs/AgregarSubCategoria";
 import Agregar from '../../../img/icons/agregar.png';
 import Eliminar from "../../../img/icons/eliminar.png";
 import Icon from '@ant-design/icons';
-import {ValidarTexto} from '../Validacion/validaciones'
+import { ValidarTexto } from '../Validacion/validaciones'
 import Permisos from '../../../requirements/Permisos'
 import "./AdmSubCategorias.css"
 import EditarSubCategoria from './tabs/EditarSubCategoria'
@@ -25,18 +25,18 @@ class AdmSubCategorias extends Component {
             data_subcategoria: [],
             loadingTable: false,
             loadingCheck: false,
-            loadingcategorias:true,
-            key:'',
+            loadingcategorias: true,
+            key: '',
             modalVisible: false,
             modalVisibleEdit: false,
             modalalert: false,
-            nombre:'',
-            descripcion:'',
-            limpiar:false,
-            limpiarEdit:false,
-            categoria:null,
-            nombre0:'',
-            descripcion0:'',
+            nombre: '',
+            descripcion: '',
+            limpiar: false,
+            limpiarEdit: false,
+            categoria: null,
+            nombre0: '',
+            descripcion0: '',
             disableCheck: true,
         };
     }
@@ -48,7 +48,7 @@ class AdmSubCategorias extends Component {
         this.llenarTablaSubCategoria();
     }
 
-    llamaCategorias= () => {
+    llamaCategorias = () => {
         MetodosAxios.obtener_categorias().then(res => {
             let data_categoria = [];
             for (let i = 0; i < res.data.length; i++) {
@@ -60,18 +60,18 @@ class AdmSubCategorias extends Component {
             }
             this.setState({
                 data_categoria: data_categoria,
-                loadingcategorias:false
+                loadingcategorias: false
             })
         })
-       
+
     }
 
     llenarTablaSubCategoria = () => {
-        let perm= ((permisos.filter(element => { return element.includes('Can view sub categoria')}).length >0) || permisos.includes('all'))
-        if((permisos.filter(element => { return element.includes('Can change sub categoria')}).length >0) || permisos.includes('all')){
-            this.setState({disableCheck: false})
+        let perm = ((permisos.filter(element => { return element.includes('Can view sub categoria') }).length > 0) || permisos.includes('all'))
+        if ((permisos.filter(element => { return element.includes('Can change sub categoria') }).length > 0) || permisos.includes('all')) {
+            this.setState({ disableCheck: false })
         }
-        if(perm){
+        if (perm) {
             this.setState({
                 loadingTable: true
             })
@@ -83,7 +83,7 @@ class AdmSubCategorias extends Component {
                     data_subcategoria.push({
                         key: subcategoria.id,
                         nombre: subcategoria.nombre,
-                        categoria:subcategoria.categoria,
+                        categoria: subcategoria.categoria,
                         check: <Switch
                             key={subcategoria.id}
                             loading={this.state.loadingCheck}
@@ -92,7 +92,7 @@ class AdmSubCategorias extends Component {
                             defaultChecked={subcategoria.estado}
                         />,
                     });
-                    
+
                 }
                 this.setState({
                     data_subcategoria: data_subcategoria,
@@ -104,7 +104,7 @@ class AdmSubCategorias extends Component {
     }
 
 
-    async onChangeCheckSubCategoria(i, checked){
+    async onChangeCheckSubCategoria(i, checked) {
         this.setState({
             loadingCheck: true
         })
@@ -134,7 +134,7 @@ class AdmSubCategorias extends Component {
                 let subcategoria = this.state.base_subcategoria[i];
                 search = search.toLowerCase();
                 let nombre = subcategoria.nombre.toLowerCase();
-                if (nombre.search(search) !== -1 ) {
+                if (nombre.search(search) !== -1) {
                     data_subcategoria.push(subcategoria);
                 }
             }
@@ -154,7 +154,7 @@ class AdmSubCategorias extends Component {
 
     async eliminar() {
         console.log("eliminar", this.state.selectedRowKeyssubCategoria)
-        
+
         if (this.state.selectedRowKeyssubCategoria.length > 0) {
             for (let i = 0; i < this.state.selectedRowKeyssubCategoria.length; i++) {
                 let id = this.state.selectedRowKeyssubCategoria[i];
@@ -167,30 +167,34 @@ class AdmSubCategorias extends Component {
         this.llenarTablaSubCategoria();
     }
     handleSelect = (event) => {
-        console.log(event) 
-        this.state.key=event  
-      } 
-    
-    loadServices=()=>{
-        return this.state.loadingcategorias ?<title>cargando</title>
-        :this.state.data_categoria.map((categorias , i) => {
-            let servicios=[]
-            for(let i = 0; i < this.state.data_subcategoria.length; i++){
-                let servicio=this.state.data_subcategoria[i]
-                if(servicio.categoria===categorias.key){
-                servicios.push(this.state.data_subcategoria[i])
+        console.log(event)
+        this.state.key = event
+    }
+
+    loadServices = () => {
+        return this.state.loadingcategorias ? <title>cargando</title>
+            : this.state.data_categoria.map((categorias, i) => {
+                if (categorias.nombre != "Promociones") {
+                    let servicios = []
+                    for (let i = 0; i < this.state.data_subcategoria.length; i++) {
+                        let servicio = this.state.data_subcategoria[i]
+                        if (servicio.categoria === categorias.key) {
+                            servicios.push(this.state.data_subcategoria[i])
+                        }
+                    }
+                    if (this.state.key == '') { this.handleSelect(categorias.key) }
+                    return <TabPane tab={categorias.nombre} key={categorias.key}  >
+                        <SubCategorias
+                            onSelectChange={this.onSelectChangesubCategoria}
+                            data_subcategoria={servicios}
+                            loadingTable={this.state.loadingTable}
+                            SubCategoriaSeleccionada={this.EditarSubCategoria}
+                        />
+                    </TabPane>
+
                 }
-            }
-            if(this.state.key==''){this.handleSelect(categorias.key)}
-         return <TabPane tab={categorias.nombre} key={categorias.key}  >
-             <SubCategorias
-                 onSelectChange={this.onSelectChangesubCategoria}
-                 data_subcategoria={servicios}
-                 loadingTable={this.state.loadingTable}
-                 SubCategoriaSeleccionada={this.EditarSubCategoria}
-             />
-         </TabPane>
-          })
+
+            })
     }
     setModalVisible(modalVisible) {
         this.setState({ modalVisible });
@@ -198,109 +202,109 @@ class AdmSubCategorias extends Component {
     setModalVisibleEdit(modalVisibleEdit) {
         this.setState({ modalVisibleEdit });
     }
-    limpiarformsubcategoria(){
-        this.setState({nombre0:'',descripcion0:''})
+    limpiarformsubcategoria() {
+        this.setState({ nombre0: '', descripcion0: '' })
         this.setModalVisible(false)
     }
-    validarform(){
-        if(this.state.nombre0!='' ){
+    validarform() {
+        if (this.state.nombre0 != '') {
             return true
         }
-        if(this.state.nombre0==''){
-            ValidarTexto(false,'errornombre0')
+        if (this.state.nombre0 == '') {
+            ValidarTexto(false, 'errornombre0')
         }
-      /*  if(this.state.descripcion0==''){
-            ValidarTexto(false,'errordescripcion0')
-        }*/
+        /*  if(this.state.descripcion0==''){
+              ValidarTexto(false,'errordescripcion0')
+          }*/
         return false
     }
-    validarformEdit(){
-        if(this.state.nombre!==''){
+    validarformEdit() {
+        if (this.state.nombre !== '') {
             return true
         }
-        if(this.state.nombre===''){
-            ValidarTexto(false,'errornombre')
+        if (this.state.nombre === '') {
+            ValidarTexto(false, 'errornombre')
         }
-  /*      if(this.state.descripcion===''){
-            ValidarTexto(false,'errordescripcion')
-        }*/
+        /*      if(this.state.descripcion===''){
+                  ValidarTexto(false,'errordescripcion')
+              }*/
         return false
     }
-    async guardarsubcategoria(){
-        if(this.validarform()){
-        var data = new FormData();
-        data.append('nombre', this.state.nombre0);
-        data.append('descripcion', this.state.descripcion0);
-        data.append('categoria', this.state.key);
-        await MetodosAxios.crear_subcategoria(data).then(res => {
-            console.log(res)
-        })
-        this.llenarTablaSubCategoria();
-        this.CerrarAgregar()
+    async guardarsubcategoria() {
+        if (this.validarform()) {
+            var data = new FormData();
+            data.append('nombre', this.state.nombre0);
+            data.append('descripcion', this.state.descripcion0);
+            data.append('categoria', this.state.key);
+            await MetodosAxios.crear_subcategoria(data).then(res => {
+                console.log(res)
+            })
+            this.llenarTablaSubCategoria();
+            this.CerrarAgregar()
         }
     }
-    async guardarEditsubcategoria(){
-        if(this.validarformEdit()){
-        var data = new FormData();
-        data.append('nombre', this.state.nombre);
-        data.append('descripcion', this.state.descripcion);
-        await MetodosAxios.cambio_subcategoria_update(data, this.state.categoria.key).then(res => {
-            console.log(res)
-        })
-        this.llenarTablaSubCategoria();
-        this.CerrarEdit()
+    async guardarEditsubcategoria() {
+        if (this.validarformEdit()) {
+            var data = new FormData();
+            data.append('nombre', this.state.nombre);
+            data.append('descripcion', this.state.descripcion);
+            await MetodosAxios.cambio_subcategoria_update(data, this.state.categoria.key).then(res => {
+                console.log(res)
+            })
+            this.llenarTablaSubCategoria();
+            this.CerrarEdit()
         }
     }
-    limpiarformsubcategoriaEdit = ()=>{
+    limpiarformsubcategoriaEdit = () => {
         this.setState({
-            nombre:'',
-            descripcion:'',
-            limpiarEdit:true,
+            nombre: '',
+            descripcion: '',
+            limpiarEdit: true,
         })
     }
-    CerrarEdit =() =>{
+    CerrarEdit = () => {
         this.limpiarformsubcategoriaEdit()
         this.setModalVisibleEdit(false)
-     }
-     CerrarAgregar() {
-          this.limpiarformsubcategoria()
-            this.setModalVisible(false)
+    }
+    CerrarAgregar() {
+        this.limpiarformsubcategoria()
+        this.setModalVisible(false)
     }
     AgregarsubCategoria() {
-        this.limpiarformsubcategoria() 
-        console.log("nombre",this.state.nombre) 
+        this.limpiarformsubcategoria()
+        console.log("nombre", this.state.nombre)
         //  console.log("descripcion",this.state.descripcion) 
         this.setModalVisible(true)
     }
 
-    
+
     EditarSubCategoria = (categoria) => {
         this.limpiarformsubcategoriaEdit()
         console.log(this.state.categoria)
         this.setState({
             categoria: categoria,
-            nombre:categoria.nombre,
-            descripcion:categoria.descripcion
+            nombre: categoria.nombre,
+            descripcion: categoria.descripcion
         })
         console.log(categoria.nombre)
         this.setModalVisibleEdit(true)
     }
 
-    
+
     render() {
 
         return (
             < >
                 <h1 className="titulo">Sub-Categorías</h1>
                 <div className="card-container">
-                    <Tabs onTabClick={(event) => this.handleSelect(event)} tabBarExtraContent={<div> 
-                        {((permisos.filter(element => { return element.includes('Can add sub categoria')}).length >0) || permisos.includes('all')) && <Button
+                    <Tabs onTabClick={(event) => this.handleSelect(event)} tabBarExtraContent={<div>
+                        {((permisos.filter(element => { return element.includes('Can add sub categoria') }).length > 0) || permisos.includes('all')) && <Button
                             id="agregarButton"
                             type="text"
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
-                            onClick={() => {   this.AgregarsubCategoria(true)}}
+                            onClick={() => { this.AgregarsubCategoria(true) }}
                         />}
                         <Search
                             placeholder="Buscar"
@@ -308,8 +312,8 @@ class AdmSubCategorias extends Component {
                             onSearch={this.searchCategoria}
                             style={{ width: 200, margin: '0 10px' }}
                         />
-                        
-                        {((permisos.filter(element => { return element.includes('Can delete sub categoria')}).length >0) || permisos.includes('all')) && <Button
+
+                        {((permisos.filter(element => { return element.includes('Can delete sub categoria') }).length > 0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
@@ -319,7 +323,10 @@ class AdmSubCategorias extends Component {
                     </div>}
                         type="card" size="large" >
                         {this.loadServices()}
-                       
+                        <TabPane disabled tab="Promociones" key="Promociones"  >
+
+                    </TabPane>
+
                     </Tabs>
                 </div>
                 <Modal
@@ -333,7 +340,7 @@ class AdmSubCategorias extends Component {
                     onOk={() => this.guardarsubcategoria()}
                     onCancel={() => this.CerrarAgregar()}
                 >
-                    <AgregarSubCategoria param={this.state}/>
+                    <AgregarSubCategoria param={this.state} />
                 </Modal>
                 <Modal
                     className="modal"
@@ -343,10 +350,10 @@ class AdmSubCategorias extends Component {
                     footer={[
                         <div className="footer">
                             <Button key="close" onClick={this.CerrarEdit}>
-                                    Cerrar
+                                Cerrar
                             </Button>
-                            {((permisos.filter(element => { return element.includes('Can change insignia')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.guardarEditsubcategoria}>
-                                    Guardar
+                            {((permisos.filter(element => { return element.includes('Can change insignia') }).length > 0) || permisos.includes('all')) && <Button key="edit" onClick={this.guardarEditsubcategoria}>
+                                Guardar
                             </Button>}
                         </div>
                     ]}

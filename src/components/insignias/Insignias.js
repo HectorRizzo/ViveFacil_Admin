@@ -113,11 +113,11 @@ class Insignias extends Component {
                     } else {
                         est = "Inactivo"
                     }
-                    this.state.fileimgup = insig.imagen
+                    this.state.fileimgup = 'https://tomesoft1.pythonanywhere.com/'+ insig.imagen
                     data_insignia.push({
                         key: insig.id,
                         nombre: insig.nombre,
-                        imagen: insig.imagen,
+                        imagen: 'https://tomesoft1.pythonanywhere.com/'+ insig.imagen,
                         //servicio: insig.servicio,
                         tipo: insig.tipo,
                         pedidos: insig.pedidos,
@@ -616,7 +616,7 @@ class Insignias extends Component {
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.insigniaSelected?.imagen != null ?
-                            this.insigniaSelected?.imagen : sinImagen}
+                            'https://tomesoft1.pythonanywhere.com/'+this.insigniaSelected?.imagen : sinImagen}
                             alt="foto-perfil" height="150" width="200"></img>
                     </div>
 

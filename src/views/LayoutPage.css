@@ -84,10 +84,27 @@
 }
 .ant-table{
   margin: 2% !important;
+  background-color: #000000 !important;
+  text-align: center !important;
+  
 }
+
 .ant-table-content{
+  /*background-color: #edeef0 !important;*/
   background-color: #edeef0 !important;
+  margin: auto !important;
+  /*text-align: center !important;*/
 }
+
+thead[class*="ant-table-thead"] th{
+  background-color: rgb(105, 160, 211) !important;
+  margin: auto !important;
+  font-weight: bold !important;
+  /*text-align: center !important;*/
+}
+
+
+
 .ant-tabs-tab-btn{
   font-weight: bold;
   /*color:rgba(10,68,91);*/

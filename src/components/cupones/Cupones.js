@@ -30,6 +30,7 @@ const columns = [
     { title: 'Imagen', dataIndex: 'imagen', render: imagen => <img alt={imagen} src={imagen} style={{ width: 150 + 'px' }} />, className: 'columns-pendientes' },
     { title: 'Código', dataIndex: 'codigo', className: 'columns-pendientes' },
     { title: 'Título', dataIndex: 'titulo', className: 'columns-pendientes', responsive: ['lg'] },
+    { title: 'Cantidad', dataIndex: 'cantidad', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Creación', dataIndex: 'fecha_creacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Inicio', dataIndex: 'fecha_iniciacion', className: 'columns-pendientes', responsive: ['lg'] },
     { title: 'Fecha de Fin', dataIndex: 'fecha_expiracion', className: 'columns-pendientes', responsive: ['lg'] },
@@ -68,6 +69,8 @@ class Cupones extends Component {
 
             code: '',
 
+            catgs: '',
+
 
 
             fileimg: null,
@@ -82,6 +85,7 @@ class Cupones extends Component {
             titulo0: '',
             descripcion0: '',
             porcentaje0: '',
+            cantidad0: '',
             fecha_iniciacion0: '',
             fecha_expiracion0: '',
             puntos0: '',
@@ -108,8 +112,8 @@ class Cupones extends Component {
     }
 
     MostraCupones = () => {
-        let perm= ((permisos.filter(element => { return element.includes('Can view cupon')}).length >0) || permisos.includes('all'))
-        if(perm){
+        let perm = ((permisos.filter(element => { return element.includes('Can view cupon') }).length > 0) || permisos.includes('all'))
+        if (perm) {
             this.setState({
                 loadingTable: true
             })
@@ -133,13 +137,14 @@ class Cupones extends Component {
                     //this.state.fileimgup = insig.imagen
                     data_cupon.push({
                         key: insig.id,
-                        imagen: insig.foto,
+                        imagen: 'https://tomesoft1.pythonanywhere.com/' + insig.foto,
                         codigo: insig.codigo,
                         titulo: insig.titulo,
                         fecha_creacion: insig.fecha_creacion.split('T')[0],
                         fecha_iniciacion: fechaInicio,
                         fecha_expiracion: insig.fecha_expiracion.split('T')[0],
                         estado: est,
+                        cantidad: insig.cantidad,
 
                     });
                 }
@@ -157,17 +162,25 @@ class Cupones extends Component {
         let map = new Map();
         let data = response.data;
         let ctgorias = [];
+        let cts = ''
         for (let ctgr of data) {
-            ctgorias.push(ctgr.nombre)
-            map.set(ctgr.nombre, ctgr.id);
-            //console.log(ctgr.nombre)
+            if (ctgr.nombre != "Promociones") {
+                ctgorias.push(ctgr.nombre)
+                map.set(ctgr.nombre, ctgr.id);
+                cts = cts + ctgr.nombre + ','
+                //console.log(ctgr.nombre)
+
+            }
+
         }
         for (let clavevalor of map.entries()) {
             //console.log(clavevalor);
         }
 
+        let str2 = cts.substring(0, cts.length - 1);
+
         //console.log(map.get('Hogar'))
-        this.setState({ allcategorias: ctgorias, mapallctgs: map });
+        this.setState({ allcategorias: ctgorias, mapallctgs: map, catgs: str2 });
     }
 
     async loadGrupos() {
@@ -211,8 +224,8 @@ class Cupones extends Component {
     }
 
     showModal = (insignia) => {
-        if((permisos.filter(element => { return element.includes('Can change cupon')}).length >0) || permisos.includes('all')){
-            this.setState({disableCheck: false})
+        if ((permisos.filter(element => { return element.includes('Can change cupon') }).length > 0) || permisos.includes('all')) {
+            this.setState({ disableCheck: false })
         }
         MetodosAxios.obtener_cupon(insignia.key).then(res => {
             this.cuponSelected = res.data;
@@ -301,6 +314,7 @@ class Cupones extends Component {
             picture: iconimg,
             descripcion0: '',
             porcentaje0: '',
+            cantidad0: '',
             fecha_iniciacion0: '',
             fecha_expiracion0: '',
             puntos0: '',
@@ -330,7 +344,7 @@ class Cupones extends Component {
             this.state.fileimg !== null && this.state.descripcion0 !== '' &&
             this.state.porcentaje0 !== '' && this.state.fecha_iniciacion0 !== '' &&
             this.state.fecha_expiracion0 !== '' && this.state.puntos0 !== '' &&
-            this.state.tipo_categoria0 !== '') {
+            this.state.tipo_categoria0 !== '' && this.state.cantidad0 !== '') {
 
             return true
         }
@@ -345,6 +359,9 @@ class Cupones extends Component {
         }
         if (this.state.porcentaje0 === '') {
             ValidarTexto(false, 'errorporcentaje0');
+        }
+        if (this.state.cantidad0 === '') {
+            ValidarTexto(false, 'errorcantidad0');
         }
         if (this.state.fecha_iniciacion0 === '') {
             ValidarTexto(false, 'errorfecha_iniciacion0')
@@ -374,11 +391,11 @@ class Cupones extends Component {
 
     validarformEdit() {
         if (this.state.cuponInfo.codigo !== '' && this.state.cuponInfo.titulo !== '' &&
-        //this.state.fileimg !== null && 
-        this.state.cuponInfo.descripcion !== '' &&
-        this.state.cuponInfo.porcentaje !== '' && this.state.cuponInfo.fecha_iniciacion !== '' &&
-        this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.puntos !== '' &&
-        this.state.cuponInfo.tipo_categoria !== '') {
+            //this.state.fileimg !== null && 
+            this.state.cuponInfo.descripcion !== '' &&
+            this.state.cuponInfo.porcentaje !== '' && this.state.cuponInfo.fecha_iniciacion !== '' &&
+            this.state.cuponInfo.fecha_expiracion !== '' && this.state.cuponInfo.puntos !== '' &&
+            this.state.cuponInfo.tipo_categoria !== '' && this.state.cuponInfo.cantidad !== '') {
 
             return true
         }
@@ -393,6 +410,9 @@ class Cupones extends Component {
         //}
         if (this.state.cuponInfo.porcentaje === '') {
             ValidarTexto(false, 'errorporcentajeE');
+        }
+        if (this.state.cuponInfo.cantidad === '') {
+            ValidarTexto(false, 'errorcantidadE');
         }
         if (this.state.cuponInfo.fecha_iniciacion === '') {
             ValidarTexto(false, 'errorfecha_iniciacionE')
@@ -431,6 +451,7 @@ class Cupones extends Component {
             data.append('foto', this.state.fileimg);
             data.append('descripcion', this.state.descripcion0);
             data.append('porcentaje', this.state.porcentaje0);
+            data.append('cantidad', this.state.cantidad0);
             data.append('fecha_iniciacion', this.state.fecha_iniciacion0);
             data.append('fecha_expiracion', this.state.fecha_expiracion0);
             data.append('puntos', this.state.puntos0);
@@ -461,54 +482,55 @@ class Cupones extends Component {
     }
 
     async editarCupon() {
-        if (this.validarformEdit()){
-        this.setState({
-            limpiarEdit: true,
+        if (this.validarformEdit()) {
+            this.setState({
+                limpiarEdit: true,
 
-        })
-        var data = new FormData();
-        //data.append('nombre', this.state.nombre);
-        //data.append('descripcion', this.state.descripcion);
-        //data.append('imagen', this.state.fileimg);
-        //data.append('servicio', this.state.servicio);
-        //data.append('pedidos', this.state.pedidos);
-        //data.append('tipo', this.state.tipo);
+            })
+            var data = new FormData();
+            //data.append('nombre', this.state.nombre);
+            //data.append('descripcion', this.state.descripcion);
+            //data.append('imagen', this.state.fileimg);
+            //data.append('servicio', this.state.servicio);
+            //data.append('pedidos', this.state.pedidos);
+            //data.append('tipo', this.state.tipo);
 
-        data.append('codigo', this.state.cuponInfo.codigo);
-        data.append('titulo', this.state.cuponInfo.titulo);
-        data.append('descripcion', this.state.cuponInfo.descripcion);
-        data.append('porcentaje', this.state.cuponInfo.porcentaje);
-        data.append('fecha_iniciacion', this.state.cuponInfo.fecha_iniciacion);
-        data.append('fecha_expiracion', this.state.cuponInfo.fecha_expiracion);
-        data.append('puntos', this.state.cuponInfo.puntos);
-        data.append('tipo_categoria', this.state.cuponInfo.tipo_categoria);
-        if (this.state.fileimg != null) {
-            data.append('foto', this.state.fileimg)
-        } //else {
-        //data.append('imagen', this.state.cuponInfo.imagen);
-        //}
+            data.append('codigo', this.state.cuponInfo.codigo);
+            data.append('titulo', this.state.cuponInfo.titulo);
+            data.append('descripcion', this.state.cuponInfo.descripcion);
+            data.append('porcentaje', this.state.cuponInfo.porcentaje);
+            data.append('cantidad', this.state.cuponInfo.cantidad);
+            data.append('fecha_iniciacion', this.state.cuponInfo.fecha_iniciacion);
+            data.append('fecha_expiracion', this.state.cuponInfo.fecha_expiracion);
+            data.append('puntos', this.state.cuponInfo.puntos);
+            data.append('tipo_categoria', this.state.cuponInfo.tipo_categoria);
+            if (this.state.fileimg != null) {
+                data.append('foto', this.state.fileimg)
+            } //else {
+            //data.append('imagen', this.state.cuponInfo.imagen);
+            //}
 
-        await MetodosAxios.cambio_cupon(data, this.state.cuponInfo.id).then(res => {
-            console.log(res)
-        })
+            await MetodosAxios.cambio_cupon(data, this.state.cuponInfo.id).then(res => {
+                console.log(res)
+            })
 
-        for (let value of data.keys()) {
-            console.log(value);
-        }
-        for (let values of data.values()) {
-            console.log(values);
-        }
-
-
-
+            for (let value of data.keys()) {
+                console.log(value);
+            }
+            for (let values of data.values()) {
+                console.log(values);
+            }
 
 
-        this.MostraCupones();
-        this.setState({
-            limpiarEdit: true,
-            modalEditVisible: false,
 
-        })
+
+
+            this.MostraCupones();
+            this.setState({
+                limpiarEdit: true,
+                modalEditVisible: false,
+
+            })
         }
     }
 
@@ -600,7 +622,7 @@ class Cupones extends Component {
         this.searchPromocion(search);
     }
 
-    async onChangeCheckCupon(id,estado,checked){
+    async onChangeCheckCupon(id, estado, checked) {
         this.setState({
             loadingCheck: true
         })
@@ -612,7 +634,7 @@ class Cupones extends Component {
         //await MetodosAxios.cambio_administrador_estado(id,{ 'estado': checked }).then(res => {
         //    message.success("Se ha cambiado el estado del usuario exitosamente")
         //})
-        await MetodosAxios.cambio_cupon_estado(id,{ 'estado': checked }).then(res => {
+        await MetodosAxios.cambio_cupon_estado(id, { 'estado': checked }).then(res => {
             console.log("Se ha cambiado el estado de la insignia exitosamente")
             message.success("Se ha cambiado el estado del cupon exitosamente")
         })
@@ -627,13 +649,13 @@ class Cupones extends Component {
     render() {
         return (
             <>
-                
+
                 {/*<div>*/}
                 {/*<div style={{ marginBottom: 16 }}></div>*/}
                 <div className="card-container">
-                <h1 className="titulo" style={{marginLeft: "2rem"}}>Cupones</h1>
-                <div style={{ display: "flex", marginRight: "2rem" }}>
-                        {((permisos.filter(element => { return element.includes('Can add cupon')}).length >0) || permisos.includes('all')) && <Button type="primary" style={{ marginLeft: "2rem" }}
+                    <h1 className="titulo" style={{ marginLeft: "2rem" }}>Cupones</h1>
+                    <div style={{ display: "flex", marginRight: "2rem" }}>
+                        {((permisos.filter(element => { return element.includes('Can add cupon') }).length > 0) || permisos.includes('all')) && <Button type="primary" style={{ marginLeft: "2rem" }}
                             onClick={() => this.AgregarCupon()}>
                             Agregar Cupón
                         </Button>}
@@ -664,7 +686,7 @@ class Cupones extends Component {
                             style={{ width: 200, margin: '0 10px' }}
                         />
 
-                        {((permisos.filter(element => { return element.includes('Can delete cupon')}).length >0) || permisos.includes('all')) && <Button
+                        {((permisos.filter(element => { return element.includes('Can delete cupon') }).length > 0) || permisos.includes('all')) && <Button
                             type="text"
                             shape="circle"
                             size="small"
@@ -719,17 +741,17 @@ class Cupones extends Component {
                     footer={[
                         <div className="footer">
                             <Button key="close" onClick={this.handleCerrar}>
-                                    Cerrar
+                                Cerrar
                             </Button>
-                            {((permisos.filter(element => { return element.includes('Can change cupon')}).length >0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
-                                    Editar
+                            {((permisos.filter(element => { return element.includes('Can change cupon') }).length > 0) || permisos.includes('all')) && <Button key="edit" onClick={this.handleOk}>
+                                Editar
                             </Button>}
                         </div>
                     ]}
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={this.cuponSelected?.foto != null ?
-                            this.cuponSelected?.foto : sinImagen}
+                            'https://tomesoft1.pythonanywhere.com/' + this.cuponSelected?.foto : sinImagen}
                             alt="foto-perfil" height="150" width="200"></img>
                     </div>
 
@@ -738,19 +760,20 @@ class Cupones extends Component {
                     <p><strong>Categoría:  </strong>{this.cuponSelected?.tipo_categoria}</p>
                     <p><strong>Descripcion:  </strong>{this.cuponSelected?.descripcion}</p>
                     <p><strong>Descuento:  </strong>{this.cuponSelected?.porcentaje}%</p>
+                    <p><strong>Cantidad:  </strong>{this.cuponSelected?.cantidad}</p>
                     <p><strong>Fecha de Inicio:  </strong>{this.cuponSelected?.fecha_iniciacion.split('T')[0]}</p>
                     <p><strong>Fecha de Expiración:  </strong>{this.cuponSelected?.fecha_expiracion.split('T')[0]}</p>
                     <p><strong>Estado:  </strong>{this.cuponSelected?.estado ? 'Activo' : 'Inactivo'}</p>
-                    <div style={{display: 'flex'}} >
+                    <div style={{ display: 'flex' }} >
                         {/* <Space> */}
                         <p><strong>Habilitar / Deshabilitar: </strong>  </p>
-                            <Switch
-                                key={this.cuponSelected?.id}
-                                loading={this.state.loadingCheck}
-                                disabled={this.state.disableCheck}
-                                onChange={(switchValue) => this.onChangeCheckCupon(this.cuponSelected?.id,this.cuponSelected?.estado, switchValue)}
-                                defaultChecked={this.cuponSelected?.estado}
-                            />
+                        <Switch
+                            key={this.cuponSelected?.id}
+                            loading={this.state.loadingCheck}
+                            disabled={this.state.disableCheck}
+                            onChange={(switchValue) => this.onChangeCheckCupon(this.cuponSelected?.id, this.cuponSelected?.estado, switchValue)}
+                            defaultChecked={this.cuponSelected?.estado}
+                        />
                         {/* </Space> */}
                     </div>
 

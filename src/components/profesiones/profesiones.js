@@ -313,7 +313,7 @@ class Profesiones extends Component {
                                     title: <Text strong>Foto</Text>,
                                     dataIndex: 'foto',
                                     align: 'center',
-                                    render: imagen=> <img alt={imagen} src={imagen} style={{width: 125 + 'px'}}/>
+                                    render: imagen=> <img alt={imagen} src={'https://tomesoft1.pythonanywhere.com/'+imagen} style={{width: 125 + 'px'}}/>
                     
                                 },
                                 {
@@ -414,7 +414,7 @@ class Profesiones extends Component {
                             ]}>
                                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                                     <Image  height={150} width={200}
-                                    src={ this.profesionSelected?.foto !=null ? this.profesionSelected?.foto: iconimg } 
+                                    src={ this.profesionSelected?.foto !=null ? 'https://tomesoft1.pythonanywhere.com/'+this.profesionSelected?.foto: iconimg } 
                                         alt="foto-profesion" />
                                 </div> 
                                 <p><strong>Nombre:   </strong>{this.profesionSelected?.nombre}</p>
