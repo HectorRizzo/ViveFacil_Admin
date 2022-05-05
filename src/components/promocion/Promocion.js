@@ -463,6 +463,7 @@ class Promociones extends Component {
 
             await MetodosAxios.crear_promocion(data).then(res => {
                 console.log(res)
+                message.success("Promoción creada exitosamente")
             })
 
 
@@ -519,6 +520,7 @@ class Promociones extends Component {
 
             await MetodosAxios.cambio_promocion(data, this.state.promocionInfo.id).then(res => {
                 console.log(res)
+                message.success("Promoción editada exitosamente")
             })
 
             //for (let value of data.keys()) {
