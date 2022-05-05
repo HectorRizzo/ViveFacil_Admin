@@ -91,11 +91,15 @@ class Profesiones extends Component {
         })
     }
 
+    
+
     addProfesion  = () => {
 
         this.setState({
             visibleModalAdd: true,
             picture: iconimg,
+            uploadValue: 0,
+            nompicture: "Ningun archivo seleccionado",
             limpiar: true,
         })
 
@@ -264,7 +268,7 @@ class Profesiones extends Component {
         
     }
 
-    editProfesion= () =>  {
+    async editProfesion()   {
         
         let data = new FormData()
         data.append("id",this.state.profesionSelected.id)
@@ -274,12 +278,13 @@ class Profesiones extends Component {
         if (this.state.fileimg!=null){
             data.append('foto',this.state.fileimg)
         }
-        MetodosAxios.actualizar_profesion(data).then(res =>  {
+        await MetodosAxios.actualizar_profesion(data).then(res =>  {
             message.success("Profesión editada exitosamente")
             this.setState({
                 visibleModalEdit :false,
                 limpiarEdit :true,
                 picture : iconimg,
+                
 
             })
         })
