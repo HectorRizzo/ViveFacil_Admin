@@ -132,7 +132,7 @@ const EditarPromocion = (props) => {
                 <Form {...layout} form={formEdit}
                     onSubmit={handleSubmitted()} >
 
-                    <Divider orientation="center" className="divider-edit">Informacion de la Promoción</Divider>
+                    <Divider orientation="center" className="divider-edit">Información de la Promoción</Divider>
 
                     <Form.Item name="codigo" label="Código" style={{ color: "red !important" }}
                         rules={[

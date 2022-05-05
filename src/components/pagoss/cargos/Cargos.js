@@ -16,7 +16,7 @@ const { RangePicker } = DatePicker
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes' },
     { title: 'ID', dataIndex: 'key', className: 'columns-pendientes' },
-    { title: 'Nombre', dataIndex: 'nombre', className: 'columns-pendientes' },
+    { title: 'Titulo', dataIndex: 'titulo', className: 'columns-pendientes' },
     { title: 'Porcentaje (%)', dataIndex: 'porcentaje', className: 'columns-pendientes', responsive: ['lg'] },
 ];
 
@@ -84,6 +84,7 @@ class Cargos extends Component {
                 data_cargo.push({
                     key: carg.id,
                     nombre: carg.nombre,
+                    titulo: carg.titulo,
                     porcentaje: carg.porcentaje,
 
                 });
@@ -134,11 +135,14 @@ class Cargos extends Component {
 
     validarformEdit() {
         //console.log( "edit")
-        if (this.state.cargoInfo.nombre !== '' && this.state.cargoInfo.porcentaje !== '') {
+        if (this.state.cargoInfo.nombre !== '' && this.state.cargoInfo.porcentaje !== ''  && this.state.cargoInfo.titulo !== '') {
             return true
         }
         if (this.state.cargoInfo.nombre === '') {
             ValidarTexto(false, 'errornombre')
+        }
+        if (this.state.cargoInfo.titulo === '') {
+            ValidarTexto(false, 'errortitulo')
         }
         if (this.state.cargoInfo.porcentaje === '') {
             ValidarTexto(false, 'errorporcentaje')
@@ -243,6 +247,7 @@ class Cargos extends Component {
 
 
             data.append('nombre', this.state.cargoInfo.nombre);
+            data.append('titulo', this.state.cargoInfo.titulo);
             data.append('porcentaje', this.state.cargoInfo.porcentaje);
 
 
@@ -364,7 +369,7 @@ class Cargos extends Component {
                 >
 
 
-                    <p><strong>Nombre del Cargo:  </strong>{this.cargoSelected?.nombre}</p>
+                    <p><strong>Nombre del Cargo:  </strong>{this.cargoSelected?.titulo}</p>
                     <p><strong>Porcentaje a aplicar:  </strong>{this.cargoSelected?.porcentaje}%</p>
 
 
