@@ -23,6 +23,7 @@ const EditProfesion =(props) => {
         }
         const onChangeCategoria = (event) => {
             param.profesionSelected.servicio = event.target.value;
+            console.log(param.profesionSelected.servicio)
         }
 
 
@@ -56,11 +57,11 @@ const EditProfesion =(props) => {
                     <Input.TextArea  placeholder={param.profesionSelected?.descripcion} onChange={onChangeDescripcion}/>
                 </Form.Item>
 
-                <Form.Item name="categoria" label="Categoría"  labelAlign="left"
+                <Form.Item name="categoria" label="Servicio"  labelAlign="left"
                         rules={[
                             {
                                 required: true,
-                                message: "Seleccione Categoría"
+                                message: "Seleccione Servicio"
                             },
                             ]} 
                         

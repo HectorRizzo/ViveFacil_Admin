@@ -184,6 +184,7 @@ class AdminTab extends Component {
                     limpiarEdit: true,
                     visibleModalEdit: false,
                     visibleModalConfir: false,
+                    picture: iconimg,
         
                 })
 

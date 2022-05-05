@@ -95,6 +95,8 @@ class Profesiones extends Component {
 
         this.setState({
             visibleModalAdd: true,
+            picture: iconimg,
+            limpiar: true,
         })
 
     }
@@ -126,7 +128,7 @@ class Profesiones extends Component {
             MetodosAxios.add_profesion(data).then( res => {
                 if(res.data.success=="Exito"){
 
-                    message.success("Profesion registrada")
+                    message.success("Profesión registrada")
                     this.setState({
                         visibleModalAdd: false,
                         limpiar: true,
@@ -182,7 +184,7 @@ class Profesiones extends Component {
         console.log(this.profesionSelected)
 
         MetodosAxios.delete_profesion(this.profesionSelected.id).then( res  => {
-            console.log("eliminado")
+            message.success("Profesión Eliminada")
             this.loadProfesiones()
         })
         this.setState({
@@ -263,15 +265,26 @@ class Profesiones extends Component {
     }
 
     editProfesion= () =>  {
+        
         let data = new FormData()
+        data.append("id",this.state.profesionSelected.id)
         data.append("nombre",this.state.profesionSelected.nombre)
         data.append("descripcion",this.state.profesionSelected.descripcion)
-        data.append("")
+        data.append("servicio",this.state.profesionSelected.servicio)
         if (this.state.fileimg!=null){
             data.append('foto',this.state.fileimg)
         }
+        MetodosAxios.actualizar_profesion(data).then(res =>  {
+            message.success("Profesión editada exitosamente")
+            this.setState({
+                visibleModalEdit :false,
+                limpiarEdit :true,
+                picture : iconimg,
 
-        
+            })
+        })
+
+        this.loadProfesiones()
 
     }
 
@@ -419,7 +432,7 @@ class Profesiones extends Component {
                                 </div> 
                                 <p><strong>Nombre:   </strong>{this.profesionSelected?.nombre}</p>
                                 <p><strong>Descripción:   </strong>{this.profesionSelected?.descripcion}</p>
-                                <p><strong>Categoría Asignada:   </strong>{this.profesionSelected?.servicio}</p>
+                                <p><strong>Servicio Asignado:   </strong>{this.profesionSelected?.servicio}</p>
 
                         </Modal>
 
