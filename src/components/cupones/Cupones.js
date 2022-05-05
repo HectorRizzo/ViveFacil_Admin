@@ -459,6 +459,7 @@ class Cupones extends Component {
             //console.log(data)
             await MetodosAxios.crear_cupon(data).then(res => {
                 console.log(res)
+                message.success("Cupón creado exitosamente")
             })
             //this.MostraCupones();
             //this.CerrarAgregar()
@@ -512,6 +513,7 @@ class Cupones extends Component {
 
             await MetodosAxios.cambio_cupon(data, this.state.cuponInfo.id).then(res => {
                 console.log(res)
+                message.success("Cupón editado exitosamente")
             })
 
             for (let value of data.keys()) {
