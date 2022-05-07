@@ -311,12 +311,12 @@ const EditarPromocion = (props) => {
                             onChange={value => { handleChangecategoria(value) }}
                             required>
                             <option selected="true" disabled="disabled">{param.promocionInfo?.tipo_categoria}</option>
-
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
 
-                            <option key={param.catgs} value={param.catgs}>Todas</option>
+                            
 
                         </select>
 

@@ -193,7 +193,7 @@ export function validarFechaInicio(dateInicio, param) {
     //console.log("validar hoy: ", dateNow)
     //console.log("validar: ", dateIni)
 
-    if (dateIni.getTime() <= dateNow.getTime()) {
+    if (dateIni.getTime() < dateNow.getTime()) {
         //console.log("Fecha Incompatible");
         var errorNombre = document.getElementById(param);
         errorNombre.textContent = "Fecha Incompatible"
