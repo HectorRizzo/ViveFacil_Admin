@@ -150,7 +150,7 @@ class SugerenciasNoLeidas extends Component {
                         <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
 
                             <Image src={ this.sugerenciaSelected?.foto !=null ?  
-                                this.sugerenciaSelected?.foto: sinImagen } 
+                                'https://tomesoft1.pythonanywhere.com/'+this.sugerenciaSelected?.foto: sinImagen } 
                                 alt="foto-perfil" height={200} width={200}/>
                         </div>
                         <p ><strong>Usuario:  </strong>{this.sugerenciaSelected?.usuario}</p>

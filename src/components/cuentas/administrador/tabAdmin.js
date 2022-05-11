@@ -488,7 +488,7 @@ class AdminTab extends Component {
                     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                         <Image  height={200} width={200}
                         src={ this.state.adminInfo?.user_datos.foto !=null ?  
-                            this.AdminInfo?.user_datos.foto: avatar } 
+                            'https://tomesoft1.pythonanywhere.com/'+this.AdminInfo?.user_datos.foto: avatar } 
                             alt="foto-perfil" />
                     </div> 
                     <p><strong>Nombres:  </strong>{this.state.adminInfo?.user_datos?.nombres}</p>
