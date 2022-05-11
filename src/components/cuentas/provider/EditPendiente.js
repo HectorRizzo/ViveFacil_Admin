@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input ,Divider,Row,Col,Button} from 'antd';
+import { Form, Input ,Divider,Row,Col,Button,Popconfirm} from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import docsImage from "../../../img/docs.png"
 import { API_URL } from "../../../Constants";
@@ -425,9 +425,21 @@ const handleSubmitted = () => {
                                                 <a href={API_URL + documento.document} target="_blank" download>
                                                     <img src={docsImage} width={30}/>
                                                 </a>
-                                                <Button icon={<DeleteTwoTone />} shape="circle"
+                                                <Popconfirm title={
+                                                    <><strong>¿Está Seguro que desea eliminar el documento?</strong>
+                                                        <br></br>
+                                                        <strong>Al seleccionar la opción "si" dicho documento será eliminado permanentemente</strong>
+                                                    </>
+                                                    
+                                                }
+                                                okText="Si" cancelText="No" onConfirm={()=> handleEliminarDocument(documento.id)}>
+                                                    <Button icon={<DeleteTwoTone />} shape="circle"
+                                                        className="eliminar" >
+                                                    </Button>
+                                                </Popconfirm>
+                                                {/* <Button icon={<DeleteTwoTone />} shape="circle"
                                                     className="eliminar" onClick={()=>handleEliminarDocument(documento.id)}>
-                                                </Button>
+                                                </Button> */}
                                                 
                                                 </div></>
                         })}

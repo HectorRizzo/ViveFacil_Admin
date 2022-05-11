@@ -72,6 +72,7 @@ class Administrador extends Component {
         MetodosAxios.obtener_roles().then(res => {
             let roles=[];
             for(let rol of res.data){
+                if(rol.name != "Administrador" && rol.name != "Solicitante" && rol.name != "Proveedor"  && rol.name != 'Proveedor_Pendiente')
                 roles.push(rol.name)
             }
             this.setState({
