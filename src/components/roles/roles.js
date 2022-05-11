@@ -253,7 +253,7 @@ class Roles extends Component {
         let value = await MetodosAxios.obtener_grupos();
         let data = value.data
         for(let rol of data){
-            if(rol.name != "Administrador" && rol.name != "Solicitante" && rol.name != "Proveedor")
+            if(rol.name != "Administrador" && rol.name != "Solicitante" && rol.name != "Proveedor" && rol.name != "Proveedor_Pendiente")
             roles.push(rol)
         }
         this.setState({
@@ -335,8 +335,6 @@ class Roles extends Component {
         try {
             let response = await MetodosAxios.crear_rol(data);
             let value = response.data;
-            console.log(value);
-
             if (value['id'] >=0){
                 message.success("El rol fue creado exitosamente");
                 this.setState({
@@ -387,7 +385,7 @@ class Roles extends Component {
         try {
             let response = await MetodosAxios.actualizar_rol(data);
             let value = response.data;
-            console.log(value);
+            document.getElementById('edit-button').disabled = true
             if (value['id'] >=0) {
                 this.setState({
                     show: false,
@@ -423,7 +421,7 @@ class Roles extends Component {
     }
 
     handleAdd = () => {
-
+        document.getElementById('edit-button').disabled = true
         this.setState({displayGuardar: 'block',
             displayEliminar: 'none',
             mostrarNombre: 'flex',
@@ -538,6 +536,7 @@ class Roles extends Component {
         }
 
         this.setState({displayEliminar: 'block',
+        displayGuardar: 'none',
         seleccionado: event.target.value,
         mostrarNombre: 'none',
         id: rol.id,
@@ -603,16 +602,15 @@ class Roles extends Component {
             permisos[i].edit = false
             permisos[i].delete = false
         }
-        
+        document.getElementById('edit-button').disabled = true
         try {
 
             let response = await MetodosAxios.borrar_rol(this.state.id);
-            let value = response.data;
+            let value = response.status;
             console.log(response);
             
-
-            if (value['id'] >=0) {
-
+            if (value == 204) {
+                message.success("El rol fue eliminado exitosamente");
                 this.setState({
                     displayEliminar: 'none',
                     seleccionado: null,
@@ -624,21 +622,10 @@ class Roles extends Component {
                     is_changed: true,
                 });
 
-            } else {
-                this.setState({
-                    displayEliminar: 'none',
-                    permisos: permisos,
-                    seleccionado: null,
-                    show: false,
-                    mssg: value.error,
-                    failed: true,
-                    borrar: false,
-                    is_changed: true,
-                });
             }
 
         } catch (e) {
-            
+            console.log(e)
             this.setState({
                 displayEliminar: 'none',
                 seleccionado: null,
@@ -713,11 +700,30 @@ class Roles extends Component {
                             <Button onClick={this.handleCrearP} style={{ display: this.state.displayGuardar, marginLeft: 15 + 'px', marginRight: 10 + 'px'}} id='edit-button'> 
                                             Guardar
                             </Button>
-                            <Button onClick={this.deleteRol} style={{ display: this.state.displayEliminar, marginRight: 5 + 'px'}} id='eliminar'> 
+                            <Button onClick={e => {this.setState({borrar: true})}} style={{ display: this.state.displayEliminar, marginRight: 5 + 'px'}} id='eliminar'> 
                                             Eliminar
                             </Button>
                         </ButtonGroup>
                        
+                        <Modal
+                            key="modal-fail-prom"
+                            visible={this.state.borrar}
+                            width={520}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept" onClick={this.deleteRol} className="button-request"
+                                        style={{ background: '##052434' }} size="large">
+                                        Aceptar
+                            </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <div className="success-msg">
+                                    <h3 className="msg-text">Esta seguro que desea eliminar el rol {this.state.seleccionado}</h3>
+                                </div>
+                            </div>
+                        </Modal>
                     </div>
                 </div>
             </div>

@@ -95,6 +95,9 @@ class LayoutPage extends Component {
         MetodosAxios.logout(localStorage.getItem('token')).then(res => {
             window.localStorage.clear()
             props.history.push({pathname: '/'})
+        }).catch(error => {
+            window.localStorage.clear()
+            props.history.push({pathname: '/'})
         })
     }
 

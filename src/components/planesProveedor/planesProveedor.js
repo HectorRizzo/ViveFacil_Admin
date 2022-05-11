@@ -286,7 +286,7 @@ class planesProveedor extends Component {
     render() {
         return (
             <div>
-                <h1 className="proveedor-title">Planes de Proveedores </h1>
+                <h1 className="proveedor-title">Expiración Planes de Proveedores </h1>
                 <div>
                     <div style={{ marginBottom: 16 }}></div>
                     <div className="card-container">
