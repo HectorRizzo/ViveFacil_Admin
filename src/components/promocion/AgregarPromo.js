@@ -355,12 +355,12 @@ const AgregarPromocion = (props) => {
                             onChange={value => { handleChangecategoria(value) }}
                             required>
                             <option selected="true" disabled="disabled">seleccione la categoria</option>
-
+                            <option key={param.catgs} value={param.catgs}>Todas</option>
                             {param.allcategorias.map((ctg, i) => {
                                 return <option key={ctg} value={ctg}>{ctg}</option>
                             })}
 
-                            <option key={param.catgs} value={param.catgs}>Todas</option>
+                            
 
                         </select>
                         <div className="Registroerror-div">

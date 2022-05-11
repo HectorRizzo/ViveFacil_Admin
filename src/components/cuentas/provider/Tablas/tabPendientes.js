@@ -77,7 +77,7 @@ class PendienteTab extends Component {
         MetodosAxios.obtener_todas_profesiones().then(res => {
             let profesionesDisponibles=[];
             for(let profesion of res.data){
-                profesionesDisponibles.push(profesion.nombre.toLowerCase())
+                profesionesDisponibles.push(profesion.nombre)
                 
             }
             this.setState({
@@ -194,7 +194,8 @@ class PendienteTab extends Component {
 
     crearProveedor(){
             let profesion =this.state.pendienteActual?.profesion
-            if(this.state.profesiones.includes(profesion.toLowerCase())){
+
+            if(this.state.profesiones.includes(profesion)){
 
                 let datosProveedor = new FormData()
                 datosProveedor.append("id",this.state.pendienteActual?.id)
@@ -208,13 +209,16 @@ class PendienteTab extends Component {
                 datosProveedor.append("email",this.state.pendienteActual?.email)
                 datosProveedor.append("licencia",this.state.pendienteActual?.licencia)
                 let profesion = String(this.state.pendienteActual.profesion).charAt(0).toUpperCase()+String(this.state.pendienteActual.profesion).slice(1)
+                console.log(profesion)
                 datosProveedor.append("profesion",profesion)
                 datosProveedor.append("descripcion",this.state.pendienteActual?.descripcion)
                 datosProveedor.append("tipo_cuenta",this.state.pendienteActual?.tipo_cuenta)
                 datosProveedor.append("anio_experiencia",this.state.pendienteActual?.ano_experiencia)
+                console.log(this.state.pendienteActual?.banco)
                 datosProveedor.append("banco",this.state.pendienteActual?.banco)
                 datosProveedor.append("numero_cuenta",this.state.pendienteActual?.numero_cuenta)
                 datosProveedor.append("descripcionDoc",`documento de ${this.state.pendienteActual?.nombres}`)
+
 
                 MetodosAxios.crear_proveedor(datosProveedor).then(res  => {
                     console.log(res)
@@ -323,7 +327,7 @@ class PendienteTab extends Component {
             this.state.pendienteActual.cedula===""||this.state.pendienteActual.telefono===""||
             this.state.pendienteActual.genero===""|| this.state.pendienteActual.ciudad===""||
             this.state.pendienteActual.direccion===""||this.state.pendienteActual.email===""||
-            this.state.pendienteActual.licencia==="" || this.state.pendienteActual.numero_cuenta.length<6 ||
+            this.state.pendienteActual.licencia==="" || this.state.pendienteActual.numero_cuenta.length<1 ||
             this.state.pendienteActual.tipo_cuenta==="" || this.state.pendienteActual.banco==="" || 
             this.state.pendienteActual.profesion==="" || this.state.pendienteActual.descripcion===""){
                 message.error("Ingrese todos los campos requeridos")
@@ -392,6 +396,9 @@ class PendienteTab extends Component {
                 limpiarEdit: true,
                 visibleModalConfirmacion:false,
                 visibleModalEditP: false,
+                filesDocumentacion: [],
+                fileCedula: null,
+                fileLicencia: null,
 
             })
             this.cargarPagina(1)
@@ -405,6 +412,11 @@ class PendienteTab extends Component {
         this.setState({
             visibleModalEditP: false,
             limpiarEdit: true,
+            filesDocumentacion: [],
+            fileCedula: null,
+            fileLicencia: null,
+
+
         })
     }
 
@@ -647,7 +659,7 @@ class PendienteTab extends Component {
                             <p><strong>Nº Cuenta:  </strong>{this.state.pendienteActual?.numero_cuenta}</p>
                             <p><strong>Banco:   </strong>{this.state.pendienteActual?.banco}</p>
                         <Divider orientation="center" className="divider-edit">Profesión</Divider>
-                        {this.state.profesiones.includes(this.state.pendienteActual?.profesion.toLowerCase()) 
+                        {this.state.profesiones.includes(this.state.pendienteActual?.profesion) 
                             ? <>
                                 <p><strong>Profesión:  </strong>{this.state.pendienteActual?.profesion}</p>
                                 <p><strong>Años de Experiencia:  </strong>{this.state.pendienteActual?.ano_experiencia}</p>
@@ -692,7 +704,8 @@ class PendienteTab extends Component {
 
                     </p>}
                     visible={this.state.visibleModalEditP}
-                    closable= {false}
+                    maskClosable= {false}
+                    closable = {false}
                     okText="Guardar Cambios"
                     cancelText="Cancelar"
                     onOk = {() =>this.handleValidarDatos()}
@@ -707,7 +720,6 @@ class PendienteTab extends Component {
                     <Modal
                     title={<p style={{textAlign:"center"}}>Confirmación </p>}
                     visible={this.state.visibleModalConfirmacion}
-                    closable= {false}
                     okText="Aceptar"
                     cancelText="Cancelar"
                     onOk = {() =>this.handleEnviarDatos()}
@@ -720,7 +732,6 @@ class PendienteTab extends Component {
                     <Modal
                     title="Aceptar Solicitud"
                     visible={this.state.visibleModalAceptar}
-                    closable= {false}
                     okText="Si"
                     cancelText="No"
                     onOk = {() =>this.crearProveedor()}
@@ -734,7 +745,6 @@ class PendienteTab extends Component {
                     <Modal
                     title="Denegar Solicitud"
                     visible={this.state.visibleModalDenegar}
-                    closable= {false}
                     okText="Si"
                     cancelText="No"
                     onOk = {() =>this.EliminarPendiente()}

@@ -391,6 +391,9 @@ class ProveedorTab extends Component {
         this.setState({
             visibleModalEditProveedor: false,
             limpiarEdit: true,
+            filesDocumentacion: [],
+            fileCedula: null,
+            fileLicencia: null,
         })
     }
 
@@ -496,6 +499,9 @@ class ProveedorTab extends Component {
                 this.setState({
                     limpiarEdit: true,
                     visibleModalEditProveedor: false,
+                    fileCedula:null,
+                    fileLicencia:null,
+                    filesDocumentacion: [],
         
                 })
 
