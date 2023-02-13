@@ -212,7 +212,7 @@ class Efectivo extends Component {
         MetodosAxios.filtrar_efectivo(this.fechaInicio, this.fechaFin, 1).then(res => {
             console.log(res)
             let efectivo_fechas = this.formatData(res);
-            console.log(efectivo_fechas)
+            console.log(this.fechaInicio,this.fechaFin)
             this.setState({
                 efectivos: efectivo_fechas,
                 loadingTable: false,

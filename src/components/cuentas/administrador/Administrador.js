@@ -201,6 +201,7 @@ class Administrador extends Component {
             datos.append('telefono',this.state.telefono)
             datos.append('genero',this.state.genero)
             datos.append('rol', this.state.rol)
+            console.log(datos)
             if (this.state.fileimg!=null){
                 datos.append('foto',this.state.fileimg)
             }
